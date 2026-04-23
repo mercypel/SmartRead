@@ -15,6 +15,30 @@
   --card:rgba(255,255,255,.05);--cb:rgba(255,255,255,.1);
   --r:14px;--rs:8px;
 }
+/* ── Warm cream light theme (system default + manual toggle) ── */
+@media(prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --bg:#FFFBF5;--bg2:#FDF6ED;
+    --teal:#00A389;--teal2:#007A68;
+    --purple:#6B52D4;--red:#C0392B;--green:#27874A;--amber:#B8730A;
+    --text:#2C1F0E;--t2:#6B5340;--t3:#9C7E64;
+    --card:rgba(255,255,255,.85);--cb:rgba(139,100,60,.15);
+  }
+}
+[data-theme="light"]{
+  --bg:#FFFBF5;--bg2:#FDF6ED;
+  --teal:#00A389;--teal2:#007A68;
+  --purple:#6B52D4;--red:#C0392B;--green:#27874A;--amber:#B8730A;
+  --text:#2C1F0E;--t2:#6B5340;--t3:#9C7E64;
+  --card:rgba(255,255,255,.85);--cb:rgba(139,100,60,.15);
+}
+[data-theme="dark"]{
+  --bg:#0D1B2A;--bg2:#1B2F45;
+  --teal:#00C9A7;--teal2:#00A389;
+  --purple:#A78BFA;--red:#FF6B6B;--green:#4ADE80;--amber:#FFB347;
+  --text:#EEF2F7;--t2:#9BAFC4;--t3:#5A7A96;
+  --card:rgba(255,255,255,.05);--cb:rgba(255,255,255,.1);
+}
 body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 #shell{display:flex;min-height:100vh}
 
@@ -191,6 +215,78 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 .aInp:focus{border-color:var(--teal)}
 .aInp::placeholder{color:var(--t3)}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px}
+
+/* ── Light mode overrides ── */
+@media(prefers-color-scheme:light){
+  :root:not([data-theme="dark"]) body,
+  [data-theme="light"] body{ background:var(--bg); }
+  :root:not([data-theme="dark"]) #sidebar,
+  [data-theme="light"] #sidebar{ background:#FDF0E4;border-right-color:rgba(139,100,60,.2); }
+  :root:not([data-theme="dark"]) .ni:hover,
+  [data-theme="light"] .ni:hover{ background:rgba(0,163,137,.08); }
+  :root:not([data-theme="dark"]) .ni.on,
+  [data-theme="light"] .ni.on{ background:rgba(0,163,137,.12);border-left-color:var(--teal); }
+  :root:not([data-theme="dark"]) .xpbox,
+  [data-theme="light"] .xpbox{ background:rgba(0,163,137,.08);border-color:rgba(0,163,137,.25); }
+  :root:not([data-theme="dark"]) .card,
+  [data-theme="light"] .card{ background:#FFFFFF;border-color:rgba(139,100,60,.15); }
+  :root:not([data-theme="dark"]) .btn,
+  [data-theme="light"] .btn{ border-color:rgba(139,100,60,.25);color:var(--text); }
+  :root:not([data-theme="dark"]) .btn:hover,
+  [data-theme="light"] .btn:hover{ background:rgba(139,100,60,.06); }
+  :root:not([data-theme="dark"]) .rtext,
+  [data-theme="light"] .rtext{ background:#FFFFFF;border-color:rgba(139,100,60,.15); }
+  :root:not([data-theme="dark"]) .read-along,
+  [data-theme="light"] .read-along{ background:#FFFFFF;border-color:rgba(139,100,60,.15); }
+  :root:not([data-theme="dark"]) .read-along p.speaking,
+  [data-theme="light"] .read-along p.speaking{ background:rgba(0,163,137,.12); }
+  :root:not([data-theme="dark"]) .aplayer,
+  [data-theme="light"] .aplayer{ background:#FFFFFF;border-color:rgba(139,100,60,.15); }
+  :root:not([data-theme="dark"]) .notes-side,
+  [data-theme="light"] .notes-side{ background:#FFFFFF;border-color:rgba(139,100,60,.15); }
+  :root:not([data-theme="dark"]) .tabs,
+  [data-theme="light"] .tabs{ background:rgba(139,100,60,.08); }
+  :root:not([data-theme="dark"]) .tab.on,
+  [data-theme="light"] .tab.on{ background:rgba(0,163,137,.15);color:var(--teal); }
+  :root:not([data-theme="dark"]) #chatbox,
+  [data-theme="light"] #chatbox{ background:#FFFFFF;border-color:rgba(139,100,60,.15); }
+  :root:not([data-theme="dark"]) #chat-inp,
+  [data-theme="light"] #chat-inp{ background:#FFFFFF;border-color:rgba(139,100,60,.2);color:var(--text); }
+  :root:not([data-theme="dark"]) .ca,
+  [data-theme="light"] .ca{ background:#F5EEE6; }
+  :root:not([data-theme="dark"]) .metric,
+  [data-theme="light"] .metric{ background:#FFFFFF;border-color:rgba(139,100,60,.15); }
+  :root:not([data-theme="dark"]) .match-item,
+  [data-theme="light"] .match-item{ background:#FFFFFF;border-color:rgba(139,100,60,.2); }
+  :root:not([data-theme="dark"]) .hn-item,
+  [data-theme="light"] .hn-item{ background:#FFFFFF;border-color:rgba(139,100,60,.15); }
+  :root:not([data-theme="dark"]) #hn-panel,
+  [data-theme="light"] #hn-panel{ background:#FDF0E4; }
+  :root:not([data-theme="dark"]) .fc-front,
+  [data-theme="light"] .fc-front{ background:linear-gradient(135deg,rgba(0,163,137,.1),rgba(107,82,212,.06)); }
+  :root:not([data-theme="dark"]) .fc-back,
+  [data-theme="light"] .fc-back{ background:linear-gradient(135deg,rgba(107,82,212,.1),rgba(0,163,137,.06)); }
+  :root:not([data-theme="dark"]) .ntarea,
+  [data-theme="light"] .ntarea{ background:#FFFFFF;border-color:rgba(139,100,60,.2);color:var(--text); }
+  :root:not([data-theme="dark"]) .sel,
+  [data-theme="light"] .sel{ background:#FFFFFF;border-color:rgba(139,100,60,.2);color:var(--text); }
+  :root:not([data-theme="dark"]) #apiBox,
+  [data-theme="light"] #apiBox{ background:#FFFBF5;border-color:rgba(139,100,60,.2); }
+  :root:not([data-theme="dark"]) .aInp,
+  [data-theme="light"] .aInp{ background:#FFFFFF;border-color:rgba(139,100,60,.2);color:var(--text); }
+  :root:not([data-theme="dark"]) #dict-result>div,
+  [data-theme="light"] #dict-result>div{ background:#FFFFFF;border-color:rgba(139,100,60,.15); }
+  :root:not([data-theme="dark"]) #focusOv,
+  [data-theme="light"] #focusOv{ background:#FFFBF5; }
+  :root:not([data-theme="dark"]) #focus-bar,
+  [data-theme="light"] #focus-bar{ background:rgba(253,240,228,.95);border-bottom-color:rgba(139,100,60,.2); }
+  :root:not([data-theme="dark"]) .uzone,
+  [data-theme="light"] .uzone{ border-color:rgba(0,163,137,.35); }
+  :root:not([data-theme="dark"]) .bcard,
+  [data-theme="light"] .bcard{ background:#FFFFFF;border-color:rgba(139,100,60,.15); }
+  :root:not([data-theme="dark"]) #reward,
+  [data-theme="light"] #reward{ background:rgba(253,240,228,.98); }
+}
 </style>
 </head>
 <body>
@@ -228,6 +324,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
   <button class="ni" onclick="go('leaderboard')"><span>🏆</span><span class="nl">Leaderboard</span></button>
   <div class="nsep"></div>
   <button class="ni" onclick="toggleFocus()"><span>🎯</span><span class="nl">Focus Mode</span></button>
+  <button class="ni" id="theme-btn" onclick="cycleTheme()" title="Toggle theme"><span id="theme-icon">☀</span><span class="nl" id="theme-label">Light theme</span></button>
 
   <div class="nsep"></div>
 
@@ -1963,7 +2060,37 @@ function renderLB(){
 // ═══════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════
+// ── Theme management ──
+function applyTheme(theme){
+  var root=document.documentElement;
+  var icon=document.getElementById('theme-icon');
+  var label=document.getElementById('theme-label');
+  if(theme==='light'){
+    root.setAttribute('data-theme','light');
+    if(icon) icon.textContent='☽';
+    if(label) label.textContent='Dark theme';
+  } else if(theme==='dark'){
+    root.setAttribute('data-theme','dark');
+    if(icon) icon.textContent='☀';
+    if(label) label.textContent='Light theme';
+  } else {
+    root.removeAttribute('data-theme');
+    var prefersDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+    if(icon) icon.textContent=prefersDark?'☀':'☽';
+    if(label) label.textContent=prefersDark?'Light theme':'Dark theme';
+  }
+  try{localStorage.setItem('sr_theme',theme||'auto');}catch(e){}
+}
+function cycleTheme(){
+  var current=document.documentElement.getAttribute('data-theme')||'auto';
+  var next=current==='auto'?(window.matchMedia('(prefers-color-scheme:dark)').matches?'light':'dark'):current==='light'?'dark':'light';
+  applyTheme(next);
+}
+
 (function init(){
+  // Apply saved theme
+  var saved=localStorage.getItem('sr_theme')||'auto';
+  applyTheme(saved==='auto'?null:saved);
   renderLib();
   renderChat();
   renderProgress();
