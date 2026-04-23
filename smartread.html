@@ -1,0 +1,1974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SmartRead</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0D1B2A;--bg2:#1B2F45;
+  --teal:#00C9A7;--teal2:#00A389;
+  --purple:#A78BFA;--red:#FF6B6B;--green:#4ADE80;--amber:#FFB347;
+  --text:#EEF2F7;--t2:#9BAFC4;--t3:#5A7A96;
+  --card:rgba(255,255,255,.05);--cb:rgba(255,255,255,.1);
+  --r:14px;--rs:8px;
+}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+#shell{display:flex;min-height:100vh}
+
+/* ── Sidebar ── */
+#sidebar{width:220px;background:rgba(255,255,255,.03);border-right:1px solid var(--cb);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+#content{flex:1;overflow:auto;padding:1.75rem 2rem}
+@media(max-width:700px){#sidebar{width:48px}#sidebar .nl{display:none}#sidebar .lt{display:none}#content{padding:1rem}}
+.logo{padding:1.1rem 1rem 1.2rem;display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--cb);flex-shrink:0}
+.logo-ic{width:34px;height:34px;background:linear-gradient(135deg,var(--teal),var(--purple));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.lt{font-family:'DM Serif Display',serif;font-size:17px;background:linear-gradient(90deg,var(--teal),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ni{display:flex;align-items:center;gap:9px;padding:.55rem 1rem;cursor:pointer;border:none;background:none;width:100%;text-align:left;color:var(--t2);font-size:13px;font-family:'Sora',sans-serif;border-left:2.5px solid transparent;transition:all .15s;white-space:nowrap}
+.ni:hover{color:var(--text);background:rgba(255,255,255,.05)}
+.ni.on{color:var(--teal);border-left-color:var(--teal);background:rgba(0,201,167,.1)}
+.nsep{height:1px;background:var(--cb);margin:.3rem 0;flex-shrink:0}
+.xpbox{margin:.75rem .75rem 0;background:rgba(0,201,167,.08);border:1px solid rgba(0,201,167,.25);border-radius:var(--rs);padding:.5rem .75rem;text-align:center;flex-shrink:0}
+.xpn{font-size:18px;font-weight:600;color:var(--teal)}
+.xpl{font-size:11px;color:var(--t3)}
+
+/* ── Highlights & Notes panel in sidebar ── */
+#hn-panel{flex:1;overflow-y:auto;padding:.5rem .75rem .75rem;min-height:0}
+.hn-section-title{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin:.6rem 0 .3rem;padding:0 .25rem}
+.hn-item{background:rgba(255,255,255,.04);border:1px solid var(--cb);border-radius:var(--rs);padding:.45rem .6rem;margin-bottom:.35rem;font-size:11.5px;line-height:1.5;position:relative;word-break:break-word}
+.hn-item .hn-del{position:absolute;top:.3rem;right:.4rem;background:none;border:none;cursor:pointer;font-size:11px;color:var(--t3);opacity:.6;line-height:1}
+.hn-item .hn-del:hover{color:var(--red);opacity:1}
+.hn-item.hl-item{border-left:3px solid var(--amber);color:var(--t2)}
+.hn-item.note-item{border-left:3px solid var(--teal);color:var(--t2)}
+.hn-empty{font-size:11px;color:var(--t3);padding:.3rem .25rem;font-style:italic}
+
+/* ── Cards / Buttons ── */
+.card{background:var(--card);border:1px solid var(--cb);border-radius:var(--r);padding:1.2rem}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:.46rem 1rem;border-radius:var(--rs);border:1px solid var(--cb);background:transparent;cursor:pointer;font-size:13px;font-family:'Sora',sans-serif;color:var(--text);transition:all .15s}
+.btn:hover{background:rgba(255,255,255,.08)}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btnp{background:linear-gradient(135deg,var(--teal),var(--teal2));color:#0D1B2A;border:none;font-weight:600}
+.btnp:hover{opacity:.88;transform:translateY(-1px)}
+.btns{padding:.3rem .72rem;font-size:12px}
+.btnd{background:rgba(255,107,107,.1);border-color:rgba(255,107,107,.3);color:var(--red)}
+.pbar{height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden}
+.pfill{height:100%;background:linear-gradient(90deg,var(--teal),var(--purple));border-radius:3px;transition:width .35s}
+.tabs{display:flex;gap:3px;padding:4px;background:rgba(0,0,0,.3);border-radius:10px;margin-bottom:1.1rem}
+.tab{flex:1;padding:.36rem .3rem;border:none;background:none;border-radius:7px;cursor:pointer;font-size:12px;color:var(--t2);font-family:'Sora',sans-serif;transition:all .15s;white-space:nowrap}
+.tab.on{background:rgba(0,201,167,.2);color:var(--teal);font-weight:600}
+
+/* ── Upload ── */
+.uzone{border:1.5px dashed rgba(0,201,167,.35);border-radius:var(--r);padding:1.75rem;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:1rem}
+.uzone:hover,.uzone.drag{border-color:var(--teal);background:rgba(0,201,167,.06)}
+.uzone input{display:none}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.bcard{background:var(--card);border:1px solid var(--cb);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .2s}
+.bcard:hover{border-color:var(--teal);transform:translateY(-2px)}
+.bcov{height:78px;display:flex;align-items:center;justify-content:center;font-size:32px;background:linear-gradient(135deg,rgba(0,201,167,.1),rgba(167,139,250,.1))}
+.binfo{padding:.6rem .7rem}
+.btit{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+.bpct{font-size:11px;color:var(--t3);margin-bottom:5px}
+
+/* ── Text reading ── */
+.rtext{background:rgba(0,0,0,.22);border:1px solid var(--cb);border-radius:var(--r);padding:1.5rem 1.8rem;line-height:1.9;font-size:15.5px;min-height:240px;max-height:440px;overflow-y:auto}
+.rtext p{margin-bottom:.9em}
+.hl{background:rgba(255,179,71,.38);border-radius:2px;cursor:pointer;transition:background .2s}
+.hl:hover{background:rgba(255,107,107,.35)}
+.ntarea{width:100%;background:rgba(0,0,0,.2);border:1px solid var(--cb);border-radius:var(--rs);padding:.65rem;font-family:'Sora',sans-serif;font-size:13px;color:var(--text);resize:vertical;min-height:80px;outline:none;margin-top:.4rem}
+.ntarea:focus{border-color:var(--teal)}
+
+/* ── Audio read-along ── */
+#audio-layout{display:grid;grid-template-columns:1fr 300px;gap:1rem;align-items:start}
+@media(max-width:820px){#audio-layout{grid-template-columns:1fr}}
+.read-along{background:rgba(0,0,0,.22);border:1px solid var(--cb);border-radius:var(--r);padding:1.4rem 1.6rem;line-height:1.9;font-size:15px;max-height:500px;overflow-y:auto}
+.read-along p{margin-bottom:.85em;border-radius:5px;padding:3px 6px;margin-left:-6px;transition:background .3s,opacity .3s}
+.read-along p.speaking{background:rgba(0,201,167,.18)}
+.read-along p.spoken{opacity:.45}
+.audio-panel{display:flex;flex-direction:column;gap:.75rem}
+.aplayer{background:rgba(0,0,0,.28);border:1px solid var(--cb);border-radius:var(--r);padding:1.2rem;text-align:center}
+.awave{display:flex;align-items:flex-end;justify-content:center;gap:3px;height:32px;margin-bottom:.85rem}
+.abar{width:4px;background:var(--teal);border-radius:2px;opacity:.2;height:6px}
+.abar.on{opacity:1;animation:wav 1.1s ease-in-out infinite}
+@keyframes wav{0%,100%{height:6px}50%{height:24px}}
+.abar:nth-child(2){animation-delay:.1s}.abar:nth-child(3){animation-delay:.2s}
+.abar:nth-child(4){animation-delay:.3s}.abar:nth-child(5){animation-delay:.15s}
+.abar:nth-child(6){animation-delay:.25s}.abar:nth-child(7){animation-delay:.05s}
+.abar:nth-child(8){animation-delay:.35s}
+.aprog{display:flex;align-items:center;gap:8px;margin:.6rem 0 .85rem}
+.atime{font-size:11px;color:var(--t3);min-width:30px}
+.spd-row{display:flex;gap:4px;justify-content:center;flex-wrap:wrap}
+.spdBtn{padding:.24rem .52rem;border-radius:20px;border:1px solid var(--cb);background:transparent;cursor:pointer;font-size:11.5px;font-family:'Sora',sans-serif;color:var(--t2);transition:all .15s}
+.spdBtn.on{background:var(--teal);color:#0D1B2A;border-color:var(--teal);font-weight:600}
+.notes-side{background:rgba(0,0,0,.2);border:1px solid var(--cb);border-radius:var(--r);padding:.9rem}
+
+/* ── Video ── */
+.vthrow{display:flex;gap:6px;overflow-x:auto;padding:.5rem 0 .2rem;scrollbar-width:thin}
+.vth{flex-shrink:0;border:2px solid transparent;border-radius:6px;overflow:hidden;cursor:pointer;background:rgba(0,0,0,.4);transition:border-color .18s}
+.vth:hover,.vth.on{border-color:var(--teal)}
+.vth-lbl{font-size:9px;color:var(--t3);text-align:center;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px}
+
+/* ── Games ── */
+.flashcard{perspective:600px;width:100%;max-width:480px;height:230px;margin:0 auto 1rem;cursor:pointer}
+.fc-inner{position:relative;width:100%;height:100%;transition:transform .55s;transform-style:preserve-3d}
+.fc-inner.flipped{transform:rotateY(180deg)}
+.fc-front,.fc-back{position:absolute;inset:0;border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:1px solid var(--cb)}
+.fc-front{background:linear-gradient(135deg,rgba(0,201,167,.12),rgba(167,139,250,.08));border-color:rgba(0,201,167,.3)}
+.fc-back{background:linear-gradient(135deg,rgba(167,139,250,.12),rgba(0,201,167,.08));transform:rotateY(180deg);border-color:rgba(167,139,250,.3)}
+.fc-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.65rem;opacity:.6}
+.fc-text{font-size:15.5px;line-height:1.55;font-weight:500}
+.fc-hint{font-size:12px;color:var(--t3);margin-top:.6rem}
+.fib-sentence{font-size:16px;line-height:2.2;margin-bottom:1rem}
+.fib-options{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.75rem}
+.fib-opt{padding:.38rem .9rem;border-radius:20px;border:1px solid var(--cb);background:transparent;cursor:pointer;font-size:13.5px;font-family:'Sora',sans-serif;color:var(--text);transition:all .15s}
+.fib-opt:hover{border-color:var(--teal);background:rgba(0,201,167,.08)}
+.fib-opt.ok{border-color:var(--green);background:rgba(74,222,128,.1);color:var(--green)}
+.fib-opt.no{border-color:var(--red);background:rgba(255,107,107,.1);color:var(--red)}
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:.75rem}
+.match-col{display:flex;flex-direction:column;gap:8px}
+.match-item{padding:.6rem .85rem;border-radius:var(--rs);border:2px solid var(--cb);background:rgba(0,0,0,.2);cursor:pointer;font-size:13px;line-height:1.45;transition:all .18s;user-select:none}
+.match-item:hover{border-color:var(--teal)}
+.match-item.selected{border-color:var(--teal);background:rgba(0,201,167,.1)}
+.match-item.matched{border-color:var(--green);background:rgba(74,222,128,.08);cursor:default;opacity:.75}
+.match-item.wrong{border-color:var(--red);animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.qopt{display:block;width:100%;text-align:left;padding:.6rem 1rem;border:1px solid rgba(255,255,255,.12);border-radius:var(--rs);background:transparent;cursor:pointer;font-family:'Sora',sans-serif;font-size:13.5px;color:var(--text);margin-bottom:7px;transition:all .16s}
+.qopt:hover{background:rgba(0,201,167,.08);border-color:rgba(0,201,167,.4)}
+.qopt.ok{background:rgba(74,222,128,.12);border-color:var(--green);color:var(--green)}
+.qopt.no{background:rgba(255,107,107,.12);border-color:var(--red);color:var(--red)}
+
+/* ── Chat ── */
+#chatbox{height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:.6rem;padding:.9rem;background:rgba(0,0,0,.18);border:1px solid var(--cb);border-radius:var(--r)}
+.cmsg{max-width:86%;padding:.55rem .85rem;border-radius:11px;font-size:13.5px;line-height:1.62;white-space:pre-wrap}
+.cu{background:linear-gradient(135deg,var(--teal2),rgba(0,163,137,.7));color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
+.ca{background:rgba(255,255,255,.07);align-self:flex-start;border-bottom-left-radius:3px}
+.ca.tk{opacity:.5;font-style:italic}
+.chatrow{display:flex;gap:8px;margin-top:.7rem}
+#chat-inp{flex:1;background:rgba(0,0,0,.25);border:1px solid var(--cb);border-radius:var(--rs);padding:.46rem .7rem;font-family:'Sora',sans-serif;font-size:13.5px;color:var(--text);outline:none}
+#chat-inp:focus{border-color:var(--teal)}
+#chat-inp::placeholder{color:var(--t3)}
+
+/* ── Misc ── */
+.ptitle{font-family:'DM Serif Display',serif;font-size:23px;margin-bottom:.25rem}
+.psub{font-size:13px;color:var(--t3);margin-bottom:1.3rem}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.tbadge{background:rgba(0,201,167,.15);color:var(--teal);border:1px solid rgba(0,201,167,.3)}
+.sel{background:rgba(0,0,0,.25);border:1px solid var(--cb);border-radius:var(--rs);padding:.3rem .55rem;font-family:'Sora',sans-serif;font-size:12px;color:var(--text);outline:none}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.2);border-top-color:var(--teal);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.empty{color:var(--t3);font-size:13.5px;text-align:center;padding:2rem}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:1.1rem}
+.metric{background:rgba(0,0,0,.22);border:1px solid var(--cb);border-radius:var(--rs);padding:.78rem 1rem}
+.mval{font-size:22px;font-weight:600;color:var(--teal)}
+.mlbl{font-size:11px;color:var(--t3);margin-top:2px}
+.lbrow{display:flex;align-items:center;gap:10px;padding:.58rem 0;border-bottom:1px solid var(--cb)}
+.lbav{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
+
+/* ── Reward popup ── */
+#reward{position:fixed;top:16px;right:16px;background:rgba(13,27,42,.96);border:1px solid var(--teal);border-radius:var(--r);padding:.82rem 1rem;display:none;z-index:999;min-width:200px;backdrop-filter:blur(8px)}
+#reward.show{display:block;animation:rp .28s ease}
+@keyframes rp{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Focus mode ── */
+#focusOv{display:none;position:fixed;inset:0;z-index:990;background:var(--bg)}
+#focusOv.show{display:flex;flex-direction:column}
+#focus-bar{display:flex;align-items:center;gap:8px;padding:.75rem 1.2rem;background:rgba(0,0,0,.4);border-bottom:1px solid var(--cb);flex-shrink:0}
+#focus-tabs{display:flex;gap:3px;padding:3px;background:rgba(0,0,0,.4);border-radius:9px;margin-right:auto}
+.ftab{padding:.3rem .8rem;border:none;background:none;border-radius:7px;cursor:pointer;font-size:12px;color:var(--t2);font-family:'Sora',sans-serif;transition:all .15s}
+.ftab.on{background:rgba(0,201,167,.2);color:var(--teal);font-weight:600}
+#focus-body{flex:1;overflow:auto;display:flex;min-height:0}
+#focus-main{flex:1;overflow:auto;padding:1.5rem 2rem;max-width:860px;margin:0 auto;width:100%}
+#focus-side{width:280px;border-left:1px solid var(--cb);overflow:auto;flex-shrink:0;padding:1rem;display:none}
+#focus-side.open{display:block}
+
+/* ── API modal ── */
+#apiModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;align-items:center;justify-content:center}
+#apiModal.show{display:flex}
+#apiBox{background:var(--bg2);border:1px solid var(--cb);border-radius:16px;padding:2rem;max-width:460px;width:90%}
+.aLbl{font-size:11.5px;color:var(--t3);margin-bottom:.3rem;display:block}
+.aInp{width:100%;background:rgba(0,0,0,.25);border:1px solid var(--cb);border-radius:var(--rs);padding:.54rem .72rem;font-family:'Sora',sans-serif;font-size:13px;color:var(--text);outline:none;margin-bottom:.25rem}
+.aInp:focus{border-color:var(--teal)}
+.aInp::placeholder{color:var(--t3)}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- API Modal -->
+<div id="apiModal">
+  <div id="apiBox">
+    <div style="font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:.4rem">🔑 Optional API Key</div>
+    <div style="font-size:13px;color:var(--t2);margin-bottom:.85rem">SmartRead works fully without any key. Adding your Anthropic key gives the AI assistant Claude-quality answers.</div>
+    <div style="margin-bottom:.85rem">
+      <span class="aLbl">Anthropic API Key (optional)</span>
+      <input class="aInp" type="password" id="ak1" placeholder="sk-ant-api03-...">
+      <div style="font-size:11px;color:var(--t3)">Free key → <a href="https://console.anthropic.com" target="_blank" style="color:var(--teal)">console.anthropic.com</a></div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btnp" onclick="saveKeys()">Save</button>
+      <button class="btn btns" onclick="closeModal()">Skip</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN SHELL -->
+<div id="shell">
+
+<!-- ── Sidebar ── -->
+<nav id="sidebar">
+  <div class="logo"><div class="logo-ic">📖</div><span class="lt">SmartRead</span></div>
+
+  <button class="ni on" onclick="go('library')"><span>📚</span><span class="nl">Library</span></button>
+  <button class="ni" onclick="go('read')"><span>📖</span><span class="nl">Read</span></button>
+  <button class="ni" onclick="go('ai')"><span>🤖</span><span class="nl">AI Assistant</span></button>
+  <button class="ni" onclick="go('game')"><span>🎮</span><span class="nl">Games</span></button>
+  <button class="ni" onclick="go('quiz')"><span>✅</span><span class="nl">Quiz</span></button>
+  <button class="ni" onclick="go('progress')"><span>📊</span><span class="nl">Progress</span></button>
+  <button class="ni" onclick="go('leaderboard')"><span>🏆</span><span class="nl">Leaderboard</span></button>
+  <div class="nsep"></div>
+  <button class="ni" onclick="toggleFocus()"><span>🎯</span><span class="nl">Focus Mode</span></button>
+
+  <div class="nsep"></div>
+
+  <!-- XP -->
+  <div class="xpbox"><div class="xpn" id="xpn">0</div><div class="xpl">XP Points</div></div>
+
+  <!-- Highlights & Notes Panel -->
+  <div id="hn-panel">
+    <div class="hn-section-title">✏️ Highlights</div>
+    <div id="hl-list"><div class="hn-empty">No highlights yet</div></div>
+    <div class="hn-section-title" style="margin-top:.7rem">📝 Notes</div>
+    <div id="note-list"><div class="hn-empty">No notes yet</div></div>
+  </div>
+</nav>
+
+<!-- ── Main content ── -->
+<main id="content">
+
+<!-- LIBRARY -->
+<div id="p-library">
+  <div class="ptitle">My Library</div>
+  <div class="psub">Upload a document or open a sample book to get started</div>
+  <div class="uzone" id="uzone" onclick="document.getElementById('ufile').click()"
+    ondrop="dropFile(event)" ondragover="overFile(event)" ondragleave="leaveFile()">
+    <input type="file" id="ufile" accept=".txt,.pdf,.docx" onchange="selectFile(event)">
+    <div style="font-size:28px;margin-bottom:.4rem">⬆</div>
+    <div style="font-weight:600;margin-bottom:.2rem">Upload a document</div>
+    <div style="font-size:12px;color:var(--t3)">.txt · .docx · .pdf — drag & drop or click</div>
+  </div>
+  <div style="font-size:11px;color:var(--t3);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.4rem">Sample books</div>
+  <div class="bgrid" id="bgrid"></div>
+</div>
+
+<!-- READ -->
+<div id="p-read" style="display:none">
+  <div style="max-width:860px;margin:0 auto">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+      <div>
+        <div class="ptitle" id="read-title">No book open</div>
+        <div style="font-size:12px;color:var(--t3)" id="read-sub">Go to Library to open a book</div>
+      </div>
+      <button class="btn btns btnp" onclick="go('quiz')">📝 Take quiz</button>
+    </div>
+    <div class="tabs" id="read-tabs">
+      <button class="tab on" onclick="setTab('text',this)">📖 Text</button>
+      <button class="tab" onclick="setTab('audio',this)">🔊 Audio</button>
+      <button class="tab" onclick="setTab('video',this)">🎬 Video</button>
+    </div>
+
+    <!-- TEXT TAB -->
+    <div id="t-text">
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:.85rem;flex-wrap:wrap">
+        <button class="btn btns" onclick="doHighlight()">✏️ Highlight</button>
+        <button class="btn btns" onclick="openNoteDialog()">📝 Add note</button>
+        <button class="btn btns" onclick="aiSummarise()">🤖 Summarise</button>
+        <select class="sel" style="margin-left:auto" onchange="setFontSize(this.value)">
+          <option value="14">Small</option><option value="16" selected>Medium</option><option value="19">Large</option>
+        </select>
+      </div>
+      <div class="rtext" id="rtext"><p class="empty">Open a book from the Library to start reading</p></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:.65rem">
+        <div class="pbar" style="flex:1"><div class="pfill" id="rprog" style="width:0%"></div></div>
+        <span style="font-size:11px;color:var(--t3)" id="rpct">0%</span>
+      </div>
+      <!-- Quick note box -->
+      <div id="noteDialog" style="display:none;margin-top:.85rem;background:rgba(0,0,0,.22);border:1px solid var(--cb);border-radius:var(--rs);padding:.85rem">
+        <div style="font-size:12px;font-weight:500;margin-bottom:.3rem;color:var(--t2)">Add a note</div>
+        <textarea class="ntarea" id="noteTA" placeholder="Write your note here…"></textarea>
+        <div style="display:flex;gap:7px;margin-top:.4rem">
+          <button class="btn btns btnp" onclick="saveNote()">Save note</button>
+          <button class="btn btns" onclick="document.getElementById('noteDialog').style.display='none'">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUDIO TAB -->
+    <div id="t-audio" style="display:none">
+      <div id="audio-layout">
+        <div>
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:.75rem;flex-wrap:wrap">
+            <button class="btn btns" onclick="doHighlight()">✏️ Highlight</button>
+            <button class="btn btns" onclick="openNoteDialog()">📝 Add note</button>
+            <span style="font-size:11px;color:var(--t3);margin-left:auto">Current paragraph highlights as it plays</span>
+          </div>
+          <div class="read-along" id="read-along-text"></div>
+        </div>
+        <div class="audio-panel">
+          <div class="aplayer">
+            <div style="font-size:34px;margin-bottom:.4rem">🔊</div>
+            <div style="font-size:13.5px;font-weight:500;margin-bottom:.2rem" id="atitle">Audio</div>
+            <div style="font-size:11.5px;color:var(--t3);margin-bottom:.85rem" id="asub">Open a book then press Play</div>
+            <div class="awave">
+              <div class="abar"></div><div class="abar"></div><div class="abar"></div><div class="abar"></div>
+              <div class="abar"></div><div class="abar"></div><div class="abar"></div><div class="abar"></div>
+            </div>
+            <div class="aprog">
+              <span class="atime" id="acur">0:00</span>
+              <div class="pbar" style="flex:1"><div class="pfill" id="afill" style="width:0%"></div></div>
+              <span class="atime" id="adur">0:00</span>
+            </div>
+            <div style="display:flex;gap:6px;justify-content:center;margin-bottom:.85rem">
+              <button class="btn btns" onclick="ttsSkipPara(-1)">⏮ Prev</button>
+              <button class="btn btnp btns" id="tts-btn" onclick="ttsToggle()" style="min-width:80px">▶ Play</button>
+              <button class="btn btns" onclick="ttsSkipPara(1)">Next ⏭</button>
+            </div>
+            <div class="spd-row">
+              <span style="font-size:11px;color:var(--t3);align-self:center">Speed:</span>
+              <button class="spdBtn" onclick="setSpd(0.75,this)">0.75×</button>
+              <button class="spdBtn on" onclick="setSpd(1,this)">1×</button>
+              <button class="spdBtn" onclick="setSpd(1.25,this)">1.25×</button>
+              <button class="spdBtn" onclick="setSpd(1.5,this)">1.5×</button>
+            </div>
+          </div>
+          <div class="notes-side">
+            <div style="font-size:12px;font-weight:500;color:var(--t2);margin-bottom:.4rem">Saved notes</div>
+            <div id="audio-notes-list"><div style="font-size:12px;color:var(--t3)">No notes yet</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIDEO TAB -->
+    <div id="t-video" style="display:none">
+      <div class="card">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:.75rem">
+          <div>
+            <div style="font-weight:500;font-size:14px">🎬 Video</div>
+            <div style="font-size:11.5px;color:var(--t3);margin-top:2px">Your document explained section by section — each slide shows a real photograph and a clear spoken explanation.</div>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0">
+            <button class="btn btns" id="vPrevBtn" onclick="vidPreview()">👁 Preview</button>
+            <button class="btn btns btnp" id="vPlayBtn" onclick="vidRecord()">▶ Present</button>
+            <button class="btn btns btnd" id="vStopBtn" style="display:none" onclick="vidStop()">⏹ Stop</button>
+          </div>
+        </div>
+        <div style="border-radius:10px;overflow:hidden;background:#000;border:1px solid var(--cb);position:relative">
+          <canvas id="vid-canvas" style="display:block;width:100%;height:auto"></canvas>
+          <div id="vid-empty" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--t3);font-size:13px;pointer-events:none">
+            <div style="font-size:34px;margin-bottom:.4rem">🎬</div>Open a book then click Preview or Present
+          </div>
+        </div>
+        <div id="vid-subtitle" style="display:none;background:rgba(0,0,0,.55);border:1px solid var(--cb);border-top:none;border-radius:0 0 10px 10px;padding:.7rem 1rem;font-size:13.5px;line-height:1.65;color:var(--text);min-height:52px"></div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:.6rem">
+          <div class="pbar" style="flex:1"><div class="pfill" id="vPfill" style="width:0%"></div></div>
+          <span style="font-size:11px;color:var(--t3);min-width:30px" id="vPct">0%</span>
+          <span style="font-size:11.5px;color:var(--teal);font-style:italic" id="vStatus"></span>
+        </div>
+        <div class="vthrow" id="vThumbs"></div>
+        <div style="font-size:11px;color:var(--t3);margin-top:.45rem">💡 With Anthropic key (🔑 via AI Assistant): uses Claude for explanations. Without key: smart explanations are generated from your document.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AI ASSISTANT -->
+<div id="p-ai" style="display:none">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:.75rem">
+    <div>
+      <div class="ptitle">Dictionary &amp; AI Assistant</div>
+      <div class="psub">Look up any word instantly — definitions, synonyms, pronunciation, examples. No key needed.</div>
+    </div>
+    <button class="btn btns" onclick="document.getElementById('apiModal').classList.add('show')" style="margin-top:.25rem">🔑 API Key</button>
+  </div>
+
+  <!-- Word lookup bar -->
+  <div style="background:rgba(0,201,167,.07);border:1px solid rgba(0,201,167,.25);border-radius:var(--r);padding:1rem 1.1rem;margin-bottom:.85rem">
+    <div style="font-size:12px;font-weight:600;color:var(--teal);margin-bottom:.55rem;letter-spacing:.03em">🔍 WORD LOOKUP — type any English word</div>
+    <div style="display:flex;gap:7px;margin-bottom:.6rem;flex-wrap:wrap">
+      <input id="word-inp" type="text" placeholder="e.g. reading, algorithm, perspective, nuance…"
+        style="flex:1;min-width:160px;background:rgba(0,0,0,.28);border:1px solid rgba(0,201,167,.4);border-radius:var(--rs);padding:.5rem .8rem;font-family:'Sora',sans-serif;font-size:14px;color:var(--text);outline:none"
+        onkeydown="if(event.key==='Enter')lookupWord()"
+        oninput="wordInputChanged(this.value)">
+      <button class="btn btnp" onclick="lookupWord()" style="padding:.5rem 1.1rem;flex-shrink:0">Look up ↗</button>
+    </div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap">
+      <button class="btn btns" id="lm-define"  onclick="lookupMode('define')"   style="background:rgba(0,201,167,.2);color:var(--teal)">📖 Define</button>
+      <button class="btn btns" id="lm-synonym" onclick="lookupMode('synonym')">🔄 Synonyms</button>
+      <button class="btn btns" id="lm-example" onclick="lookupMode('example')">💬 Examples</button>
+      <button class="btn btns" id="lm-pronounce" onclick="lookupMode('pronounce')">🔊 Pronounce</button>
+      <button class="btn btns" onclick="useSelectedWord(false)" title="Highlight a word in the Text tab first">✏️ Use highlighted word</button>
+    </div>
+  </div>
+
+  <!-- Dictionary result -->
+  <div id="dict-result" style="display:none;margin-bottom:.85rem"></div>
+
+  <!-- AI Chat for concept questions -->
+  <div style="font-size:11.5px;font-weight:600;color:var(--t2);letter-spacing:.04em;margin-bottom:.5rem;text-transform:uppercase">🤖 AI Assistant — ask concept questions about your reading</div>
+  <div id="chatbox"></div>
+  <div class="chatrow">
+    <input type="text" id="chat-inp" placeholder="Ask e.g. Summarise this reading, Explain machine learning…" onkeydown="if(event.key==='Enter')sendChat()">
+    <button class="btn btnp" onclick="sendChat()">Send ↗</button>
+  </div>
+  <div style="display:flex;gap:5px;margin-top:.6rem;flex-wrap:wrap">
+    <button class="btn btns" onclick="qp('Summarise the key ideas from what I am reading')">📋 Summarise</button>
+    <button class="btn btns" onclick="qp('Explain the main concepts with simple real-world examples')">💡 Explain</button>
+    <button class="btn btns" onclick="qp('Create 5 quiz questions to test my understanding')">❓ Quiz me</button>
+    <button class="btn btns" onclick="qp('What are the most important terms I should remember?')">🔑 Key terms</button>
+  </div>
+</div>
+
+<!-- GAMES -->
+<div id="p-game" style="display:none">
+  <div class="ptitle">Learning Games</div>
+  <div class="psub">Three research-backed games generated directly from your document</div>
+  <div class="tabs" id="game-tabs">
+    <button class="tab on" onclick="setGameTab('flashcard',this)">🃏 Flashcards</button>
+    <button class="tab" onclick="setGameTab('fillin',this)">✍ Fill-in-blank</button>
+    <button class="tab" onclick="setGameTab('match',this)">🔗 Concept match</button>
+  </div>
+  <div id="g-flashcard"><div class="empty">Open a book then click Generate below</div></div>
+  <div id="g-fillin" style="display:none"><div class="empty">Open a book then click Generate below</div></div>
+  <div id="g-match" style="display:none"><div class="empty">Open a book then click Generate below</div></div>
+  <div style="margin-top:1rem;text-align:right">
+    <button class="btn btns btnp" onclick="genAllGames()">✨ Generate all games from reading</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="p-quiz" style="display:none">
+  <div class="ptitle">Comprehension Test</div>
+  <div class="psub">Score 70%+ to earn your completion badge and XP</div>
+  <button class="btn btnp" style="margin-bottom:1rem" onclick="genQuiz()">✨ Generate test</button>
+  <div id="quiz-out"></div>
+</div>
+
+<!-- PROGRESS -->
+<div id="p-progress" style="display:none">
+  <div class="ptitle">My Progress</div><div class="psub">Your reading journey</div>
+  <div class="metrics">
+    <div class="metric"><div class="mval" id="sm-b">0</div><div class="mlbl">Books opened</div></div>
+    <div class="metric"><div class="mval" id="sm-p">0</div><div class="mlbl">Pages read</div></div>
+    <div class="metric"><div class="mval" id="sm-t">0</div><div class="mlbl">Tests passed</div></div>
+    <div class="metric"><div class="mval" id="sm-x">0</div><div class="mlbl">Total XP</div></div>
+  </div>
+  <div class="card"><div style="font-weight:500;margin-bottom:.65rem;font-size:13.5px">7-day reading streak</div><div style="display:flex;gap:5px" id="streak"></div></div>
+  <div class="card" style="margin-top:.9rem"><div style="font-weight:500;margin-bottom:.65rem;font-size:13.5px">Achievements</div><div id="achiev"></div></div>
+</div>
+
+<!-- LEADERBOARD -->
+<div id="p-leaderboard" style="display:none">
+  <div class="ptitle">Leaderboard</div><div class="psub">Top SmartRead learners this week</div>
+  <div class="card" id="lb-out"></div>
+</div>
+
+</main>
+</div><!-- end #shell -->
+
+<!-- ══════════════════════════════════════════════════════
+     FOCUS MODE OVERLAY — full SmartRead inside, no external apps
+     ══════════════════════════════════════════════════════ -->
+<div id="focusOv">
+  <div id="focus-bar">
+    <!-- Tab switcher -->
+    <div id="focus-tabs">
+      <button class="ftab on" onclick="setFocusTab('read',this)">📖 Read</button>
+      <button class="ftab" onclick="setFocusTab('audio',this)">🔊 Audio</button>
+      <button class="ftab" onclick="setFocusTab('video',this)">🎬 Video</button>
+      <button class="ftab" onclick="setFocusTab('ai',this)">🤖 AI</button>
+      <button class="ftab" onclick="setFocusTab('game',this)">🎮 Games</button>
+      <button class="ftab" onclick="setFocusTab('quiz',this)">✅ Quiz</button>
+    </div>
+    <!-- Actions -->
+    <button class="btn btns" onclick="doHighlight()">✏️ Highlight</button>
+    <button class="btn btns" onclick="openNoteDialog()">📝 Note</button>
+    <button class="btn btns" id="f-side-btn" onclick="toggleFocusSide()">📋 Notes</button>
+    <div style="flex:1"></div>
+    <span style="font-size:12px;color:var(--t3);margin-right:.5rem">🎯 Focus Mode</span>
+    <button class="btn btns btnd" onclick="toggleFocus()">✕ Exit</button>
+  </div>
+  <div id="focus-body">
+    <div id="focus-main">
+      <!-- Content injected dynamically by setFocusTab() -->
+    </div>
+    <div id="focus-side">
+      <div style="font-size:12px;font-weight:500;color:var(--t2);margin-bottom:.5rem">✏️ Highlights</div>
+      <div id="f-hl-list"></div>
+      <div style="font-size:12px;font-weight:500;color:var(--t2);margin:.75rem 0 .5rem">📝 Notes</div>
+      <div id="f-note-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Reward popup -->
+<div id="reward">
+  <div style="font-size:20px;margin-bottom:2px" id="r-i">🎉</div>
+  <div style="font-weight:600;font-size:13.5px;color:var(--teal)" id="r-t"></div>
+  <div style="font-size:11.5px;color:var(--t3);margin-top:1px" id="r-m"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════
+// CONFIG — edit to hardcode keys for deployment
+// ═══════════════════════════════════════════════
+var CONFIG = {
+  anthropicKey: '',
+  youtubeKey:   'AIzaSyBxqJqcFxVOYLE5343ULikQMov_MnHY3C0',
+};
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+var ANT = CONFIG.anthropicKey || localStorage.getItem('sr_ant') || '';
+
+var S = {
+  xp:0, booksOpened:0, pagesRead:0, testsPassed:0,
+  book: null,
+  highlights: [],   // {id, text, book, color}
+  notes: [],        // {id, text, book, ts}
+  ttsOn:false, ttsSpeed:1, ttsParaIdx:0,
+  ttsTotalSecs:0, ttsInterval:null, ttsParas:[],
+  chatHistory:[],
+  focusTab: 'read',
+  DB: [
+    {id:1,e:'🤖',title:'Introduction to AI',prog:45,
+     content:'Artificial intelligence is a branch of computer science focused on building machines that can perform tasks requiring human-like intelligence.\n\nMachine learning is a subset of AI where systems learn from data automatically. Algorithms identify patterns and improve through experience without being explicitly programmed.\n\nDeep learning uses neural networks with many layers to model complex patterns. It powers image recognition, speech processing, and large language models.\n\nNatural language processing enables computers to understand and generate human language. Applications include translation, summarisation, chatbots, and voice assistants.\n\nComputer vision allows machines to interpret visual information. It drives autonomous vehicles, medical diagnostics, and facial recognition systems.\n\nReinforcement learning trains agents through reward signals. Agents learn by maximising cumulative reward, producing world-champion game-playing AIs.\n\nAI ethics addresses fairness, accountability, transparency, and privacy. As AI influences healthcare, hiring, and lending, these concerns grow increasingly important.'},
+    {id:2,e:'💻',title:'Digital Literacy',prog:20,
+     content:'Digital literacy is the ability to navigate, evaluate, and create information using digital technologies effectively and critically.\n\nCore skills include information literacy, online safety, digital communication, content creation, and understanding how algorithms shape what we see.\n\nCritical thinking online means questioning sources and spotting misinformation. Search results are curated for engagement, not necessarily truth.\n\nPrivacy and security involve strong passwords, recognising phishing attempts, understanding cookies and data tracking, and managing your digital footprint.\n\nDigital citizenship encompasses rights, responsibilities, and ethical behaviour in online spaces, from respectful communication to intellectual property awareness.\n\nAccessibility ensures digital tools work for everyone. Screen readers, captions, adjustable text, and alternative interfaces make digital spaces equitable.\n\nThe digital divide describes unequal access to technology and skills. Addressing it requires infrastructure investment, affordable devices, and inclusive training.'},
+    {id:3,e:'🎮',title:'Gamification in Education',prog:70,
+     content:'Gamification applies game-design elements in non-game contexts to increase engagement, motivation, and learning outcomes among students.\n\nCore mechanics include points, badges, leaderboards, progress bars, challenges, and narrative progression. These tap into intrinsic motivation and the desire for mastery.\n\nResearch shows gamified environments increase engagement by up to 48 percent and improve retention by 40 percent compared to traditional instruction.\n\nFlow state is the optimal experience of full immersion and energy. It is more easily achieved when challenge and skill are well balanced, as in good game design.\n\nAdaptive gamification adjusts difficulty and rewards based on learner performance, preventing both frustration and boredom.\n\nSocial elements like team challenges and peer leaderboards leverage social motivation and create accountability structures among students.\n\nCritiques include concerns about extrinsic rewards crowding out intrinsic motivation, superficial design choices, and equity issues in competitive settings.'}
+  ]
+};
+
+var GM = {flashcards:[],fcIdx:0,fcFlipped:false,fibs:[],fibIdx:0,pairs:[],matchSel:null,matchDone:0};
+var QS = {qs:[],step:0,score:0};
+var VP = {slides:[],cur:0,playing:false,prev:false,raf:null,mr:null,chunks:[],blob:null,mime:'video/webm',W:960,H:540};
+var VPTHEMES=[
+  {b:['#0D1B2A','#1B2F45'],a:'#00C9A7'},{b:['#1a0a2e','#2d1054'],a:'#A78BFA'},
+  {b:['#0a2218','#133020'],a:'#4ADE80'},{b:['#1f0a0a','#3b1010'],a:'#FF6B6B'},
+  {b:['#0a1a2e','#0f2a4a'],a:'#60A5FA'},{b:['#1a170a','#302b10'],a:'#FACC15'}
+];
+
+// ═══════════════════════════════════════════════
+// API KEYS
+// ═══════════════════════════════════════════════
+function saveKeys(){
+  var a=document.getElementById('ak1').value.trim();
+  if(a){ANT=a;localStorage.setItem('sr_ant',a);}
+  closeModal();
+  reward('🔑','Key saved!','AI features unlocked',0);
+}
+function closeModal(){document.getElementById('apiModal').classList.remove('show');}
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+var PAGES=['library','read','ai','game','quiz','progress','leaderboard'];
+function go(p){
+  PAGES.forEach(function(n){var el=document.getElementById('p-'+n);if(el)el.style.display='none';});
+  document.getElementById('p-'+p).style.display='';
+  document.querySelectorAll('.ni').forEach(function(b){b.classList.remove('on');});
+  var idx={library:0,read:1,ai:2,game:3,quiz:4,progress:5,leaderboard:6}[p];
+  if(idx!==undefined) document.querySelectorAll('.ni')[idx].classList.add('on');
+  if(p==='progress') renderProgress();
+  if(p==='leaderboard') renderLB();
+  if(p==='library') renderLib();
+}
+
+// ═══════════════════════════════════════════════
+// REWARD
+// ═══════════════════════════════════════════════
+function reward(icon,title,msg,xp){
+  S.xp+=(xp||0);
+  document.getElementById('xpn').textContent=S.xp;
+  document.getElementById('r-i').textContent=icon;
+  document.getElementById('r-t').textContent=title+(xp?' +'+xp+' XP':'');
+  document.getElementById('r-m').textContent=msg;
+  var el=document.getElementById('reward');
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t=setTimeout(function(){el.classList.remove('show');},3000);
+}
+
+// ═══════════════════════════════════════════════
+// LIBRARY
+// ═══════════════════════════════════════════════
+function renderLib(){
+  var g=document.getElementById('bgrid');g.innerHTML='';
+  S.DB.forEach(function(b){
+    var d=document.createElement('div');d.className='bcard';
+    d.innerHTML='<div class="bcov">'+b.e+'</div><div class="binfo"><div class="btit">'+b.title+'</div><div class="bpct">'+b.prog+'% read</div><div class="pbar"><div class="pfill" style="width:'+b.prog+'%"></div></div></div>';
+    d.onclick=function(){openBook(b);};
+    g.appendChild(d);
+  });
+}
+
+function openBook(b){
+  S.book=b; S.booksOpened++;
+  document.getElementById('read-title').textContent=b.title;
+  document.getElementById('read-sub').textContent=b.e+' '+b.prog+'% complete';
+  // Text tab
+  var rt=document.getElementById('rtext');rt.innerHTML='';
+  b.content.split('\n\n').filter(function(p){return p.trim();}).forEach(function(para){
+    var p=document.createElement('p');p.textContent=para;rt.appendChild(p);
+  });
+  document.getElementById('rprog').style.width=b.prog+'%';
+  document.getElementById('rpct').textContent=b.prog+'%';
+  // Audio tab
+  buildReadAlong(b);
+  document.getElementById('atitle').textContent=b.title;
+  document.getElementById('asub').textContent='Press Play to listen while reading';
+  var words=b.content.split(/\s+/).length;
+  S.ttsTotalSecs=Math.round(words/2.5);
+  S.ttsParaIdx=0; S.ttsOn=false;
+  document.getElementById('adur').textContent=fmtTime(S.ttsTotalSecs);
+  document.getElementById('acur').textContent='0:00';
+  document.getElementById('afill').style.width='0%';
+  document.getElementById('tts-btn').textContent='▶ Play';
+  setWave(false);
+  go('read');
+  reward('📖','Book opened!',b.title,10);
+}
+
+function buildReadAlong(b){
+  var el=document.getElementById('read-along-text');el.innerHTML='';
+  S.ttsParas=b.content.split('\n\n').filter(function(p){return p.trim();});
+  S.ttsParas.forEach(function(para,i){
+    var p=document.createElement('p');p.id='rap'+i;p.textContent=para;el.appendChild(p);
+  });
+}
+function fmtTime(s){var m=Math.floor(s/60);return m+':'+(s%60<10?'0':'')+(s%60|0);}
+
+// ═══════════════════════════════════════════════
+// FILE UPLOAD
+// ═══════════════════════════════════════════════
+function dropFile(e){e.preventDefault();leaveFile();var f=e.dataTransfer.files[0];if(f)processFile(f);}
+function overFile(e){e.preventDefault();document.getElementById('uzone').classList.add('drag');}
+function leaveFile(){document.getElementById('uzone').classList.remove('drag');}
+function selectFile(e){var f=e.target.files[0];if(f)processFile(f);}
+
+function processFile(f){
+  var name=f.name.replace(/\.[^.]+$/,''),ext=f.name.split('.').pop().toLowerCase();
+  if(ext==='txt'){
+    var r=new FileReader();r.onload=function(ev){addBook(name,'📄',ev.target.result.substring(0,9000));};r.readAsText(f);
+  } else if(ext==='docx'||ext==='doc'){
+    var r2=new FileReader();r2.onload=function(ev){
+      if(typeof mammoth!=='undefined'){
+        mammoth.extractRawText({arrayBuffer:ev.target.result}).then(function(res){addBook(name,'📝',res.value.substring(0,9000));}).catch(function(){addBook(name,'📝','Could not extract text. Try .txt format.');});
+      } else {addBook(name,'📝','Please try .txt format');}
+    };r2.readAsArrayBuffer(f);
+  } else if(ext==='pdf'){
+    var r3=new FileReader();r3.onload=function(ev){
+      var raw=ev.target.result,text='';
+      for(var i=0;i<Math.min(raw.length,200000);i++){var c=raw.charCodeAt(i);if(c>=32&&c<127)text+=raw[i];else if(c===10)text+=' ';}
+      text=text.replace(/\s+/g,' ').trim();
+      var sents=text.match(/[A-Z][^.!?]{20,}[.!?]/g)||[];
+      var readable=sents.join(' ').substring(0,7000);
+      addBook(name,'📄',readable.length>200?readable:'PDF uploaded. For best results try .txt format.');
+    };r3.readAsBinaryString(f);
+  } else {alert('Please upload .txt, .docx, or .pdf');}
+}
+function addBook(name,emoji,content){
+  var b={id:Date.now(),e:emoji,title:name,prog:0,content:content};
+  S.DB.unshift(b);renderLib();reward('📚','Uploaded!',name,25);openBook(b);
+}
+
+// ═══════════════════════════════════════════════
+// READ TABS
+// ═══════════════════════════════════════════════
+function setTab(t,btn){
+  ['text','audio','video'].forEach(function(n){document.getElementById('t-'+n).style.display='none';});
+  document.getElementById('t-'+t).style.display='';
+  document.querySelectorAll('#read-tabs .tab').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  if(t==='audio'&&S.book) buildReadAlong(S.book);
+}
+function setFontSize(v){document.getElementById('rtext').style.fontSize=v+'px';}
+function aiSummarise(){if(!S.book){alert('Open a book first!');return;}go('ai');qp('Summarise the key ideas from "'+S.book.title+'" with the most important points');}
+
+// ═══════════════════════════════════════════════
+// HIGHLIGHTS
+// ═══════════════════════════════════════════════
+function doHighlight(){
+  var sel=window.getSelection();
+  if(!sel||!sel.rangeCount||sel.isCollapsed) return;
+  var text=sel.toString().trim();
+  if(!text) return;
+  var range=sel.getRangeAt(0);
+  var span=document.createElement('span');
+  span.className='hl';
+  var hlId='hl-'+Date.now();
+  span.dataset.id=hlId;
+  span.title='Click to remove highlight';
+  span.onclick=function(){removeHighlight(hlId);};
+  try{
+    range.surroundContents(span);
+    sel.removeAllRanges();
+    S.highlights.push({id:hlId,text:text,book:S.book?S.book.title:''});
+    renderHLPanel();
+    reward('✏️','Highlighted!',text.substring(0,30)+(text.length>30?'…':''),5);
+  } catch(e){}
+}
+
+function removeHighlight(id){
+  var span=document.querySelector('[data-id="'+id+'"]');
+  if(span){var p=span.parentNode;while(span.firstChild)p.insertBefore(span.firstChild,span);p.removeChild(span);}
+  S.highlights=S.highlights.filter(function(h){return h.id!==id;});
+  renderHLPanel();
+}
+
+function renderHLPanel(){
+  var el=document.getElementById('hl-list');
+  var fel=document.getElementById('f-hl-list');
+  var html='';
+  if(!S.highlights.length){html='<div class="hn-empty">No highlights yet</div>';}
+  else {
+    html=S.highlights.map(function(h){
+      return '<div class="hn-item hl-item">'
+        +h.text.substring(0,80)+(h.text.length>80?'…':'')
+        +'<button class="hn-del" onclick="removeHighlight(\''+h.id+'\')">✕</button></div>';
+    }).join('');
+  }
+  if(el) el.innerHTML=html;
+  if(fel) fel.innerHTML=html.replace(/onclick="removeHighlight/g,"onclick=\"removeHighlight");
+}
+
+// ═══════════════════════════════════════════════
+// NOTES
+// ═══════════════════════════════════════════════
+function openNoteDialog(){
+  var nd=document.getElementById('noteDialog');
+  if(nd){nd.style.display='';document.getElementById('noteTA').focus();}
+}
+function saveNote(){
+  var ta=document.getElementById('noteTA');
+  var text=ta?ta.value.trim():'';
+  if(!text) return;
+  var note={id:'n-'+Date.now(),text:text,book:S.book?S.book.title:'',ts:new Date().toLocaleTimeString()};
+  S.notes.push(note);
+  if(ta) ta.value='';
+  var nd=document.getElementById('noteDialog');if(nd) nd.style.display='none';
+  renderNotesPanel();
+  reward('📝','Note saved!','',5);
+}
+function removeNote(id){
+  S.notes=S.notes.filter(function(n){return n.id!==id;});
+  renderNotesPanel();
+}
+function renderNotesPanel(){
+  var el=document.getElementById('note-list');
+  var anel=document.getElementById('audio-notes-list');
+  var fel=document.getElementById('f-note-list');
+  var html='';
+  if(!S.notes.length){html='<div class="hn-empty">No notes yet</div>';}
+  else {
+    html=S.notes.slice().reverse().map(function(n){
+      return '<div class="hn-item note-item">'
+        +'<span style="font-size:10px;color:var(--t3);display:block;margin-bottom:2px">'+n.ts+(n.book?' · '+n.book:'')+'</span>'
+        +n.text.substring(0,100)+(n.text.length>100?'…':'')
+        +'<button class="hn-del" onclick="removeNote(\''+n.id+'\')">✕</button></div>';
+    }).join('');
+  }
+  if(el) el.innerHTML=html;
+  if(anel) anel.innerHTML=html;
+  if(fel) fel.innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════
+// FOCUS MODE
+// ═══════════════════════════════════════════════
+function toggleFocus(){
+  var ov=document.getElementById('focusOv');
+  if(ov.classList.contains('show')){
+    ov.classList.remove('show');
+    return;
+  }
+  if(!S.book){alert('Open a book from the Library first!');return;}
+  ov.classList.add('show');
+  setFocusTab('read',document.querySelector('.ftab'));
+  renderFocusSidePanels();
+}
+
+function setFocusTab(tab,btn){
+  S.focusTab=tab;
+  document.querySelectorAll('.ftab').forEach(function(b){b.classList.remove('on');});
+  if(btn) btn.classList.add('on');
+  var main=document.getElementById('focus-main');
+  main.innerHTML='';
+
+  if(tab==='read'){
+    var d=document.createElement('div');
+    d.innerHTML='<div style="font-family:\'DM Serif Display\',serif;font-size:22px;margin-bottom:.75rem">'+S.book.title+'</div>';
+    S.book.content.split('\n\n').filter(function(p){return p.trim();}).forEach(function(para){
+      var p=document.createElement('p');
+      p.style.cssText='margin-bottom:.9em;font-size:16px;line-height:1.9;';
+      p.textContent=para;d.appendChild(p);
+    });
+    main.appendChild(d);
+
+  } else if(tab==='audio'){
+    main.innerHTML='<div style="max-width:540px;margin:0 auto">'
+      +'<div style="font-size:14px;font-weight:500;margin-bottom:1rem">🔊 Audio — '+S.book.title+'</div>'
+      +'<div class="read-along" id="f-read-along" style="max-height:340px"></div>'
+      +'<div class="aplayer" style="margin-top:1rem">'
+      +'<div class="awave"><div class="abar"></div><div class="abar"></div><div class="abar"></div><div class="abar"></div><div class="abar"></div><div class="abar"></div><div class="abar"></div><div class="abar"></div></div>'
+      +'<div class="aprog"><span class="atime" id="f-acur">0:00</span><div class="pbar" style="flex:1"><div class="pfill" id="f-afill" style="width:0%"></div></div><span class="atime" id="f-adur">'+fmtTime(S.ttsTotalSecs)+'</span></div>'
+      +'<div style="display:flex;gap:6px;justify-content:center;margin-bottom:.75rem">'
+      +'<button class="btn btns" onclick="ttsSkipPara(-1)">⏮ Prev</button>'
+      +'<button class="btn btnp btns" id="f-tts-btn" onclick="ttsToggle()" style="min-width:80px">▶ Play</button>'
+      +'<button class="btn btns" onclick="ttsSkipPara(1)">Next ⏭</button>'
+      +'</div>'
+      +'<div class="spd-row"><span style="font-size:11px;color:var(--t3);align-self:center">Speed:</span>'
+      +'<button class="spdBtn" onclick="setSpd(0.75,this)">0.75×</button>'
+      +'<button class="spdBtn on" onclick="setSpd(1,this)">1×</button>'
+      +'<button class="spdBtn" onclick="setSpd(1.25,this)">1.25×</button>'
+      +'<button class="spdBtn" onclick="setSpd(1.5,this)">1.5×</button>'
+      +'</div></div></div>';
+    // Populate focus read-along
+    var frl=document.getElementById('f-read-along');
+    if(frl){
+      S.ttsParas.forEach(function(para,i){
+        var p=document.createElement('p');p.id='frap'+i;p.textContent=para;frl.appendChild(p);
+      });
+    }
+
+  } else if(tab==='video'){
+    main.innerHTML='<div style="font-size:14px;font-weight:500;margin-bottom:.75rem">🎬 Video — '+S.book.title+'</div>'
+      +'<div style="border-radius:10px;overflow:hidden;background:#000;border:1px solid var(--cb);position:relative">'
+      +'<canvas id="f-vid-canvas" style="display:block;width:100%;height:auto"></canvas>'
+      +'<div id="f-vid-empty" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--t3);font-size:13px;pointer-events:none"><div style="font-size:32px;margin-bottom:.4rem">🎬</div>Click Present to start</div>'
+      +'</div>'
+      +'<div id="f-vid-subtitle" style="display:none;background:rgba(0,0,0,.55);border:1px solid var(--cb);border-top:none;border-radius:0 0 10px 10px;padding:.65rem 1rem;font-size:13px;line-height:1.6;color:var(--text)"></div>'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-top:.6rem">'
+      +'<div class="pbar" style="flex:1"><div class="pfill" id="f-vPfill" style="width:0%"></div></div>'
+      +'<span style="font-size:11px;color:var(--t3)" id="f-vPct">0%</span>'
+      +'<span style="font-size:11px;color:var(--teal);font-style:italic" id="f-vStatus"></span>'
+      +'</div>'
+      +'<div style="display:flex;gap:6px;margin-top:.65rem">'
+      +'<button class="btn btns" onclick="vidPreview(true)">👁 Preview</button>'
+      +'<button class="btn btns btnp" id="f-vPlayBtn" onclick="vidRecord(true)">▶ Present</button>'
+      +'<button class="btn btns btnd" id="f-vStopBtn" style="display:none" onclick="vidStop()">⏹ Stop</button>'
+      +'</div>'
+      +'<div class="vthrow" id="f-vThumbs"></div>';
+
+  } else if(tab==='ai'){
+    main.innerHTML=''
+      +'<div style="font-size:14px;font-weight:500;margin-bottom:.75rem">📖 Dictionary &amp; AI Assistant</div>'
+      +'<div style="display:flex;gap:7px;margin-bottom:.6rem;flex-wrap:wrap;align-items:center">'
+      +'<input id="f-word-inp" type="text" placeholder="Type any word to look it up…" '
+      +'style="flex:1;min-width:140px;background:rgba(0,0,0,.28);border:1px solid rgba(0,201,167,.4);border-radius:var(--rs);padding:.42rem .7rem;font-family:Sora,sans-serif;font-size:13.5px;color:var(--text);outline:none" '
+      +'onkeydown="if(event.key===\'Enter\')fLookupWord()">'
+      +'<button class="btn btns btnp" onclick="fLookupWord()">Look up ↗</button>'
+      +'<button class="btn btns" onclick="useSelectedWord(true)">✏️ Selected word</button>'
+      +'</div>'
+      +'<div id="f-dict-result" style="display:none;margin-bottom:.65rem"></div>'
+      +'<div id="f-chatbox" style="height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:.5rem;padding:.8rem;background:rgba(0,0,0,.18);border:1px solid var(--cb);border-radius:var(--r)"></div>'
+      +'<div style="display:flex;gap:8px;margin-top:.65rem">'
+      +'<input type="text" id="f-chat-inp" placeholder="Ask a concept question…" '
+      +'style="flex:1;background:rgba(0,0,0,.25);border:1px solid var(--cb);border-radius:var(--rs);padding:.42rem .65rem;font-family:Sora,sans-serif;font-size:13px;color:var(--text);outline:none" '
+      +'onkeydown="if(event.key===\'Enter\')fSendChat()">'
+      +'<button class="btn btnp btns" onclick="fSendChat()">Send ↗</button>'
+      +'</div>'
+      +'<div style="display:flex;gap:5px;margin-top:.5rem;flex-wrap:wrap">'
+      +'<button class="btn btns" onclick="fQp(\'Summarise the key ideas\')">📋 Summarise</button>'
+      +'<button class="btn btns" onclick="fQp(\'Explain the main concepts with examples\')">💡 Explain</button>'
+      +'<button class="btn btns" onclick="fQp(\'Create 5 quiz questions\')">❓ Quiz me</button>'
+      +'</div>';
+    renderFocusChat();
+
+  } else if(tab==='game'){
+    main.innerHTML='<div style="font-size:14px;font-weight:500;margin-bottom:.75rem">🎮 Games</div>'
+      +'<div class="tabs" id="f-game-tabs">'
+      +'<button class="tab on" onclick="setFocusGameTab(\'flashcard\',this)">🃏 Flashcards</button>'
+      +'<button class="tab" onclick="setFocusGameTab(\'fillin\',this)">✍ Fill-in</button>'
+      +'<button class="tab" onclick="setFocusGameTab(\'match\',this)">🔗 Match</button>'
+      +'</div>'
+      +'<div id="f-g-flashcard"></div>'
+      +'<div id="f-g-fillin" style="display:none"></div>'
+      +'<div id="f-g-match" style="display:none"></div>'
+      +'<div style="margin-top:.75rem;text-align:right"><button class="btn btns btnp" onclick="genAllGames(true)">✨ Generate games</button></div>';
+    if(GM.flashcards.length) renderFocusFlashcard();
+    else document.getElementById('f-g-flashcard').innerHTML='<div class="empty">Click Generate games above</div>';
+    document.getElementById('f-g-fillin').innerHTML='<div class="empty">Click Generate games above</div>';
+    document.getElementById('f-g-match').innerHTML='<div class="empty">Click Generate games above</div>';
+
+  } else if(tab==='quiz'){
+    main.innerHTML='<div style="font-size:14px;font-weight:500;margin-bottom:.75rem">✅ Quiz</div>'
+      +'<button class="btn btns btnp" style="margin-bottom:1rem" onclick="genQuiz(true)">✨ Generate test</button>'
+      +'<div id="f-quiz-out"></div>';
+    if(QS.qs.length) renderFocusQuiz();
+  }
+}
+
+function toggleFocusSide(){
+  var s=document.getElementById('focus-side');
+  s.classList.toggle('open');
+  renderFocusSidePanels();
+}
+function renderFocusSidePanels(){
+  renderHLPanel(); renderNotesPanel();
+}
+
+// Focus Audio helpers — sync with main TTS
+function ttsToggle(){
+  if(!S.book){reward('⚠️','No book','Open a book first',0);return;}
+  if(S.ttsOn){ttsPause();}else{ttsPlay();}
+}
+function ttsPlay(){
+  window.speechSynthesis.cancel();clearInterval(S.ttsInterval);
+  speakPara(S.ttsParaIdx);
+}
+function speakPara(idx){
+  if(idx>=S.ttsParas.length){ttsEnd();return;}
+  S.ttsParaIdx=idx;S.ttsOn=true;
+  // Update both main and focus UI
+  var btn=document.getElementById('tts-btn'),fbtn=document.getElementById('f-tts-btn');
+  if(btn) btn.textContent='⏸ Pause';
+  if(fbtn) fbtn.textContent='⏸ Pause';
+  setWave(true);
+  // Highlight paragraphs
+  ['rap','frap'].forEach(function(prefix){
+    document.querySelectorAll('[id^="'+prefix+'"]').forEach(function(p,i){
+      p.classList.toggle('speaking',i===idx);p.classList.toggle('spoken',i<idx);
+    });
+  });
+  var para=document.getElementById('rap'+idx)||document.getElementById('frap'+idx);
+  if(para) para.scrollIntoView({behavior:'smooth',block:'center'});
+
+  var u=new SpeechSynthesisUtterance(S.ttsParas[idx]);
+  u.rate=S.ttsSpeed;u.lang='en-US';
+  var voices=window.speechSynthesis.getVoices();
+  var v=voices.find(function(vv){return vv.lang.startsWith('en')&&(vv.name.includes('Google')||vv.name.includes('Samantha')||vv.name.includes('Daniel'));});
+  if(v) u.voice=v;
+  u.onend=function(){if(S.ttsOn)speakPara(idx+1);};
+  u.onerror=function(){if(S.ttsOn)speakPara(idx+1);};
+  window.speechSynthesis.speak(u);
+  var total=S.ttsParas.length;
+  clearInterval(S.ttsInterval);
+  S.ttsInterval=setInterval(function(){
+    var pct=Math.round(idx/total*100);
+    var fill=document.getElementById('afill'),ffill=document.getElementById('f-afill');
+    var cur=document.getElementById('acur'),fcur=document.getElementById('f-acur');
+    if(fill) fill.style.width=pct+'%';
+    if(ffill) ffill.style.width=pct+'%';
+    var t=fmtTime(Math.round(idx/total*S.ttsTotalSecs));
+    if(cur) cur.textContent=t;
+    if(fcur) fcur.textContent=t;
+  },400);
+}
+function ttsEnd(){
+  S.ttsOn=false;clearInterval(S.ttsInterval);setWave(false);
+  var btn=document.getElementById('tts-btn'),fbtn=document.getElementById('f-tts-btn');
+  if(btn) btn.textContent='▶ Play';if(fbtn) fbtn.textContent='▶ Play';
+  document.getElementById('afill').style.width='100%';
+  document.querySelectorAll('[id^="rap"],[id^="frap"]').forEach(function(p){p.classList.remove('speaking','spoken');});
+}
+function ttsPause(){
+  window.speechSynthesis.pause();clearInterval(S.ttsInterval);S.ttsOn=false;
+  var btn=document.getElementById('tts-btn'),fbtn=document.getElementById('f-tts-btn');
+  if(btn) btn.textContent='▶ Resume';if(fbtn) fbtn.textContent='▶ Resume';
+  setWave(false);
+}
+function ttsSkipPara(dir){
+  window.speechSynthesis.cancel();clearInterval(S.ttsInterval);
+  S.ttsParaIdx=Math.max(0,Math.min(S.ttsParas.length-1,S.ttsParaIdx+dir));
+  S.ttsOn=false;speakPara(S.ttsParaIdx);
+}
+function setSpd(r,btn){
+  S.ttsSpeed=r;document.querySelectorAll('.spdBtn').forEach(function(b){b.classList.remove('on');});
+  document.querySelectorAll('.spdBtn').forEach(function(b){if(b.textContent===btn.textContent)b.classList.add('on');});
+  if(S.ttsOn){window.speechSynthesis.cancel();clearInterval(S.ttsInterval);speakPara(S.ttsParaIdx);}
+}
+function setWave(on){document.querySelectorAll('.abar').forEach(function(b){b.classList.toggle('on',on);});}
+if(window.speechSynthesis){window.speechSynthesis.onvoiceschanged=function(){};}
+
+// ═══════════════════════════════════════════════
+// VIDEO PRESENTER
+// ═══════════════════════════════════════════════
+function vpKw(text){
+  var stop=new Set('the a an is are was were be been have has do does to of and or but in on at by for with that this it they we can will which from as also more most many some these those their very just about not all any each'.split(' '));
+  var freq={};text.replace(/[^a-zA-Z\s]/g,' ').split(/\s+/).forEach(function(w){var l=w.toLowerCase();if(l.length>4&&!stop.has(l))freq[l]=(freq[l]||0)+1;});
+  var top=Object.entries(freq).sort(function(a,b){return b[1]-a[1];});return top.length?top[0][0]:'';
+}
+
+function localExplain(heading,body,kw){
+  // Variety of explanation starters — never starts with "Simply put"
+  var starters=['In other words,','To put it clearly,','The core idea here is that','At its heart, this means','Breaking this down,','In practice,','What this tells us is that','To understand this better,'];
+  var starter=starters[Math.floor(Math.random()*starters.length)];
+  var analogies={
+    'learning':'This is similar to how you improve at a sport through repeated practice',
+    'network':'Think of it like a web of roads connecting cities',
+    'system':'Much like a well-organised factory where each part has a specific role',
+    'process':'This works like following a recipe — step by step to reach the result',
+    'data':'Data here is like raw ingredients before they are cooked into a meal',
+    'algorithm':'An algorithm works like a cooking recipe — the same steps always give the same result',
+    'intelligence':'Intelligence in this context means the ability to learn from experience',
+    'digital':'Digital refers to information stored as numbers that computers can process',
+    'literacy':'Literacy here means having the skills to understand and use something well',
+    'engagement':'Engagement means how actively and genuinely involved someone is',
+    'gamification':'This involves adding game-like rewards and challenges to non-game activities',
+    'motivation':'Motivation is the internal drive that keeps someone going even when things are difficult'
+  };
+  var analogy='';var kl=(kw||'').toLowerCase();
+  for(var k in analogies){if(kl.includes(k)||k.includes(kl)){analogy=analogies[k];break;}}
+  var sents=body.split(/[.!?]/).filter(function(s){return s.trim().length>20;});
+  var core=sents[0]?sents[0].trim():body.substring(0,120);
+  var detail=sents[1]?sents[1].trim():'';
+  var expl=starter+' '+core.charAt(0).toLowerCase()+core.slice(1)+'.';
+  if(analogy) expl+=' '+analogy+'.';
+  if(detail) expl+=' For example, '+detail.charAt(0).toLowerCase()+detail.slice(1)+'.';
+  return expl;
+}
+
+async function aiExplain(heading,para){
+  if(!ANT) return '';
+  try{
+    var prompt='Rewrite this academic paragraph as a clear spoken explanation for a university student. Use one simple analogy or real-world example. 2-3 sentences max. Do not start with "Simply put" or "In this paragraph". Start directly with an explanation.\n\nHeading: '+heading+'\nText: '+para.substring(0,400);
+    var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':ANT,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:120,messages:[{role:'user',content:prompt}]})});
+    var data=await res.json();
+    if(data.content&&data.content[0]) return data.content[0].text.trim();
+  }catch(e){}
+  return '';
+}
+
+async function vpBuildSlides(book){
+  var paras=book.content.split('\n\n').map(function(p){return p.trim();}).filter(function(p){return p.length>30;});
+  var slides=[];
+  slides.push({type:'title',title:book.title,icon:book.e||'📖',imgQuery:book.title.split(' ').slice(0,3).join(' ')+' education',narration:'Welcome. This presentation explains the key ideas from "'+book.title+'". Each section will be broken down with a clear explanation and a real-world example.'});
+  for(var i=0;i<paras.length;i++){
+    var para=paras[i];
+    var sents=para.split(/[.!?]/).filter(function(s){return s.length>10;});
+    var heading=(sents[0]||para.substring(0,60)).replace(/[.!?]$/,'').substring(0,65);
+    var kw=vpKw(para);
+    var imgQuery=(kw+' '+vpKw(para.split(' ').slice(4).join(' '))).trim()||heading.split(' ').slice(0,3).join(' ');
+    var explanation='';
+    if(ANT&&i<5){explanation=await aiExplain(heading,para);}
+    if(!explanation){explanation=localExplain(heading,para.substring(0,250),kw);}
+    slides.push({type:'content',num:i+1,heading:heading,kw:kw,imgQuery:imgQuery,narration:explanation});
+  }
+  var kws=paras.slice(0,6).map(vpKw).filter(Boolean);
+  slides.push({type:'summary',title:'Key Points',points:kws,imgQuery:'success achievement study',narration:'To summarise, the main topics covered were: '+kws.slice(0,4).join(', ')+'. Head to the Games tab to test what you have learned.'});
+  return slides;
+}
+
+function vpPreloadImages(slides){
+  return Promise.all(slides.map(function(slide,i){
+    return new Promise(function(resolve){
+      var img=new Image();img.crossOrigin='anonymous';
+      var q=(slide.imgQuery||'education').substring(0,50).replace(/\s+/g,',');
+      img.src='https://source.unsplash.com/960x540/?'+encodeURIComponent(q)+'&sig='+(Date.now()+i*7);
+      img.onload=function(){slide._img=img;resolve();};
+      img.onerror=function(){slide._img=null;resolve();};
+      setTimeout(function(){if(!slide._img){slide._img=null;resolve();}},6000);
+    });
+  }));
+}
+
+function vpRR(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();}
+function vpWrap(ctx,text,x,y,maxW,lh,align){
+  ctx.textAlign=align||'left';var cx=align==='center'?x+maxW/2:x;
+  var words=text.split(' '),line='';
+  words.forEach(function(w){var test=line+(line?' ':'')+w;if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,cx,y);y+=lh;line=w;}else line=test;});
+  if(line)ctx.fillText(line,cx,y);
+}
+
+function vDrawFrame(ctx,slide,t,idx,total,img){
+  var W=VP.W,H=VP.H,th=VPTHEMES[idx%VPTHEMES.length];
+  var e=1-Math.pow(1-Math.min(t*2,1),3);
+  if(img){
+    ctx.drawImage(img,0,0,W,H);
+    var ov=ctx.createLinearGradient(0,0,0,H);
+    ov.addColorStop(0,'rgba(0,0,0,0.5)');ov.addColorStop(0.5,'rgba(0,0,0,0.25)');ov.addColorStop(1,'rgba(0,0,0,0.88)');
+    ctx.fillStyle=ov;ctx.fillRect(0,0,W,H);
+  } else {
+    var g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,th.b[0]);g.addColorStop(1,th.b[1]);
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    ctx.save();ctx.globalAlpha=0.04;ctx.strokeStyle=th.a;ctx.lineWidth=1;
+    for(var x=0;x<W;x+=60){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(var y=0;y<H;y+=60){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    ctx.restore();
+  }
+  ctx.fillStyle='rgba(0,0,0,0.72)';ctx.fillRect(0,H-56,W,56);
+  ctx.fillStyle=th.a;ctx.fillRect(0,0,6,H);
+  ctx.fillStyle='rgba(255,255,255,0.45)';ctx.font='bold 12px Sora,Arial,sans-serif';ctx.textAlign='left';ctx.fillText('SmartRead',18,H-18);
+  ctx.fillStyle='rgba(255,255,255,0.38)';ctx.font='12px Sora,Arial,sans-serif';ctx.textAlign='right';ctx.fillText((idx+1)+' / '+total,W-16,H-18);
+  ctx.fillStyle='rgba(255,255,255,0.12)';ctx.fillRect(0,H-4,W,4);ctx.fillStyle=th.a;ctx.fillRect(0,H-4,W*(idx/Math.max(total-1,1)),4);
+  ctx.shadowColor='rgba(0,0,0,0.9)';ctx.shadowBlur=14;
+  if(slide.type==='title'){
+    ctx.font='84px serif';ctx.textAlign='center';ctx.globalAlpha=e;ctx.fillText(slide.icon,W/2,H*0.37);ctx.globalAlpha=1;
+    ctx.font='bold 36px DM Serif Display,Georgia,serif';ctx.fillStyle='#fff';ctx.globalAlpha=1-Math.pow(1-Math.min(Math.max(0,(t-0.1)*2.5),1),3);
+    vpWrap(ctx,slide.title,W/2-300,H*0.52,600,46,'center');ctx.globalAlpha=1;ctx.shadowBlur=0;
+    var lw=(W-200)*(1-Math.pow(1-Math.min(Math.max(0,(t-0.2)*3),1),3));
+    ctx.fillStyle=th.a;ctx.fillRect((W-lw)/2,H*0.63,lw,3);
+  } else if(slide.type==='content'){
+    ctx.shadowBlur=0;ctx.fillStyle='rgba(0,0,0,0.6)';vpRR(ctx,18,16,86,30,15);ctx.fill();
+    ctx.fillStyle=th.a;ctx.font='bold 12px Sora,Arial,sans-serif';ctx.textAlign='left';ctx.fillText('Slide '+slide.num,30,36);
+    if(slide.kw){var kwT='#'+slide.kw.toUpperCase();ctx.font='bold 11px Sora,Arial,sans-serif';var kwW=ctx.measureText(kwT).width+24;ctx.fillStyle=th.a+'44';vpRR(ctx,W-kwW-18,16,kwW,28,14);ctx.fill();ctx.fillStyle=th.a;ctx.textAlign='right';ctx.fillText(kwT,W-24,34);}
+    ctx.shadowColor='rgba(0,0,0,0.95)';ctx.shadowBlur=16;ctx.globalAlpha=e;
+    ctx.font='bold 28px DM Serif Display,Georgia,serif';ctx.fillStyle='#fff';ctx.textAlign='left';
+    vpWrap(ctx,slide.heading,24,H-100,W-48,36,'left');ctx.globalAlpha=1;
+  } else if(slide.type==='summary'){
+    ctx.font='50px serif';ctx.textAlign='center';ctx.globalAlpha=e;ctx.fillText('🏆',W/2,H*0.3);ctx.globalAlpha=1;
+    ctx.font='bold 32px DM Serif Display,Georgia,serif';ctx.fillStyle='#fff';ctx.textAlign='center';ctx.globalAlpha=e;
+    ctx.fillText(slide.title,W/2,H*0.43);ctx.globalAlpha=1;ctx.shadowBlur=0;
+    ctx.fillStyle=th.a;ctx.fillRect(W/2-65,H*0.47,130,3);
+    var cols=Math.min(slide.points.length,3),cw=198,ch=38,gx=10,gy=9,tw=cols*cw+(cols-1)*gx,sx=(W-tw)/2;
+    slide.points.forEach(function(pt,i){
+      var del=0.1+i*0.07,ce=1-Math.pow(1-Math.min(Math.max(0,(t-del)*3),1),3);
+      var col=i%cols,row=Math.floor(i/cols),px=sx+col*(cw+gx),py=H*0.51+row*(ch+gy);
+      var ac=VPTHEMES[i%VPTHEMES.length].a;
+      ctx.fillStyle=ac+'44';ctx.globalAlpha=ce;vpRR(ctx,px,py,cw,ch,19);ctx.fill();
+      ctx.fillStyle='#fff';ctx.font='bold 13px Sora,Arial,sans-serif';ctx.textAlign='center';
+      ctx.fillText(pt.charAt(0).toUpperCase()+pt.slice(1),px+cw/2,py+25);ctx.globalAlpha=1;
+    });
+  }
+  ctx.shadowBlur=0;
+}
+
+// canvasId and subtitleId let the same function serve both main and focus mode
+function vInitCanvas(canvasId,emptyId,subtitleId){
+  var c=document.getElementById(canvasId||'vid-canvas');
+  if(!c) return null;
+  c.width=VP.W;c.height=VP.H;
+  var empty=document.getElementById(emptyId||'vid-empty');if(empty) empty.style.display='none';
+  var sub=document.getElementById(subtitleId||'vid-subtitle');if(sub) sub.style.display='block';
+  return c;
+}
+
+function vBuildThumbs(thumbsId,canvasId){
+  var row=document.getElementById(thumbsId||'vThumbs');if(!row)return;row.innerHTML='';
+  var c=document.getElementById(canvasId||'vid-canvas');if(!c)return;
+  VP.slides.forEach(function(slide,i){
+    var wrap=document.createElement('div');wrap.className='vth';wrap.id='vth'+i;if(i===0)wrap.classList.add('on');
+    var mini=document.createElement('canvas');mini.width=90;mini.height=50;mini.getContext('2d').drawImage(c,0,0,90,50);
+    var lbl=document.createElement('div');lbl.className='vth-lbl';
+    lbl.textContent=slide.type==='title'?'Intro':slide.type==='summary'?'Summary':'Slide '+slide.num;
+    wrap.appendChild(mini);wrap.appendChild(lbl);
+    var cid=canvasId||'vid-canvas',sid=(canvasId==='f-vid-canvas'?'f-vid-subtitle':'vid-subtitle');
+    wrap.onclick=(function(idx,ci,si){return function(){
+      VP.cur=idx;vHiThumb(idx);
+      var ctx2=document.getElementById(ci).getContext('2d');
+      vDrawFrame(ctx2,VP.slides[idx],0.7,idx,VP.slides.length,VP.slides[idx]._img||null);
+      var sub2=document.getElementById(si);if(sub2) sub2.textContent=VP.slides[idx].narration||'';
+    };})(i,cid,sid);
+    row.appendChild(wrap);
+  });
+}
+function vHiThumb(idx){document.querySelectorAll('.vth').forEach(function(t,i){t.classList.toggle('on',i===idx);});}
+
+async function vidPreview(focusMode){
+  if(!S.book){alert('Open a book from the Library first!');return;}
+  var cid=focusMode?'f-vid-canvas':'vid-canvas';
+  var eid=focusMode?'f-vid-empty':'vid-empty';
+  var sid=focusMode?'f-vid-subtitle':'vid-subtitle';
+  var tid=focusMode?'f-vThumbs':'vThumbs';
+  var stid=focusMode?'f-vStatus':'vStatus';
+  var pid=focusMode?'f-vPfill':'vPfill';
+  var pctid=focusMode?'f-vPct':'vPct';
+  var pb=focusMode?null:document.getElementById('vPrevBtn');
+  var vb=focusMode?null:document.getElementById('vPlayBtn');
+  if(pb) pb.disabled=true;if(vb) vb.disabled=true;
+  var stEl=document.getElementById(stid);if(stEl) stEl.textContent='Building slides…';
+  var c=vInitCanvas(cid,eid,sid);if(!c){if(pb)pb.disabled=false;if(vb)vb.disabled=false;return;}
+  var ctx=c.getContext('2d');
+  if(VP.raf) cancelAnimationFrame(VP.raf);
+  window.speechSynthesis.cancel();
+  VP.slides=await vpBuildSlides(S.book);
+  if(stEl) stEl.textContent='Loading images…';
+  await vpPreloadImages(VP.slides);
+  VP.cur=0;VP.prev=true;VP.playing=false;
+  vBuildThumbs(tid,cid);
+  if(pb) pb.disabled=false;if(vb) vb.disabled=false;
+  if(stEl) stEl.textContent='Preview — click thumbnails to jump';
+  var t=0,idx=0;
+  (function loop(){
+    t+=0.006;if(t>1){t=0;idx=(idx+1)%VP.slides.length;VP.cur=idx;vHiThumb(idx);}
+    vDrawFrame(ctx,VP.slides[idx],t,idx,VP.slides.length,VP.slides[idx]._img||null);
+    var sub=document.getElementById(sid);if(sub) sub.textContent=VP.slides[idx].narration||'';
+    var pf=document.getElementById(pid);if(pf) pf.style.width=Math.round((idx+t)/VP.slides.length*100)+'%';
+    var pc=document.getElementById(pctid);if(pc) pc.textContent=Math.round((idx+t)/VP.slides.length*100)+'%';
+    VP.raf=requestAnimationFrame(loop);
+  })();
+  reward('👁','Preview ready!','Images and explanations loaded',0);
+}
+
+async function vidRecord(focusMode){
+  if(!S.book){alert('Open a book from the Library first!');return;}
+  var cid=focusMode?'f-vid-canvas':'vid-canvas';
+  var eid=focusMode?'f-vid-empty':'vid-empty';
+  var sid=focusMode?'f-vid-subtitle':'vid-subtitle';
+  var tid=focusMode?'f-vThumbs':'vThumbs';
+  var stid=focusMode?'f-vStatus':'vStatus';
+  var pid=focusMode?'f-vPfill':'vPfill';
+  var pctid=focusMode?'f-vPct':'vPct';
+  var stopBtnId=focusMode?'f-vStopBtn':'vStopBtn';
+  var playBtnId=focusMode?'f-vPlayBtn':'vPlayBtn';
+  var prevBtnId=focusMode?null:'vPrevBtn';
+  var pBtn=prevBtnId?document.getElementById(prevBtnId):null;
+  var plBtn=document.getElementById(playBtnId);
+  if(pBtn) pBtn.disabled=true;if(plBtn) plBtn.disabled=true;
+  var stEl=document.getElementById(stid);if(stEl) stEl.textContent='Building slides…';
+  var c=vInitCanvas(cid,eid,sid);if(!c){if(pBtn)pBtn.disabled=false;if(plBtn)plBtn.disabled=false;return;}
+  var ctx=c.getContext('2d');
+  if(VP.raf) cancelAnimationFrame(VP.raf);
+  window.speechSynthesis.cancel();
+  VP.slides=await vpBuildSlides(S.book);
+  if(stEl) stEl.textContent='Loading images…';
+  await vpPreloadImages(VP.slides);
+  VP.cur=0;VP.playing=true;VP.prev=false;VP.chunks=[];VP.blob=null;
+  vBuildThumbs(tid,cid);
+  var stopBtn=document.getElementById(stopBtnId);if(stopBtn) stopBtn.style.display='';
+  reward('▶','Presenting!','Explaining each section with images…',0);
+  runVSlide(0,ctx,sid,pid,pctid,stid,stopBtnId,playBtnId,prevBtnId);
+}
+
+function runVSlide(idx,ctx,sid,pid,pctid,stid,stopBtnId,playBtnId,prevBtnId){
+  if(!VP.playing||idx>=VP.slides.length){
+    window.speechSynthesis.cancel();if(VP.raf) cancelAnimationFrame(VP.raf);
+    var sb=document.getElementById(stopBtnId);if(sb) sb.style.display='none';
+    var pb2=document.getElementById(playBtnId);if(pb2) pb2.disabled=false;
+    var prb=prevBtnId?document.getElementById(prevBtnId):null;if(prb) prb.disabled=false;
+    var st=document.getElementById(stid);if(st) st.textContent='Presentation complete!';
+    return;
+  }
+  var slide=VP.slides[idx],total=VP.slides.length;
+  VP.cur=idx;vHiThumb(idx);
+  var narr=slide.narration||slide.heading||'';
+  var sub=document.getElementById(sid);if(sub) sub.textContent=narr;
+  var words=narr.split(/\s+/).length;
+  var estMs=Math.max(slide.type==='title'?3500:2500,(words/105)*60000);
+  var ttsDone=false,animDone=false,startTs=null;
+  function done(){if(ttsDone&&animDone)runVSlide(idx+1,ctx,sid,pid,pctid,stid,stopBtnId,playBtnId,prevBtnId);}
+  var u=new SpeechSynthesisUtterance(narr);u.rate=0.92;u.lang='en-US';
+  var voices=window.speechSynthesis.getVoices();
+  var v=voices.find(function(vv){return vv.lang.startsWith('en')&&(vv.name.includes('Google')||vv.name.includes('Samantha')||vv.name.includes('Daniel'));});
+  if(v) u.voice=v;
+  u.onend=u.onerror=function(){ttsDone=true;done();};
+  window.speechSynthesis.speak(u);
+  if(VP.raf) cancelAnimationFrame(VP.raf);
+  (function anim(ts){
+    if(!startTs) startTs=ts;
+    var t=Math.min((ts-startTs)/estMs,1);
+    vDrawFrame(ctx,slide,t,idx,total,slide._img||null);
+    var pf=document.getElementById(pid);if(pf) pf.style.width=Math.round((idx+t)/total*100)+'%';
+    var pc=document.getElementById(pctid);if(pc) pc.textContent=Math.round((idx+t)/total*100)+'%';
+    var st=document.getElementById(stid);if(st) st.textContent='Slide '+(idx+1)+' of '+total;
+    if(t<1&&VP.playing){VP.raf=requestAnimationFrame(anim);}
+    else{vDrawFrame(ctx,slide,1,idx,total,slide._img||null);animDone=true;done();}
+  })(0);
+}
+
+function vidStop(){
+  VP.playing=false;VP.prev=false;
+  window.speechSynthesis.cancel();
+  if(VP.raf) cancelAnimationFrame(VP.raf);
+  ['vStopBtn','f-vStopBtn'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  ['vPlayBtn','f-vPlayBtn','vPrevBtn'].forEach(function(id){var el=document.getElementById(id);if(el)el.disabled=false;});
+  ['vStatus','f-vStatus'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent='Stopped.';});
+}
+
+// ═══════════════════════════════════════════════
+// GAMES
+// ═══════════════════════════════════════════════
+function setGameTab(t,btn){
+  ['flashcard','fillin','match'].forEach(function(n){document.getElementById('g-'+n).style.display='none';});
+  document.getElementById('g-'+t).style.display='';
+  document.querySelectorAll('#game-tabs .tab').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+}
+function setFocusGameTab(t,btn){
+  ['flashcard','fillin','match'].forEach(function(n){var el=document.getElementById('f-g-'+n);if(el)el.style.display='none';});
+  var el=document.getElementById('f-g-'+t);if(el)el.style.display='';
+  document.querySelectorAll('#f-game-tabs .tab').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+}
+function genAllGames(focusMode){
+  if(!S.book){alert('Open a book from the Library first!');return;}
+  genFlashcards(focusMode);genFillin(focusMode);genMatch(focusMode);
+  reward('🎮','Games generated!','3 game types ready',15);
+}
+
+// Flashcards
+function genFlashcards(focusMode){
+  if(!S.book) return;
+  var paras=S.book.content.split('\n\n').filter(function(p){return p.trim().length>50;});
+  GM.flashcards=paras.slice(0,8).map(function(para){
+    var kw=vpKw(para),sents=para.split(/[.!?]/).filter(function(s){return s.trim().length>20;});
+    var front=kw?'What is "'+kw.charAt(0).toUpperCase()+kw.slice(1)+'" in the context of this topic?':'What is the key concept in this passage?';
+    var back=(sents[0]||para.substring(0,180)).trim();
+    return{front:front,back:back,kw:kw};
+  });
+  GM.fcIdx=0;GM.fcFlipped=false;
+  renderFlashcard(focusMode);
+}
+function renderFlashcard(focusMode){
+  var el=document.getElementById(focusMode?'f-g-flashcard':'g-flashcard');
+  if(!el) return;
+  if(!GM.flashcards.length){el.innerHTML='<div class="empty">Click Generate games above</div>';return;}
+  if(GM.fcIdx>=GM.flashcards.length){
+    el.innerHTML='<div class="card" style="text-align:center;padding:1.5rem"><div style="font-size:44px;margin-bottom:.5rem">🏆</div><div style="font-family:\'DM Serif Display\',serif;font-size:18px;margin-bottom:.4rem">Deck complete!</div><div style="font-size:13px;color:var(--t2);margin-bottom:1rem">You reviewed all '+GM.flashcards.length+' cards</div><button class="btn btns btnp" onclick="genFlashcards('+(focusMode?'true':'false')+')">🔄 Restart</button></div>';
+    reward('🏆','Deck complete!','',30);return;
+  }
+  var card=GM.flashcards[GM.fcIdx],pct=Math.round(GM.fcIdx/GM.flashcards.length*100);
+  var fm=focusMode?'true':'false';
+  el.innerHTML='<div style="margin-bottom:.75rem;display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;color:var(--t3)">Card '+(GM.fcIdx+1)+' of '+GM.flashcards.length+'</span><span style="font-size:12px;color:var(--t3)">Click card to flip</span></div>'
+    +'<div class="flashcard" onclick="flipCard('+fm+')">'
+    +'<div class="fc-inner" id="fc-inner-'+(focusMode?'f':'m')+'">'
+    +'<div class="fc-front"><div class="fc-label">Question</div><div class="fc-text">'+card.front+'</div><div class="fc-hint">Click to reveal answer</div></div>'
+    +'<div class="fc-back"><div class="fc-label">Answer</div><div class="fc-text">'+card.back+'</div></div>'
+    +'</div></div>'
+    +'<div style="display:flex;gap:8px;justify-content:center;margin-top:.75rem;flex-wrap:wrap">'
+    +'<button class="btn btns btnd" onclick="fcRate(false,'+fm+')">😕 Unsure — repeat</button>'
+    +'<button class="btn btns" style="border-color:rgba(0,201,167,.4);color:var(--teal)" onclick="fcRate(true,'+fm+')">✅ Got it — next</button>'
+    +'</div>'
+    +'<div style="margin-top:.75rem"><div class="pbar"><div class="pfill" style="width:'+pct+'%"></div></div></div>';
+}
+function flipCard(focusMode){
+  GM.fcFlipped=!GM.fcFlipped;
+  var id='fc-inner-'+(focusMode?'f':'m');
+  var el=document.getElementById(id);if(el)el.classList.toggle('flipped',GM.fcFlipped);
+}
+function fcRate(knew,focusMode){
+  if(knew){GM.fcIdx++;}else{GM.flashcards.push(GM.flashcards[GM.fcIdx]);GM.fcIdx++;}
+  renderFlashcard(focusMode);
+}
+
+// Fill-in-blank
+function genFillin(focusMode){
+  if(!S.book) return;
+  var paras=S.book.content.split('\n\n').filter(function(p){return p.trim().length>60;});
+  GM.fibs=[];
+  paras.slice(0,6).forEach(function(para){
+    var sents=para.split(/[.!?]/).filter(function(s){return s.trim().length>30;}).slice(0,2);
+    sents.forEach(function(sent){
+      sent=sent.trim();if(!sent)return;
+      var words=sent.split(' ').filter(function(w){return w.replace(/[^a-zA-Z]/g,'').length>5;});
+      if(!words.length)return;
+      var target=words[Math.floor(words.length/2)],clean=target.replace(/[^a-zA-Z]/g,'');
+      if(!clean)return;
+      var allW=para.split(' ').filter(function(w){var c=w.replace(/[^a-zA-Z]/g,'');return c.length>5&&c.toLowerCase()!==clean.toLowerCase();});
+      var dist=allW.sort(function(){return Math.random()-.5;}).slice(0,3).map(function(w){return w.replace(/[^a-zA-Z]/g,'');});
+      while(dist.length<3)dist.push(['concept','process','approach','system'][dist.length]);
+      GM.fibs.push({sentence:sent.replace(target,'_____'),target:clean,options:[clean].concat(dist).sort(function(){return Math.random()-.5;})});
+    });
+  });
+  GM.fibs=GM.fibs.slice(0,8);GM.fibIdx=0;renderFillin(focusMode);
+}
+function renderFillin(focusMode){
+  var el=document.getElementById(focusMode?'f-g-fillin':'g-fillin');
+  if(!el) return;
+  if(!GM.fibs.length){el.innerHTML='<div class="empty">Click Generate games above</div>';return;}
+  if(GM.fibIdx>=GM.fibs.length){
+    el.innerHTML='<div class="card" style="text-align:center;padding:1.5rem"><div style="font-size:44px;margin-bottom:.5rem">✍</div><div style="font-family:\'DM Serif Display\',serif;font-size:18px;margin-bottom:.4rem">All blanks filled!</div><button class="btn btns btnp" onclick="GM.fibIdx=0;renderFillin('+(focusMode?'true':'false')+')">🔄 Restart</button></div>';
+    reward('✍','Fill-in complete!','',25);return;
+  }
+  var q=GM.fibs[GM.fibIdx],pct=Math.round(GM.fibIdx/GM.fibs.length*100),fm=focusMode?'true':'false';
+  el.innerHTML='<div style="margin-bottom:.65rem;font-size:13px;color:var(--t3)">Question '+(GM.fibIdx+1)+' of '+GM.fibs.length+'</div>'
+    +'<div class="card" style="margin-bottom:.75rem"><div style="font-size:12px;color:var(--t3);margin-bottom:.5rem;font-weight:500;text-transform:uppercase;letter-spacing:.06em">Fill in the blank</div>'
+    +'<div class="fib-sentence">'+q.sentence+'</div>'
+    +'<div class="fib-options">'+q.options.map(function(o){return'<button class="fib-opt" onclick="checkFib(\''+o+'\',\''+q.target+'\',this,'+fm+')">'+o+'</button>';}).join('')+'</div></div>'
+    +'<div class="pbar"><div class="pfill" style="width:'+pct+'%"></div></div>';
+}
+function checkFib(choice,target,btn,focusMode){
+  document.querySelectorAll('.fib-opt').forEach(function(b){b.disabled=true;});
+  var ok=choice.toLowerCase()===target.toLowerCase();
+  btn.classList.add(ok?'ok':'no');
+  if(!ok)document.querySelectorAll('.fib-opt').forEach(function(b){if(b.textContent.toLowerCase()===target.toLowerCase())b.classList.add('ok');});
+  reward(ok?'✅':'❌',ok?'Correct!':'Incorrect','',ok?10:0);
+  GM.fibIdx++;setTimeout(function(){renderFillin(focusMode);},1800);
+}
+
+// Concept Match
+function genMatch(focusMode){
+  if(!S.book) return;
+  var paras=S.book.content.split('\n\n').filter(function(p){return p.trim().length>60;});
+  GM.pairs=paras.slice(0,6).map(function(para){
+    var kw=vpKw(para),sents=para.split(/[.!?]/).filter(function(s){return s.trim().length>20;});
+    var def=(sents[0]||para.substring(0,120)).trim().replace(/[.!?]$/,'');
+    return{term:kw.charAt(0).toUpperCase()+kw.slice(1),def:def.substring(0,100)+(def.length>100?'…':'')};
+  }).filter(function(p){return p.term&&p.def;}).slice(0,5);
+  GM.matchSel=null;GM.matchDone=0;renderMatch(focusMode);
+}
+function renderMatch(focusMode){
+  var el=document.getElementById(focusMode?'f-g-match':'g-match');
+  if(!el) return;
+  if(!GM.pairs.length){el.innerHTML='<div class="empty">Click Generate games above</div>';return;}
+  if(GM.matchDone>=GM.pairs.length){
+    el.innerHTML='<div class="card" style="text-align:center;padding:1.5rem"><div style="font-size:44px;margin-bottom:.5rem">🔗</div><div style="font-family:\'DM Serif Display\',serif;font-size:18px;margin-bottom:.4rem">All matched!</div><button class="btn btns btnp" onclick="genMatch('+(focusMode?'true':'false')+')">🔄 New round</button></div>';
+    reward('🔗','All matched!','',35);return;
+  }
+  var terms=GM.pairs.map(function(p){return{val:p.term,type:'term'};}).sort(function(){return Math.random()-.5;});
+  var defs=GM.pairs.map(function(p){return{val:p.def,type:'def'};}).sort(function(){return Math.random()-.5;});
+  var prefix=focusMode?'f-':'';
+  el.innerHTML='<div style="font-size:13px;color:var(--t3);margin-bottom:.75rem">Click a term on the left, then its matching definition on the right.</div>'
+    +'<div class="match-grid"><div class="match-col" id="'+prefix+'match-terms"></div><div class="match-col" id="'+prefix+'match-defs"></div></div>'
+    +'<div style="font-size:12px;color:var(--t3)" id="'+prefix+'match-hint">Select a term to begin</div>';
+  terms.forEach(function(item){
+    var d=document.createElement('div');d.className='match-item';d.textContent=item.val;d.dataset.val=item.val;d.dataset.type='term';d.dataset.prefix=prefix;
+    d.onclick=function(){selectMatch(this,focusMode);};document.getElementById(prefix+'match-terms').appendChild(d);
+  });
+  defs.forEach(function(item){
+    var d=document.createElement('div');d.className='match-item';d.textContent=item.val;d.dataset.val=item.val;d.dataset.type='def';d.dataset.prefix=prefix;
+    d.onclick=function(){selectMatch(this,focusMode);};document.getElementById(prefix+'match-defs').appendChild(d);
+  });
+}
+function selectMatch(el,focusMode){
+  if(el.classList.contains('matched'))return;
+  var prefix=el.dataset.prefix||'';
+  var hint=document.getElementById(prefix+'match-hint');
+  if(!GM.matchSel){
+    document.querySelectorAll('.match-item.selected').forEach(function(e){e.classList.remove('selected');});
+    if(el.dataset.type==='term'){el.classList.add('selected');GM.matchSel=el;if(hint)hint.textContent='Now click the matching definition';}
+    else{if(hint)hint.textContent='Select a term first (left column)';}
+    return;
+  }
+  if(el.dataset.type==='term'){GM.matchSel.classList.remove('selected');el.classList.add('selected');GM.matchSel=el;return;}
+  var pair=GM.pairs.find(function(p){return p.term===GM.matchSel.dataset.val;});
+  var correct=pair&&el.textContent.indexOf(pair.def.substring(0,20))===0;
+  if(correct){
+    GM.matchSel.classList.remove('selected');GM.matchSel.classList.add('matched');el.classList.add('matched');
+    GM.matchSel=null;GM.matchDone++;if(hint)hint.textContent=GM.matchDone+' of '+GM.pairs.length+' matched ✅';
+    reward('🔗','Matched!','',10);if(GM.matchDone>=GM.pairs.length)setTimeout(function(){renderMatch(focusMode);},1200);
+  } else {
+    el.classList.add('wrong');GM.matchSel.classList.add('wrong');reward('❌','Not a match','',0);
+    setTimeout(function(){el.classList.remove('wrong');if(GM.matchSel){GM.matchSel.classList.remove('wrong','selected');}GM.matchSel=null;if(hint)hint.textContent='Try again';},900);
+  }
+}
+
+// Focus game helpers
+function renderFocusFlashcard(){renderFlashcard(true);}
+
+// ═══════════════════════════════════════════════
+// QUIZ
+// ═══════════════════════════════════════════════
+function genQuiz(focusMode){
+  var outId=focusMode?'f-quiz-out':'quiz-out';
+  var el=document.getElementById(outId);
+  if(!el)return;
+  if(!S.book){el.innerHTML='<div class="empty">Open a book first!</div>';return;}
+  el.innerHTML='<div class="empty"><span class="spin"></span> Generating test…</div>';
+  setTimeout(function(){
+    var paras=S.book.content.split('\n\n').filter(function(p){return p.trim().length>60;}).slice(0,5);
+    QS.qs=paras.map(function(para,i){
+      var sents=para.split(/[.!?]/).filter(function(s){return s.trim().length>20;});
+      var correct=(sents[0]||para.substring(0,110)).trim().substring(0,110);
+      var opts=[correct,'This section is unrelated to the main topic','The text presents the opposite view here','This concept contradicts the rest of the document'].map(function(v,idx){return{v:v,idx:idx};}).sort(function(){return Math.random()-.5;});
+      return{q:'What is the main idea of paragraph '+(i+1)+'?',options:opts.map(function(o){return o.v;}),ans:opts.findIndex(function(o){return o.idx===0;}),exp:'The answer comes from the opening sentence of that paragraph.'};
+    });
+    QS.step=0;QS.score=0;renderQuiz(focusMode);
+  },500);
+}
+function renderQuiz(focusMode){
+  var outId=focusMode?'f-quiz-out':'quiz-out';
+  var el=document.getElementById(outId);if(!el)return;
+  var fm=focusMode?'true':'false';
+  if(QS.step>=QS.qs.length){
+    var pct=Math.round(QS.score/QS.qs.length*100),pass=pct>=70;
+    el.innerHTML='<div class="card" style="text-align:center;padding:1.6rem"><div style="font-size:44px;margin-bottom:.5rem">'+(pass?'🏆':'📚')+'</div><div style="font-family:\'DM Serif Display\',serif;font-size:20px;margin-bottom:.3rem">'+(pass?'Test Passed!':'Keep Studying')+'</div><div style="font-size:13.5px;color:var(--t2);margin-bottom:.3rem">Score: '+QS.score+'/'+QS.qs.length+' ('+pct+'%)</div><div style="font-size:12.5px;color:var(--t3);margin-bottom:1rem">'+(pass?'Excellent! You have mastered this material.':'You need 70% to pass. Review and try again.')+'</div>'+(pass?'<div class="badge tbadge" style="font-size:13px;padding:.38rem 1rem;margin-bottom:.9rem">✅ Completion badge earned!</div><br>':'')+'<button class="btn btns btnp" onclick="genQuiz('+fm+')">🔄 New test</button></div>';
+    if(pass){reward('🏆','Test passed!',pct+'% — badge earned!',150);S.testsPassed++;S.pagesRead+=8;}
+    else reward('📚','Test done',pct+'% — aim for 70%+',30);
+    return;
+  }
+  var q=QS.qs[QS.step],prog=Math.round(QS.step/QS.qs.length*100);
+  el.innerHTML='<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem"><span style="font-size:12px;color:var(--t3)">Question '+(QS.step+1)+' of '+QS.qs.length+'</span><span class="badge tbadge">'+QS.score+' correct</span></div><div class="pbar" style="margin-bottom:.85rem"><div class="pfill" style="width:'+prog+'%"></div></div><div style="font-weight:500;font-size:14.5px;margin-bottom:.8rem;line-height:1.5">'+q.q+'</div>'+q.options.map(function(o,i){return'<button class="qopt" onclick="ansQ('+i+',this,'+fm+')">'+o+'</button>';}).join('')+'</div>';
+}
+function ansQ(idx,btn,focusMode){
+  var q=QS.qs[QS.step];
+  document.querySelectorAll((focusMode?'#f-quiz-out':'#quiz-out')+' .qopt').forEach(function(b){b.disabled=true;});
+  if(idx===q.ans){btn.classList.add('ok');QS.score++;reward('✅','Correct!','',10);}
+  else{btn.classList.add('no');document.querySelectorAll((focusMode?'#f-quiz-out':'#quiz-out')+' .qopt')[q.ans].classList.add('ok');reward('❌','Wrong',q.exp,0);}
+  QS.step++;setTimeout(function(){renderQuiz(focusMode);},1900);
+}
+function renderFocusQuiz(){renderQuiz(true);}
+
+// ═══════════════════════════════════════════════
+// DICTIONARY + AI ASSISTANT
+// ═══════════════════════════════════════════════
+
+var _lookupMode = 'define';
+var _lookupDebounce = null;
+
+function lookupMode(mode) {
+  _lookupMode = mode;
+  var map = {define:'lm-define',synonym:'lm-synonym',example:'lm-example',pronounce:'lm-pronounce'};
+  Object.keys(map).forEach(function(k) {
+    var el = document.getElementById(map[k]);
+    if (!el) return;
+    el.style.background = (k === mode) ? 'rgba(0,201,167,.2)' : '';
+    el.style.color = (k === mode) ? 'var(--teal)' : '';
+  });
+  var w = document.getElementById('word-inp');
+  if (w && w.value.trim()) lookupWord();
+}
+
+function wordInputChanged(val) {
+  clearTimeout(_lookupDebounce);
+  if (val.trim().length > 2) _lookupDebounce = setTimeout(lookupWord, 700);
+}
+
+function useSelectedWord(focusMode) {
+  var sel = window.getSelection();
+  var word = (sel && sel.toString().trim()) ? sel.toString().trim().split(/\s+/)[0] : '';
+  word = word.replace(/[^a-zA-Z'-]/g, '');
+  if (!word) { alert('Highlight a word in the Text or Audio tab first, then click this button.'); return; }
+  if (focusMode) {
+    var fi = document.getElementById('f-word-inp');
+    if (fi) { fi.value = word; fLookupWord(); }
+  } else {
+    var mi = document.getElementById('word-inp');
+    if (mi) { mi.value = word; lookupWord(); }
+  }
+}
+
+// ── Main lookup (main page) ──
+async function lookupWord() {
+  var inp = document.getElementById('word-inp');
+  if (!inp) return;
+  var word = inp.value.trim().replace(/[^a-zA-Z'-]/g, '').toLowerCase();
+  if (!word) return;
+  var el = document.getElementById('dict-result');
+  if (!el) return;
+  el.style.display = 'block';
+  el.innerHTML = dictLoading(word);
+  el.innerHTML = await fetchDictionary(word, _lookupMode);
+}
+
+// ── Focus mode lookup ──
+async function fLookupWord() {
+  var inp = document.getElementById('f-word-inp');
+  if (!inp) return;
+  var word = inp.value.trim().replace(/[^a-zA-Z'-]/g, '').toLowerCase();
+  if (!word) return;
+  var el = document.getElementById('f-dict-result');
+  if (!el) return;
+  el.style.display = 'block';
+  el.innerHTML = dictLoading(word);
+  el.innerHTML = await fetchDictionary(word, 'define');
+}
+
+function dictLoading(word) {
+  return '<div style="background:rgba(0,0,0,.22);border:1px solid var(--cb);border-radius:var(--r);padding:1rem 1.2rem;font-size:13.5px;color:var(--t2)">'
+    + '<span class="spin"></span>  Looking up <strong style="color:var(--text)">' + word + '</strong>…</div>';
+}
+
+// ── Core fetch: Free Dictionary API → built-in fallback ──
+async function fetchDictionary(word, mode) {
+  // 1. Free Dictionary API — covers ALL English words, free, no key
+  try {
+    var res = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(word));
+    if (res.ok) {
+      var data = await res.json();
+      if (Array.isArray(data) && data[0] && data[0].meanings && data[0].meanings.length) {
+        return renderDictEntry(word, data[0], mode);
+      }
+    }
+  } catch(e) {}
+  // 2. Built-in vocabulary (works offline)
+  if (VOCAB[word]) return renderBuiltinEntry(word, VOCAB[word], mode);
+  // 3. Not found
+  return renderNotFound(word);
+}
+
+// ── Render Free Dictionary API result ──
+function renderDictEntry(word, entry, mode) {
+  // Phonetic
+  var phonetic = entry.phonetic || '';
+  if (!phonetic && entry.phonetics) {
+    var ph = entry.phonetics.find(function(p) { return p.text; });
+    if (ph) phonetic = ph.text;
+  }
+  // Audio
+  var audioUrl = '';
+  if (entry.phonetics) {
+    var ap = entry.phonetics.find(function(p) { return p.audio && p.audio.length > 4; });
+    if (ap) audioUrl = ap.audio;
+  }
+  var meanings = entry.meanings || [];
+  var h = '<div style="background:rgba(0,0,0,.22);border:1px solid var(--cb);border-radius:var(--r);padding:1rem 1.2rem">';
+
+  // Header row
+  h += '<div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:.75rem;border-bottom:1px solid var(--cb);padding-bottom:.75rem">';
+  h += '<span style="font-family:\'DM Serif Display\',serif;font-size:24px;color:var(--text)">' + word + '</span>';
+  if (phonetic) h += '<span style="font-size:15px;color:var(--teal);font-family:monospace">' + phonetic + '</span>';
+  if (audioUrl) {
+    var safeUrl = audioUrl.replace(/'/g, "\\'");
+    h += '<button class="btn btns" onclick="playAudio(\'' + safeUrl + '\')" style="padding:.22rem .65rem;font-size:12px">🔊 Hear it</button>';
+  }
+  if (entry.sourceUrls && entry.sourceUrls[0]) {
+    h += '<a href="' + entry.sourceUrls[0] + '" target="_blank" class="btn btns" style="padding:.22rem .65rem;font-size:12px;margin-left:auto">🌐 Full entry</a>';
+  }
+  h += '</div>';
+
+  if (mode === 'synonym') {
+    // Collect all synonyms and antonyms
+    var allSyns = [], allAnts = [];
+    meanings.forEach(function(m) {
+      allSyns = allSyns.concat(m.synonyms || []);
+      allAnts = allAnts.concat(m.antonyms || []);
+      (m.definitions || []).forEach(function(d) {
+        allSyns = allSyns.concat(d.synonyms || []);
+        allAnts = allAnts.concat(d.antonyms || []);
+      });
+    });
+    allSyns = allSyns.filter(function(v,i,a){return a.indexOf(v)===i;}).slice(0,16);
+    allAnts = allAnts.filter(function(v,i,a){return a.indexOf(v)===i;}).slice(0,8);
+    if (allSyns.length) {
+      h += '<div style="font-size:11px;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">Synonyms — click any to look it up</div>';
+      h += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:.75rem">';
+      allSyns.forEach(function(s) {
+        h += '<span onclick="document.getElementById(\'word-inp\').value=\'' + s.replace(/'/g,"\\'") + '\';lookupWord()" '
+          + 'style="background:rgba(0,201,167,.1);border:1px solid rgba(0,201,167,.3);border-radius:20px;padding:.22rem .7rem;font-size:13px;cursor:pointer;color:var(--teal)" title="Click to look up">' + s + '</span>';
+      });
+      h += '</div>';
+    }
+    if (allAnts.length) {
+      h += '<div style="font-size:11px;font-weight:600;color:var(--red);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">Antonyms</div>';
+      h += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:.75rem">';
+      allAnts.forEach(function(a) {
+        h += '<span onclick="document.getElementById(\'word-inp\').value=\'' + a.replace(/'/g,"\\'") + '\';lookupWord()" '
+          + 'style="background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.3);border-radius:20px;padding:.22rem .7rem;font-size:13px;cursor:pointer;color:var(--red)">' + a + '</span>';
+      });
+      h += '</div>';
+    }
+    if (!allSyns.length && !allAnts.length) {
+      h += '<div style="color:var(--t3);font-size:13px;margin-bottom:.65rem">No synonyms found in dictionary for this word.</div>';
+    }
+    h += defsHTML(meanings, 1);
+
+  } else if (mode === 'example') {
+    var examples = [];
+    meanings.forEach(function(m) {
+      (m.definitions || []).forEach(function(d) {
+        if (d.example) examples.push({ex:d.example, pos:m.partOfSpeech});
+      });
+    });
+    h += '<div style="font-size:11px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">Example sentences</div>';
+    if (examples.length) {
+      examples.slice(0,5).forEach(function(e) {
+        h += '<div style="border-left:3px solid var(--amber);padding:.4rem .85rem;margin-bottom:.5rem;font-size:13.5px;line-height:1.65;color:var(--t2)">'
+          + '"' + e.ex + '"'
+          + '<span style="font-size:11px;color:var(--t3);margin-left:.5rem">(' + e.pos + ')</span></div>';
+      });
+    } else {
+      h += '<div style="color:var(--t3);font-size:13px;margin-bottom:.65rem">No example sentences in dictionary for this word.</div>';
+    }
+    h += defsHTML(meanings, 1);
+
+  } else if (mode === 'pronounce') {
+    h += '<div style="font-size:11px;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">Pronunciation</div>';
+    if (phonetic) h += '<div style="font-size:28px;color:var(--purple);font-family:monospace;margin-bottom:.6rem">' + phonetic + '</div>';
+    if (audioUrl) {
+      h += '<button class="btn btnp" onclick="playAudio(\'' + audioUrl.replace(/'/g,"\\'") + '\')" style="margin-bottom:.75rem">🔊 Listen to pronunciation</button><br>';
+    }
+    var variations = (entry.phonetics || []).filter(function(p){return p.text || p.audio;});
+    if (variations.length > 1) {
+      h += '<div style="font-size:12px;color:var(--t3);margin-bottom:.3rem;margin-top:.5rem">Regional variations:</div>';
+      variations.forEach(function(p) {
+        if (!p.text && !p.audio) return;
+        h += '<div style="font-size:13.5px;color:var(--t2);margin-bottom:.3rem">';
+        if (p.text) h += '<span style="font-family:monospace">' + p.text + '</span> ';
+        if (p.audio) h += '<button class="btn btns" onclick="playAudio(\'' + p.audio.replace(/'/g,"\\'") + '\')" style="padding:.15rem .45rem;font-size:10px">▶ Play</button>';
+        h += '</div>';
+      });
+    }
+    if (!phonetic && !audioUrl) h += '<div style="color:var(--t3);font-size:13px">No phonetic data available for this word.</div>';
+    h += '<div style="margin-top:.75rem">' + defsHTML(meanings, 1) + '</div>';
+
+  } else {
+    // Default: full definition
+    h += defsHTML(meanings, 3);
+  }
+
+  h += '</div>';
+  return h;
+}
+
+function defsHTML(meanings, maxPerPos) {
+  var h = '';
+  meanings.slice(0,3).forEach(function(m) {
+    h += '<div style="margin-bottom:.75rem">';
+    h += '<span style="display:inline-block;background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.3);border-radius:20px;padding:.15rem .65rem;font-size:11px;font-weight:600;color:var(--purple);margin-bottom:.4rem">' + m.partOfSpeech + '</span>';
+    (m.definitions || []).slice(0, maxPerPos).forEach(function(d, i) {
+      h += '<div style="margin-bottom:.45rem;padding-left:.5rem">';
+      h += '<span style="font-size:13px;color:var(--t3);margin-right:.3rem">' + (i+1) + '.</span>';
+      h += '<span style="font-size:13.5px;line-height:1.7;color:var(--text)">' + d.definition + '</span>';
+      if (d.example) h += '<div style="font-size:12.5px;color:var(--t3);margin-top:.2rem;padding-left:1rem;font-style:italic">"' + d.example + '"</div>';
+      h += '</div>';
+    });
+    var syns = (m.synonyms || []).slice(0,5);
+    if (syns.length) h += '<div style="font-size:12px;color:var(--t3);padding-left:.5rem;margin-top:.15rem">Synonyms: <span style="color:var(--teal)">' + syns.join(', ') + '</span></div>';
+    h += '</div>';
+  });
+  return h;
+}
+
+function renderBuiltinEntry(word, entry, mode) {
+  var h = '<div style="background:rgba(0,0,0,.22);border:1px solid var(--cb);border-radius:var(--r);padding:1rem 1.2rem">';
+  h += '<div style="display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap;margin-bottom:.65rem;border-bottom:1px solid var(--cb);padding-bottom:.65rem">';
+  h += '<span style="font-family:\'DM Serif Display\',serif;font-size:24px;color:var(--text)">' + word + '</span>';
+  if (entry.pos) h += '<span style="font-size:11px;background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.3);border-radius:20px;padding:.12rem .55rem;color:var(--purple)">' + entry.pos + '</span>';
+  h += '<span style="font-size:11px;color:var(--t3)">(built-in vocab)</span>';
+  h += '</div>';
+  if (mode === 'synonym' && entry.syns && entry.syns.length) {
+    h += '<div style="font-size:11px;font-weight:600;color:var(--teal);text-transform:uppercase;margin-bottom:.4rem">Synonyms</div>';
+    h += '<div style="display:flex;flex-wrap:wrap;gap:6px">';
+    entry.syns.forEach(function(s) {
+      h += '<span onclick="document.getElementById(\'word-inp\').value=\'' + s + '\';lookupWord()" style="background:rgba(0,201,167,.1);border:1px solid rgba(0,201,167,.3);border-radius:20px;padding:.22rem .7rem;font-size:13px;cursor:pointer;color:var(--teal)">' + s + '</span>';
+    });
+    h += '</div>';
+  } else {
+    h += '<div style="font-size:13.5px;line-height:1.72;color:var(--text);margin-bottom:.55rem">' + entry.def + '</div>';
+    if (entry.ex) h += '<div style="border-left:3px solid var(--amber);padding:.38rem .8rem;font-size:13px;color:var(--t2);font-style:italic;margin-bottom:.5rem">"' + entry.ex + '"</div>';
+    if (entry.syns && entry.syns.length) h += '<div style="font-size:12px;color:var(--t3)">Synonyms: <span style="color:var(--teal)">' + entry.syns.slice(0,6).join(', ') + '</span></div>';
+  }
+  h += '</div>';
+  return h;
+}
+
+function renderNotFound(word) {
+  return '<div style="background:rgba(0,0,0,.22);border:1px solid var(--cb);border-radius:var(--r);padding:1rem 1.2rem">'
+    + '<div style="font-family:\'DM Serif Display\',serif;font-size:22px;color:var(--text);margin-bottom:.4rem">' + word + '</div>'
+    + '<div style="font-size:13.5px;color:var(--t2);line-height:1.65;margin-bottom:.75rem">This word was not found in the dictionary. It may be a proper noun, abbreviation, technical term, or spelling variation. Check the spelling and try again.</div>'
+    + '<div style="display:flex;gap:7px;flex-wrap:wrap">'
+    + '<a href="https://www.dictionary.com/browse/' + encodeURIComponent(word) + '" target="_blank" class="btn btns">🌐 Dictionary.com</a>'
+    + '<a href="https://www.thesaurus.com/browse/' + encodeURIComponent(word) + '" target="_blank" class="btn btns">🔄 Thesaurus.com</a>'
+    + '<a href="https://en.wikipedia.org/wiki/' + encodeURIComponent(word) + '" target="_blank" class="btn btns">📖 Wikipedia</a>'
+    + '</div></div>';
+}
+
+function playAudio(url) {
+  if (!url) return;
+  try { new Audio(url.startsWith('http') ? url : 'https:' + url).play(); } catch(e) {}
+}
+
+// ── Built-in vocabulary — common words students look up while reading ──
+var VOCAB = {
+  'reading':{pos:'noun / verb',def:'As a noun: the action of reading written or printed text. As a verb: looking at and understanding written or printed words.',syns:['studying','perusing','interpreting','examining'],ex:'Extensive reading improves vocabulary and comprehension skills.'},
+  'writing':{pos:'noun / verb',def:'The activity or skill of producing written words. A piece of written work.',syns:['composing','drafting','authoring','penning'],ex:'Academic writing requires clarity, structure, and evidence.'},
+  'learning':{pos:'noun / verb',def:'The acquisition of knowledge or skills through study, experience, or being taught.',syns:['education','studying','training','development'],ex:'Deep learning requires active engagement rather than passive memorisation.'},
+  'study':{pos:'noun / verb',def:'Devoting time and attention to gaining knowledge. To learn about a subject by reading or research.',syns:['research','examine','investigate','review'],ex:'Regular study leads to better long-term retention of information.'},
+  'understand':{pos:'verb',def:'To perceive the intended meaning of something; to comprehend fully.',syns:['comprehend','grasp','follow','interpret'],ex:'It is important to understand the context before drawing conclusions.'},
+  'comprehend':{pos:'verb',def:'To grasp mentally; to understand something fully and completely.',syns:['understand','grasp','fathom','perceive'],ex:'It can be difficult to comprehend complex theories without background knowledge.'},
+  'knowledge':{pos:'noun',def:'Facts, information, and skills acquired through experience or education; theoretical or practical understanding.',syns:['understanding','expertise','awareness','learning'],ex:'A solid knowledge of statistics is essential for interpreting research.'},
+  'analysis':{pos:'noun',def:'The detailed examination of the elements or structure of something to understand it better.',syns:['examination','investigation','study','evaluation'],ex:'A thorough analysis of the data revealed several key patterns.'},
+  'concept':{pos:'noun',def:'An abstract idea or general notion representing a class of objects or phenomena.',syns:['idea','notion','principle','theory'],ex:'The concept of democracy has evolved significantly over centuries.'},
+  'theory':{pos:'noun',def:'A system of ideas explaining something, based on general principles and evidence.',syns:['hypothesis','framework','model','principle'],ex:'Darwin\'s theory of evolution changed how we understand life on Earth.'},
+  'evidence':{pos:'noun',def:'Facts or information indicating whether a belief or proposition is true or valid.',syns:['proof','data','facts','documentation'],ex:'Strong evidence from multiple studies supports this conclusion.'},
+  'research':{pos:'noun / verb',def:'Systematic investigation into materials and sources to establish facts and reach new conclusions.',syns:['investigation','inquiry','study','examination'],ex:'Primary research involves collecting original data directly from sources.'},
+  'argument':{pos:'noun',def:'A reason or set of reasons given in support of an idea. A coherent series of statements leading to a conclusion.',syns:['case','reasoning','claim','assertion'],ex:'The author\'s argument is supported by substantial empirical evidence.'},
+  'structure':{pos:'noun',def:'The arrangement and relations between the parts of something complex.',syns:['organisation','framework','arrangement','format'],ex:'A clear structure makes an essay easier to follow and evaluate.'},
+  'critical':{pos:'adjective',def:'Expressing careful analysis and judgement. Of great importance. Relating to the objective evaluation of a text.',syns:['analytical','evaluative','essential','rigorous'],ex:'Critical thinking is a key skill for academic success.'},
+  'evaluate':{pos:'verb',def:'To form an idea of the amount or value of something; to assess carefully.',syns:['assess','judge','appraise','measure'],ex:'Students are asked to evaluate the strengths and weaknesses of each approach.'},
+  'context':{pos:'noun',def:'The circumstances forming the setting for an event or idea, in terms of which it can be fully understood.',syns:['background','setting','circumstances','situation'],ex:'Understanding historical context helps explain the author\'s perspective.'},
+  'perspective':{pos:'noun',def:'A particular attitude or way of regarding something; a point of view.',syns:['viewpoint','standpoint','outlook','position'],ex:'The study examines the issue from multiple perspectives.'},
+  'significant':{pos:'adjective',def:'Sufficiently great or important to be worthy of attention; noteworthy.',syns:['important','notable','considerable','meaningful'],ex:'The results showed a significant improvement in student performance.'},
+  'relevant':{pos:'adjective',def:'Closely connected or appropriate to the matter at hand.',syns:['applicable','pertinent','appropriate','related'],ex:'Only relevant evidence should be included in an academic argument.'},
+  'identify':{pos:'verb',def:'To establish or indicate who or what something is; to recognise something.',syns:['recognise','determine','pinpoint','specify'],ex:'The researcher identified three main themes in the data.'},
+  'approach':{pos:'noun / verb',def:'A way of dealing with a situation or problem; a method or strategy.',syns:['method','strategy','technique','way'],ex:'The qualitative approach was chosen to explore lived experiences.'},
+  'factor':{pos:'noun',def:'A circumstance or influence that contributes to a result or outcome.',syns:['element','aspect','variable','component'],ex:'Several factors contributed to the decline in student engagement.'},
+  'impact':{pos:'noun / verb',def:'A marked effect or influence on someone or something.',syns:['effect','influence','consequence','result'],ex:'The intervention had a significant positive impact on learning outcomes.'},
+  'demonstrate':{pos:'verb',def:'To clearly show the existence or truth of something by giving proof or evidence.',syns:['show','illustrate','prove','establish'],ex:'The experiment demonstrated that the hypothesis was correct.'},
+  'process':{pos:'noun / verb',def:'A series of actions taken in order to achieve a particular end.',syns:['procedure','method','operation','sequence'],ex:'The research process involves several distinct stages.'},
+  'outcome':{pos:'noun',def:'The way a thing turns out; a consequence or result.',syns:['result','consequence','effect','product'],ex:'The primary outcome of the study was a measurable improvement in scores.'},
+  'framework':{pos:'noun',def:'A basic structure underlying a system or concept; an essential supporting structure.',syns:['structure','system','model','scheme'],ex:'The theoretical framework guides the entire research design.'},
+  'literature':{pos:'noun',def:'In academia: the body of written work published on a particular subject.',syns:['publications','texts','works','sources'],ex:'A thorough review of the literature is essential before beginning research.'},
+  'hypothesis':{pos:'noun',def:'A proposed explanation made on the basis of limited evidence as a starting point for further investigation.',syns:['theory','proposition','assumption','supposition'],ex:'The researcher formed a hypothesis before conducting the experiment.'},
+  'data':{pos:'noun',def:'Facts and statistics collected together for reference or analysis.',syns:['information','statistics','facts','figures'],ex:'The data collected from 200 participants was analysed using SPSS.'},
+  'method':{pos:'noun',def:'A particular procedure for accomplishing something; a systematic approach.',syns:['approach','technique','procedure','system'],ex:'The mixed-methods approach combined qualitative and quantitative methods.'},
+  'principle':{pos:'noun',def:'A fundamental truth that serves as the foundation for a system of belief or behaviour.',syns:['rule','law','basis','standard'],ex:'The principle of informed consent is central to research ethics.'},
+  'relationship':{pos:'noun',def:'The way in which two or more concepts, objects, or people are connected.',syns:['connection','link','association','correlation'],ex:'The relationship between motivation and achievement is well documented.'},
+  'effective':{pos:'adjective',def:'Successful in producing a desired or intended result.',syns:['successful','productive','efficient','powerful'],ex:'Active recall is one of the most effective study techniques.'},
+  'strategy':{pos:'noun',def:'A plan of action designed to achieve a long-term or overall aim.',syns:['plan','approach','method','tactic'],ex:'Students need an effective revision strategy before examinations.'},
+  'suggest':{pos:'verb',def:'To put forward an idea for consideration; to imply something without stating it directly.',syns:['propose','recommend','indicate','imply'],ex:'The findings suggest that further research is needed in this area.'},
+  'focus':{pos:'noun / verb',def:'The centre of interest or activity. To pay particular attention to something.',syns:['concentrate','centre','emphasise','direct'],ex:'The study focuses on the impact of digital tools on learning outcomes.'},
+  'consider':{pos:'verb',def:'To think carefully about something, taking into account all relevant aspects.',syns:['examine','weigh','reflect','deliberate'],ex:'It is important to consider alternative explanations for the results.'},
+  'academic':{pos:'adjective',def:'Relating to education and scholarship, especially at university level.',syns:['educational','scholarly','intellectual','university'],ex:'Academic writing requires a formal tone and evidence-based arguments.'},
+  'paragraph':{pos:'noun',def:'A distinct section of a piece of writing, dealing with a single theme and indicated by a new line.',syns:['section','passage','block','text'],ex:'Each paragraph should begin with a clear topic sentence.'},
+  'conclude':{pos:'verb',def:'To bring something to an end; to arrive at a judgement or decision.',syns:['determine','decide','establish','infer'],ex:'The researchers concluded that the intervention was effective.'},
+  'compare':{pos:'verb',def:'To estimate, measure, or note the similarity or dissimilarity between things.',syns:['contrast','examine','assess','relate'],ex:'The study compares learning outcomes across three different methods.'},
+  'describe':{pos:'verb',def:'To give a detailed account in words; to say what something is like.',syns:['explain','portray','outline','characterise'],ex:'The author describes the process in clear and accessible language.'},
+  'explain':{pos:'verb',def:'To make something clear by describing it in more detail; to give reasons for.',syns:['clarify','describe','elaborate','justify'],ex:'The lecturer explained the concept using a real-world analogy.'},
+  'discuss':{pos:'verb',def:'To talk or write about a topic in detail, considering different ideas and opinions.',syns:['examine','explore','analyse','address'],ex:'The essay asks students to discuss the advantages and disadvantages of online learning.'},
+};
+
+
+// ── Chat functions ──
+function renderChat() {
+  if (!S.chatHistory.length) {
+    S.chatHistory.push({role:'assistant', content:'Hi! I am your SmartRead assistant.\n\n📖 WORD LOOKUP: Use the lookup bar above to instantly define any word, get synonyms, hear pronunciation, or see examples. Works for every English word — try "reading", "algorithm", "nuance" or any word you encounter.\n\n🤖 AI ASSISTANT: Ask me concept questions below — summaries, explanations, quiz questions, and more.'});
+  }
+  var box = document.getElementById('chatbox');
+  if (!box) return;
+  box.innerHTML = '';
+  S.chatHistory.forEach(function(m) {
+    var wrap = document.createElement('div');
+    var d = document.createElement('div');
+    d.className = 'cmsg ' + (m.role === 'user' ? 'cu' : 'ca');
+    d.textContent = m.content;
+    wrap.appendChild(d);
+    if (m.role === 'assistant' && m.src) {
+      var b = document.createElement('div');
+      b.style.cssText = 'font-size:10px;color:var(--teal);opacity:.6;padding:1px 4px;margin-bottom:2px';
+      b.textContent = 'powered by ' + m.src;
+      wrap.appendChild(b);
+    }
+    box.appendChild(wrap);
+  });
+  box.scrollTop = box.scrollHeight;
+}
+
+function renderFocusChat() {
+  var box = document.getElementById('f-chatbox');
+  if (!box) return;
+  box.innerHTML = '';
+  S.chatHistory.forEach(function(m) {
+    var d = document.createElement('div');
+    d.className = 'cmsg ' + (m.role === 'user' ? 'cu' : 'ca');
+    d.textContent = m.content;
+    box.appendChild(d);
+  });
+  box.scrollTop = box.scrollHeight;
+}
+
+async function sendChat() {
+  var inp = document.getElementById('chat-inp');
+  var txt = inp ? inp.value.trim() : '';
+  if (!txt) return;
+  // Single word typed in chat → route to dictionary
+  if (/^[a-zA-Z'-]{2,30}$/.test(txt)) {
+    var wi = document.getElementById('word-inp');
+    if (wi) { wi.value = txt; if (inp) inp.value = ''; lookupWord(); return; }
+  }
+  if (inp) inp.value = '';
+  S.chatHistory.push({role:'user', content:txt});
+  renderChat();
+  var box = document.getElementById('chatbox');
+  if (box) { var tk = document.createElement('div'); tk.className='cmsg ca tk'; tk.textContent='Thinking…'; box.appendChild(tk); box.scrollTop=99999; }
+  await doAI(txt);
+  renderChat();
+}
+
+async function fSendChat() {
+  var inp = document.getElementById('f-chat-inp');
+  if (!inp) return;
+  var txt = inp.value.trim();
+  if (!txt) return;
+  if (/^[a-zA-Z'-]{2,30}$/.test(txt)) {
+    var wi = document.getElementById('f-word-inp');
+    if (wi) { wi.value = txt; inp.value = ''; fLookupWord(); return; }
+  }
+  inp.value = '';
+  S.chatHistory.push({role:'user', content:txt});
+  renderFocusChat();
+  var box = document.getElementById('f-chatbox');
+  if (box) { var tk=document.createElement('div'); tk.className='cmsg ca tk'; tk.textContent='Thinking…'; box.appendChild(tk); box.scrollTop=99999; }
+  await doAI(txt);
+  renderChat();
+  renderFocusChat();
+}
+
+async function doAI(txt) {
+  var bookCtx = S.book
+    ? 'The student is reading "' + S.book.title + '". Excerpt:\n' + S.book.content.substring(0,600)
+    : 'No book is currently open.';
+  // 1. Claude API
+  if (ANT) {
+    try {
+      var sys = 'You are SmartRead AI assistant. ' + bookCtx + '\nHelp the student understand their reading. Be concise — 3-5 sentences. Do not start with Simply put.';
+      var msgs = S.chatHistory.filter(function(m){return m.role==='user'||m.role==='assistant';}).slice(-8).map(function(m){return{role:m.role,content:m.content};});
+      var res = await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ANT,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,system:sys,messages:msgs})});
+      var data = await res.json();
+      if (!data.error) { var text=(data.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join(''); if(text){S.chatHistory.push({role:'assistant',content:text,src:'Claude AI'});return;} }
+    } catch(e) {}
+  }
+  // 2. Hugging Face
+  try {
+    var hfr = await hfAsk(txt, bookCtx);
+    if (hfr) { S.chatHistory.push({role:'assistant',content:hfr,src:'AI Assistant'}); return; }
+  } catch(e) {}
+  // 3. Local
+  S.chatHistory.push({role:'assistant', content:localReply(txt)});
+}
+
+async function hfAsk(question, bookCtx) {
+  var models=['https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta','https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2','https://api-inference.huggingface.co/models/TinyLlama/TinyLlama-1.1B-Chat-v1.0'];
+  var prompt='<|system|>You are a helpful university learning assistant. '+bookCtx+' Answer clearly in 2-4 sentences.</s><|user|>'+question+'</s><|assistant|>';
+  for(var i=0;i<models.length;i++){
+    try{
+      var ctrl=new AbortController(),to=setTimeout(function(){ctrl.abort();},8000);
+      var r=await fetch(models[i],{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({inputs:prompt,parameters:{max_new_tokens:200,temperature:0.7,do_sample:true,return_full_text:false},options:{wait_for_model:true,use_cache:false}}),signal:ctrl.signal});
+      clearTimeout(to);if(!r.ok)continue;
+      var d=await r.json();var text='';
+      if(Array.isArray(d)&&d[0]&&d[0].generated_text)text=d[0].generated_text;
+      else if(d.generated_text)text=d.generated_text;else if(d.error)continue;
+      text=text.replace(/<\|.*?\|>/g,'').replace(/\[INST\].*?\[\/INST\]/g,'').trim();
+      if(text.length>20)return text;
+    }catch(e){continue;}
+  }
+  return '';
+}
+
+function localReply(q) {
+  var ql=q.toLowerCase().trim(),b=S.book;
+  if(!b)return'Open a book from the Library first!\n\n📖 Use the Word Lookup bar above to define any word instantly — it works without a book open.';
+  var paras=b.content.split('\n\n').filter(function(p){return p.trim();});
+  if(ql.includes('summar')||ql.includes('overview'))return'Summary of "'+b.title+'":\n\n'+paras.slice(0,4).map(function(p,i){return(i+1)+'. '+p.split('.')[0].trim()+'.';}).join('\n\n');
+  if(ql.includes('key')||ql.includes('important')||ql.includes('main'))return'Key points from "'+b.title+'":\n\n'+paras.slice(0,5).map(function(p,i){return(i+1)+'. '+p.split('.')[0].trim();}).join('\n');
+  if(ql.includes('quiz')||ql.includes('question')||ql.includes('test'))return'Practice questions:\n\n'+paras.slice(0,4).map(function(p,i){return'Q'+(i+1)+': '+p.split('.')[0].trim()+'?';}).join('\n\n')+'\n\n→ Go to ✅ Quiz for a scored test!';
+  if(ql.includes('explain')||ql.includes('how')||ql.includes('why'))return'From "'+b.title+'":\n\n'+paras[0].substring(0,300);
+  var kws=ql.split(/\s+/).filter(function(w){return w.length>4;});
+  var rel=paras.find(function(p){return kws.some(function(kw){return p.toLowerCase().includes(kw);});});
+  return'From "'+b.title+'":\n\n'+(rel||paras[0]).substring(0,280)+'…\n\nWould you like me to summarise, explain, or quiz you?';
+}
+
+function qp(p){var el=document.getElementById('chat-inp');if(el){el.value=p;sendChat();}}
+function fQp(p){var el=document.getElementById('f-chat-inp');if(el){el.value=p;fSendChat();}}
+
+
+// ═══════════════════════════════════════════════
+// PROGRESS & LEADERBOARD
+// ═══════════════════════════════════════════════
+function renderProgress(){
+  document.getElementById('sm-b').textContent=S.booksOpened;
+  document.getElementById('sm-p').textContent=S.pagesRead;
+  document.getElementById('sm-t').textContent=S.testsPassed;
+  document.getElementById('sm-x').textContent=S.xp;
+  document.getElementById('xpn').textContent=S.xp;
+  var days=['M','T','W','T','F','S','S'],active=[1,1,1,0,1,1,0];
+  document.getElementById('streak').innerHTML=days.map(function(d,i){return'<div style="text-align:center;flex:1"><div style="width:28px;height:28px;border-radius:50%;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;'+(active[i]?'background:var(--teal);color:#0D1B2A':'background:rgba(255,255,255,.08);color:var(--t3)')+'">'+d+'</div><div style="font-size:9px;color:'+(active[i]?'var(--teal)':'var(--t3)')+';">'+(active[i]?'✓':'-')+'</div></div>';}).join('');
+  var ach=[{i:'📖',t:'First read',d:'Open a book'},{i:'🃏',t:'Flashcard learner',d:'Complete a deck'},{i:'✍',t:'Active recall',d:'Finish a fill-in round'},{i:'🔗',t:'Connector',d:'Complete concept matching'},{i:'🎬',t:'Presenter',d:'Generate a video presentation'},{i:'🧠',t:'Quiz master',d:'Pass 3 comprehension tests'},{i:'⭐',t:'Early adopter',d:'Welcome to SmartRead!'}];
+  document.getElementById('achiev').innerHTML=ach.map(function(a){return'<div style="display:flex;align-items:center;gap:10px;padding:.52rem 0;border-bottom:1px solid var(--cb)"><div style="font-size:20px;width:30px;text-align:center">'+a.i+'</div><div><div style="font-size:13.5px;font-weight:500">'+a.t+'</div><div style="font-size:11.5px;color:var(--t3)">'+a.d+'</div></div></div>';}).join('');
+}
+function renderLB(){
+  var data=[{n:'Alex M.',xp:580,c:'#9FE1CB'},{n:'Jordan K.',xp:430,c:'#CECBF6'},{n:'You',xp:S.xp,c:'#FAC775'},{n:'Sam T.',xp:95,c:'#F5C4B3'},{n:'Riley O.',xp:60,c:'#B5D4F4'}].sort(function(a,b){return b.xp-a.xp;});
+  document.getElementById('lb-out').innerHTML=data.map(function(u,i){var me=u.n==='You';return'<div class="lbrow" style="'+(me?'background:rgba(0,201,167,.07);margin:-.1rem -1.2rem;padding:.58rem 1.2rem':'')+'"><div style="width:24px;font-size:13px;font-weight:600;color:var(--t3)">'+(i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1))+'</div><div class="lbav" style="background:'+u.c+';color:#1a1a1a">'+u.n.split(' ').map(function(w){return w[0];}).join('')+'</div><div style="flex:1;font-size:13.5px;'+(me?'font-weight:600;color:var(--teal)':'')+'">'+u.n+(me?' (you)':'')+'</div><div style="font-size:13.5px;font-weight:600;color:var(--teal)">'+u.xp+' XP</div></div>';}).join('');
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+(function init(){
+  renderLib();
+  renderChat();
+  renderProgress();
+  if(window.speechSynthesis){window.speechSynthesis.onvoiceschanged=function(){};}
+})();
+</script>
+</body>
+</html>
