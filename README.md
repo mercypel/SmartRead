@@ -45,16 +45,6 @@ SmartRead was informed by anonymised student research conducted by exploring stu
 
 More detail: `docs/research.md`
 
-## Data Analysis
-Challenges
-<img width="975" height="642" alt="image" src="https://github.com/user-attachments/assets/a94adfdb-c7ad-4ff1-8f6c-c62abf2d0a5e" />
-
-Desired Features
-<img width="975" height="645" alt="image" src="https://github.com/user-attachments/assets/c4ad9bc4-9e40-4fd2-94b9-7426037a57f2" />
-
-<img width="975" height="643" alt="image" src="https://github.com/user-attachments/assets/557ae56c-4695-41ad-a918-9b8421ec3b0b" />
-
-
 
 ## Live Demo
 
