@@ -53,17 +53,20 @@ More detail: `docs/research.md`
 ## Documentation
 
 - Product Research: `docs/research.md`
-- Pilot Testing: `docs/testing.md`
+- Data Analysis: `docs/data-analysis.md`
+- App features: `docs/features.md`
+- User Testing: `docs/testing.md`
+  
 
 ## Current Status
 
-SmartRead has progressed from research and prototype development into pilot testing and iterative improvement.
+SmartRead has progressed from research and prototype development into user testing and iterative improvement.
 
 ## Roadmap
 
 - improved analytics
 - adaptive recommendations
-- broader student pilots
+- broader user testing
 - educator dashboard
 
 ## Author
