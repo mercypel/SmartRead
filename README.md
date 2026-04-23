@@ -48,7 +48,7 @@ More detail: `docs/research.md`
 
 ## Live Demo
 
-[Insert Demo URL]
+https://smartreadapp.netlify.app/
 
 ## Documentation
 
