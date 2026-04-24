@@ -607,7 +607,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
       <div class="ptitle">Dictionary &amp; AI Assistant</div>
       <div class="psub">Look up any word instantly — definitions, synonyms, pronunciation, examples. No key needed.</div>
     </div>
-    <button class="btn btns" onclick="document.getElementById('apiModal').classList.add('show')" style="margin-top:.25rem">🔑 API Key</button>
+    <button class="btn btns" id="apiKeyBtn" onclick="document.getElementById('apiModal').classList.add('show')" style="margin-top:.25rem;display:none">🔑 API Key</button>
   </div>
 
   <!-- Word lookup bar -->
@@ -901,7 +901,12 @@ var VPTHEMES=[
 // ═══════════════════════════════════════════════
 function saveKeys(){
   var a=document.getElementById('ak1').value.trim();
-  if(a){ANT=a;localStorage.setItem('sr_ant',a);}
+  if(a){
+    ANT=a;
+    localStorage.setItem('sr_ant',a);
+    var keyBtn=document.getElementById('apiKeyBtn');
+    if(keyBtn) keyBtn.style.display='none';
+  }
   closeModal();
   reward('🔑','Key saved!','AI features unlocked',0);
 }
@@ -2228,8 +2233,9 @@ async function sendChat() {
   var inp = document.getElementById('chat-inp');
   var txt = inp ? inp.value.trim() : '';
   if (!txt) return;
-  // Single word typed in chat → route to dictionary
-  if (/^[a-zA-Z'-]{2,30}$/.test(txt)) {
+  // Only route to dictionary if user explicitly types one short word
+  // AND there is no book open (so it is clearly a word lookup not a concept question)
+  if (/^[a-zA-Z'-]{2,15}$/.test(txt) && !S.book) {
     var wi = document.getElementById('word-inp');
     if (wi) { wi.value = txt; if (inp) inp.value = ''; lookupWord(); return; }
   }
@@ -2264,27 +2270,65 @@ async function fSendChat() {
 async function doAI(txt) {
   var bookCtx = S.book
     ? 'The student is reading "' + S.book.title + '". Excerpt:\n' + S.book.content.substring(0,600)
-    : 'No book is currently open.';
-  // 1. Claude API
-  if (ANT || WORKER_URL) {
+    : 'No specific book is open. Answer the question helpfully as a general university learning assistant.';
+
+  // Always try Claude via Worker or direct key first
+  var useW = WORKER_URL && WORKER_URL.length > 8;
+  var useK = ANT && ANT.length > 10;
+
+  if (useW || useK) {
     try {
-      var sys = 'You are SmartRead AI assistant. ' + bookCtx + '\nHelp the student understand their reading. Be concise — 3-5 sentences. Do not start with Simply put.';
-      var msgs = S.chatHistory.filter(function(m){return m.role==='user'||m.role==='assistant';}).slice(-8).map(function(m){return{role:m.role,content:m.content};});
-      var useW = WORKER_URL && WORKER_URL.length > 8;
+      var sys = 'You are SmartRead, a helpful university learning assistant. '
+        + bookCtx
+        + ' Answer any question the student asks — about their reading, general academic topics, word meanings, or anything educational. Be clear and helpful in 3-5 sentences.';
+      var msgs = S.chatHistory
+        .filter(function(m){ return m.role==='user' || m.role==='assistant'; })
+        .slice(-8)
+        .map(function(m){ return {role:m.role, content:m.content}; });
+      var payload = {
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 500,
+        system: sys,
+        messages: msgs
+      };
       var ep = useW ? WORKER_URL : 'https://api.anthropic.com/v1/messages';
-      var hdrs = {'Content-Type':'application/json'};
-      if(!useW){ hdrs['x-api-key']=ANT; hdrs['anthropic-version']='2023-06-01'; hdrs['anthropic-dangerous-direct-browser-access']='true'; }
-      var res = await fetch(ep,{method:'POST',headers:hdrs,body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,system:sys,messages:msgs})});
-      var data = await res.json();
-      if (!data.error) { var text=(data.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join(''); if(text){S.chatHistory.push({role:'assistant',content:text,src:'Claude AI'});return;} }
-    } catch(e) {}
+      var hdrs = {'Content-Type': 'application/json'};
+      if (!useW) {
+        hdrs['x-api-key'] = ANT;
+        hdrs['anthropic-version'] = '2023-06-01';
+        hdrs['anthropic-dangerous-direct-browser-access'] = 'true';
+      }
+      var res = await fetch(ep, {method:'POST', headers:hdrs, body:JSON.stringify(payload)});
+      if (!res.ok) {
+        var errText = await res.text();
+        console.warn('AI Worker error', res.status, errText);
+      } else {
+        var data = await res.json();
+        if (data.error) {
+          console.warn('Anthropic error:', data.error);
+        } else {
+          var text = (data.content||[])
+            .filter(function(b){ return b.type==='text'; })
+            .map(function(b){ return b.text; })
+            .join('');
+          if (text) {
+            S.chatHistory.push({role:'assistant', content:text, src:'Claude AI'});
+            return;
+          }
+        }
+      }
+    } catch(e) {
+      console.warn('AI fetch error:', e.message);
+    }
   }
-  // 2. Hugging Face
+
+  // Fallback: Hugging Face free AI
   try {
     var hfr = await hfAsk(txt, bookCtx);
-    if (hfr) { S.chatHistory.push({role:'assistant',content:hfr,src:'AI Assistant'}); return; }
+    if (hfr) { S.chatHistory.push({role:'assistant', content:hfr, src:'AI Assistant'}); return; }
   } catch(e) {}
-  // 3. Local
+
+  // Final fallback: smart local reply
   S.chatHistory.push({role:'assistant', content:localReply(txt)});
 }
 
@@ -2308,7 +2352,13 @@ async function hfAsk(question, bookCtx) {
 
 function localReply(q) {
   var ql=q.toLowerCase().trim(),b=S.book;
-  if(!b)return'Open a book from the Library first!\n\n📖 Use the Word Lookup bar above to define any word instantly — it works without a book open.';
+  if(!b){
+    // Try to give a helpful answer even without a book
+    if(ql.includes('what is') || ql.includes('explain') || ql.includes('define') || ql.includes('mean')) {
+      return 'I can answer that — but for the best response, I need the AI connection to be active. The AI assistant is configured and should be working. Please try again in a moment, or open a book from the Library and ask the same question.';
+    }
+    return'You can ask me anything — I work best when you have a book open from the Library, but I can answer general questions too. The AI should respond to any question. If you are seeing this message, try asking again.';
+  }
   var paras=b.content.split('\n\n').filter(function(p){return p.trim();});
   if(ql.includes('summar')||ql.includes('overview'))return'Summary of "'+b.title+'":\n\n'+paras.slice(0,4).map(function(p,i){return(i+1)+'. '+p.split('.')[0].trim()+'.';}).join('\n\n');
   if(ql.includes('key')||ql.includes('important')||ql.includes('main'))return'Key points from "'+b.title+'":\n\n'+paras.slice(0,5).map(function(p,i){return(i+1)+'. '+p.split('.')[0].trim();}).join('\n');
