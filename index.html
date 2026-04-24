@@ -1413,7 +1413,7 @@ async function aiExplain(heading,para){
     if(!useWA){aeHd['x-api-key']=ANT;aeHd['anthropic-version']='2023-06-01';aeHd['anthropic-dangerous-direct-browser-access']='true';}
     var res=await fetch(aeEp,{method:'POST',
       headers:aeHd,
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:120,messages:[{role:'user',content:prompt}]})});
+      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:120,messages:[{role:'user',content:prompt}]})});
     var data=await res.json();
     if(data.content&&data.content[0]) return data.content[0].text.trim();
   }catch(e){}
@@ -2286,7 +2286,7 @@ async function doAI(txt) {
         .slice(-8)
         .map(function(m){ return {role:m.role, content:m.content}; });
       var payload = {
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-5',
         max_tokens: 500,
         system: sys,
         messages: msgs
@@ -2333,22 +2333,11 @@ async function doAI(txt) {
 }
 
 async function hfAsk(question, bookCtx) {
-  var models=['https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta','https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2','https://api-inference.huggingface.co/models/TinyLlama/TinyLlama-1.1B-Chat-v1.0'];
-  var prompt='<|system|>You are a helpful university learning assistant. '+bookCtx+' Answer clearly in 2-4 sentences.</s><|user|>'+question+'</s><|assistant|>';
-  for(var i=0;i<models.length;i++){
-    try{
-      var ctrl=new AbortController(),to=setTimeout(function(){ctrl.abort();},8000);
-      var r=await fetch(models[i],{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({inputs:prompt,parameters:{max_new_tokens:200,temperature:0.7,do_sample:true,return_full_text:false},options:{wait_for_model:true,use_cache:false}}),signal:ctrl.signal});
-      clearTimeout(to);if(!r.ok)continue;
-      var d=await r.json();var text='';
-      if(Array.isArray(d)&&d[0]&&d[0].generated_text)text=d[0].generated_text;
-      else if(d.generated_text)text=d.generated_text;else if(d.error)continue;
-      text=text.replace(/<\|.*?\|>/g,'').replace(/\[INST\].*?\[\/INST\]/g,'').trim();
-      if(text.length>20)return text;
-    }catch(e){continue;}
-  }
+  // Hugging Face is blocked by CORS on hosted deployments
+  // Claude via Worker handles all AI requests instead
   return '';
 }
+
 
 function localReply(q) {
   var ql=q.toLowerCase().trim(),b=S.book;
