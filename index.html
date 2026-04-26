@@ -201,11 +201,39 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 #focus-tabs{display:flex;gap:3px;padding:3px;background:rgba(0,0,0,.4);border-radius:9px;margin-right:auto}
 .ftab{padding:.3rem .8rem;border:none;background:none;border-radius:7px;cursor:pointer;font-size:12px;color:var(--t2);font-family:'Sora',sans-serif;transition:all .15s}
 .ftab.on{background:rgba(0,201,167,.2);color:var(--teal);font-weight:600}
-#focus-body{flex:1;overflow:auto;display:flex;min-height:0}
+#focus-body{flex:1;overflow:auto;display:flex;min-height:0;position:relative}
 #focus-main{flex:1;overflow:auto;padding:1.5rem 2rem;max-width:860px;margin:0 auto;width:100%}
 #focus-side{width:280px;border-left:1px solid var(--cb);overflow:auto;flex-shrink:0;padding:1rem;display:none}
 #focus-side.open{display:block}
 
+/* ── Floating AI panel ── */
+#ai-float-btn{position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--purple));border:none;cursor:pointer;font-size:22px;box-shadow:0 4px 18px rgba(0,201,167,.4);z-index:850;display:none;align-items:center;justify-content:center;transition:transform .18s,box-shadow .18s}
+#ai-float-btn:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(0,201,167,.55)}
+#ai-float-btn.active{background:linear-gradient(135deg,var(--purple),var(--teal))}
+#ai-slide-panel{position:fixed;top:0;right:0;bottom:0;width:360px;max-width:100vw;background:var(--bg2);border-left:1px solid var(--cb);display:flex;flex-direction:column;z-index:840;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);box-shadow:-6px 0 30px rgba(0,0,0,.35)}
+#ai-slide-panel.open{transform:translateX(0)}
+.asp-header{display:flex;align-items:center;gap:8px;padding:.85rem 1rem;border-bottom:1px solid var(--cb);flex-shrink:0;background:rgba(0,201,167,.06)}
+.asp-tabs{display:flex;gap:3px;padding:3px;background:rgba(0,0,0,.25);border-radius:8px;margin:.6rem 1rem;flex-shrink:0}
+.asp-tab{flex:1;padding:.3rem .4rem;border:none;background:none;border-radius:6px;cursor:pointer;font-size:11.5px;color:var(--t2);font-family:'Sora',sans-serif;transition:all .15s;white-space:nowrap}
+.asp-tab.on{background:rgba(0,201,167,.2);color:var(--teal);font-weight:600}
+.asp-body{flex:1;overflow-y:auto;padding:.5rem 1rem 1rem;display:flex;flex-direction:column;gap:.65rem}
+.asp-winp{width:100%;background:rgba(0,0,0,.25);border:1px solid rgba(0,201,167,.35);border-radius:var(--rs);padding:.42rem .7rem;font-family:'Sora',sans-serif;font-size:13px;color:var(--text);outline:none}
+.asp-winp:focus{border-color:var(--teal)}
+.asp-mode{padding:.22rem .55rem;border-radius:20px;border:1px solid var(--cb);background:transparent;cursor:pointer;font-size:11px;font-family:'Sora',sans-serif;color:var(--t2);transition:all .15s}
+.asp-mode.on{background:rgba(0,201,167,.15);color:var(--teal);border-color:rgba(0,201,167,.4)}
+#asp-dict-result{font-size:12.5px}
+#asp-chatbox{flex:1;min-height:160px;max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:.45rem;padding:.7rem;background:rgba(0,0,0,.18);border:1px solid var(--cb);border-radius:var(--r)}
+.asp-cinp{flex:1;background:rgba(0,0,0,.25);border:1px solid var(--cb);border-radius:var(--rs);padding:.38rem .6rem;font-family:'Sora',sans-serif;font-size:13px;color:var(--text);outline:none}
+.asp-cinp:focus{border-color:var(--teal)}
+/* ── Focus mode notes slide panel ── */
+#focus-note-panel{position:absolute;top:0;right:0;bottom:0;width:300px;background:var(--bg2);border-left:1px solid var(--cb);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);z-index:5;box-shadow:-4px 0 20px rgba(0,0,0,.3)}
+#focus-note-panel.open{transform:translateX(0)}
+#focus-body{position:relative}
+.fnp-ta{width:100%;background:rgba(0,0,0,.2);border:1px solid var(--cb);border-radius:var(--rs);padding:.55rem .7rem;font-family:'Sora',sans-serif;font-size:13px;color:var(--text);resize:none;height:100px;outline:none;margin-bottom:.5rem}
+.fnp-ta:focus{border-color:var(--teal)}
+.fnp-item{background:rgba(255,255,255,.04);border:1px solid var(--cb);border-left:3px solid var(--teal);border-radius:var(--rs);padding:.45rem .6rem;margin-bottom:.4rem;font-size:12px;color:var(--t2);line-height:1.5;position:relative;word-break:break-word}
+.fnp-del{position:absolute;top:.3rem;right:.4rem;background:none;border:none;cursor:pointer;font-size:11px;color:var(--t3);opacity:.6}
+.fnp-del:hover{color:var(--red);opacity:1}
 /* ── API modal ── */
 #apiModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;align-items:center;justify-content:center}
 #apiModal.show{display:flex}
@@ -431,7 +459,6 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
   <button class="ni" onclick="go('game')"><span>🎮</span><span class="nl">Games</span></button>
   <button class="ni" onclick="go('quiz')"><span>✅</span><span class="nl">Quiz</span></button>
   <button class="ni" onclick="go('progress')"><span>📊</span><span class="nl">Progress</span></button>
-  <button class="ni" onclick="go('leaderboard')"><span>🏆</span><span class="nl">Leaderboard</span></button>
   <div class="nsep"></div>
   <button class="ni" onclick="toggleFocus()"><span>🎯</span><span class="nl">Focus Mode</span></button>
   <button class="ni" onclick="tourStart()" title="Feature tour"><span>❓</span><span class="nl">Help — tour</span></button>
@@ -685,11 +712,6 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
   <div class="card" style="margin-top:.9rem"><div style="font-weight:500;margin-bottom:.65rem;font-size:13.5px">Achievements</div><div id="achiev"></div></div>
 </div>
 
-<!-- LEADERBOARD -->
-<div id="p-leaderboard" style="display:none">
-  <div class="ptitle">Leaderboard</div><div class="psub">Top SmartRead learners this week</div>
-  <div class="card" id="lb-out"></div>
-</div>
 
 </main>
 </div><!-- end #shell -->
@@ -710,7 +732,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
     </div>
     <!-- Actions -->
     <button class="btn btns" onclick="doHighlight()">✏️ Highlight</button>
-    <button class="btn btns" onclick="openNoteDialog()">📝 Note</button>
+    <button class="btn btns" onclick="openFocusNotePanel()">📝 Note</button>
     <button class="btn btns" id="f-side-btn" onclick="toggleFocusSide()">📋 Notes</button>
     <div style="flex:1"></div>
     <span style="font-size:12px;color:var(--t3);margin-right:.5rem">🎯 Focus Mode</span>
@@ -725,6 +747,21 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
       <div id="f-hl-list"></div>
       <div style="font-size:12px;font-weight:500;color:var(--t2);margin:.75rem 0 .5rem">📝 Notes</div>
       <div id="f-note-list"></div>
+    </div>
+    <!-- Focus mode notes slide panel -->
+    <div id="focus-note-panel">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;border-bottom:1px solid var(--cb);flex-shrink:0;background:rgba(0,201,167,.06)">
+        <span style="font-size:13px;font-weight:600;color:var(--teal)">📝 Notes</span>
+        <button style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--t3)" onclick="closeFocusNotePanel()">✕</button>
+      </div>
+      <div style="padding:.85rem 1rem;border-bottom:1px solid var(--cb);flex-shrink:0">
+        <textarea class="fnp-ta" id="focus-note-ta" placeholder="Write your note here…"></textarea>
+        <button class="btn btns btnp" style="width:100%" onclick="saveFocusNote()">Save note</button>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:.75rem 1rem">
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);margin-bottom:.5rem">Saved notes</div>
+        <div id="focus-note-list"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -752,12 +789,12 @@ var CONFIG = {
   workerUrl:    'https://noisy-field-f142.rotimiifeoluwam.workers.dev',
   youtubeKey:   'AIzaSyBxqJqcFxVOYLE5343ULikQMov_MnHY3C0',
   firebase: {
-    apiKey:            '',
-    authDomain:        '',
-    projectId:         '',
-    storageBucket:     '',
-    messagingSenderId: '',
-    appId:             ''
+    apiKey:            'AIzaSyDCw1YueSBqrJfldtVQLjRs9CXpFNV_I1Y',
+    authDomain:        'smartread-d099e.firebaseapp.com',
+    projectId:         'smartread-d099e',
+    storageBucket:     'smartread-d099e.firebasestorage.app',
+    messagingSenderId: '950584478101',
+    appId:             '1:950584478101:web:a447d9fc16dc69e8308e9c'
   }
 };
 
@@ -915,16 +952,18 @@ function closeModal(){document.getElementById('apiModal').classList.remove('show
 // ═══════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════
-var PAGES=['library','read','ai','game','quiz','progress','leaderboard'];
+var PAGES=['library','read','ai','game','quiz','progress'];
 function go(p){
   PAGES.forEach(function(n){var el=document.getElementById('p-'+n);if(el)el.style.display='none';});
   document.getElementById('p-'+p).style.display='';
   document.querySelectorAll('.ni').forEach(function(b){b.classList.remove('on');});
-  var idx={library:0,read:1,ai:2,game:3,quiz:4,progress:5,leaderboard:6}[p];
+  var idx={library:0,read:1,ai:2,game:3,quiz:4,progress:5}[p];
   if(idx!==undefined) document.querySelectorAll('.ni')[idx].classList.add('on');
   if(p==='progress') renderProgress();
-  if(p==='leaderboard') renderLB();
   if(p==='library') renderLib();
+  // Show AI float btn only on read and game pages
+  var fab=document.getElementById('ai-float-btn');
+  if(fab) fab.style.display=(p==='read'||p==='game')?'flex':'none';
 }
 
 // ═══════════════════════════════════════════════
@@ -2376,10 +2415,6 @@ function renderProgress(){
   var ach=[{i:'📖',t:'First read',d:'Open a book'},{i:'🃏',t:'Flashcard learner',d:'Complete a deck'},{i:'✍',t:'Active recall',d:'Finish a fill-in round'},{i:'🔗',t:'Connector',d:'Complete concept matching'},{i:'🎬',t:'Presenter',d:'Generate a video presentation'},{i:'🧠',t:'Quiz master',d:'Pass 3 comprehension tests'},{i:'⭐',t:'Early adopter',d:'Welcome to SmartRead!'}];
   document.getElementById('achiev').innerHTML=ach.map(function(a){return'<div style="display:flex;align-items:center;gap:10px;padding:.52rem 0;border-bottom:1px solid var(--cb)"><div style="font-size:20px;width:30px;text-align:center">'+a.i+'</div><div><div style="font-size:13.5px;font-weight:500">'+a.t+'</div><div style="font-size:11.5px;color:var(--t3)">'+a.d+'</div></div></div>';}).join('');
 }
-function renderLB(){
-  var data=[{n:'Alex M.',xp:580,c:'#9FE1CB'},{n:'Jordan K.',xp:430,c:'#CECBF6'},{n:'You',xp:S.xp,c:'#FAC775'},{n:'Sam T.',xp:95,c:'#F5C4B3'},{n:'Riley O.',xp:60,c:'#B5D4F4'}].sort(function(a,b){return b.xp-a.xp;});
-  document.getElementById('lb-out').innerHTML=data.map(function(u,i){var me=u.n==='You';return'<div class="lbrow" style="'+(me?'background:rgba(0,201,167,.07);margin:-.1rem -1.2rem;padding:.58rem 1.2rem':'')+'"><div style="width:24px;font-size:13px;font-weight:600;color:var(--t3)">'+(i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1))+'</div><div class="lbav" style="background:'+u.c+';color:#1a1a1a">'+u.n.split(' ').map(function(w){return w[0];}).join('')+'</div><div style="flex:1;font-size:13.5px;'+(me?'font-weight:600;color:var(--teal)':'')+'">'+u.n+(me?' (you)':'')+'</div><div style="font-size:13.5px;font-weight:600;color:var(--teal)">'+u.xp+' XP</div></div>';}).join('');
-}
 
 // ═══════════════════════════════════════════════
 // INIT
@@ -2543,6 +2578,145 @@ function cycleTheme(){
   applyTheme(next);
 }
 
+// ═══════════════════════════════════════════════
+// FLOATING AI PANEL
+// ═══════════════════════════════════════════════
+var _aspMode = 'define';
+var _aspChatHist = [];
+var _aspPanelOpen = false;
+
+function toggleAIPanel(){
+  _aspPanelOpen = !_aspPanelOpen;
+  var panel = document.getElementById('ai-slide-panel');
+  var btn   = document.getElementById('ai-float-btn');
+  if(panel) panel.classList.toggle('open', _aspPanelOpen);
+  if(btn)   btn.classList.toggle('active', _aspPanelOpen);
+  if(_aspPanelOpen && !_aspChatHist.length) aspInitChat();
+}
+
+function setASPTab(tab, el){
+  document.getElementById('asp-dict-pane').style.display = tab==='dict' ? '' : 'none';
+  var chatPane = document.getElementById('asp-chat-pane');
+  if(chatPane) chatPane.style.display = tab==='chat' ? 'flex' : 'none';
+  document.querySelectorAll('.asp-tab').forEach(function(b){ b.classList.remove('on'); });
+  if(el) el.classList.add('on');
+}
+
+function aspMode(mode){
+  _aspMode = mode;
+  ['define','synonym','example','pronounce'].forEach(function(m){
+    var el = document.getElementById('aspm-'+m);
+    if(el) el.classList.toggle('on', m===mode);
+  });
+  var inp = document.getElementById('asp-word-inp');
+  if(inp && inp.value.trim()) aspLookup();
+}
+
+async function aspLookup(){
+  var inp = document.getElementById('asp-word-inp');
+  if(!inp) return;
+  var word = inp.value.trim().replace(/[^a-zA-Z'-]/g,'').toLowerCase();
+  if(!word) return;
+  var el = document.getElementById('asp-dict-result');
+  if(!el) return;
+  el.style.display = 'block';
+  el.innerHTML = '<span class="spin"></span> Looking up <strong>'+word+'</strong>…';
+  el.innerHTML = await fetchDictionary(word, _aspMode);
+}
+
+function aspInitChat(){
+  var hasAI = (ANT&&ANT.length>10)||(WORKER_URL&&WORKER_URL.length>8);
+  _aspChatHist = [{role:'assistant',content:'Hi! Ask me anything about what you\'re reading.\n\n'+(hasAI?'Claude AI is ready.':'I\'ll do my best with local responses.')}];
+  aspRenderChat();
+}
+
+function aspRenderChat(){
+  var box = document.getElementById('asp-chatbox');
+  if(!box) return;
+  box.innerHTML = '';
+  _aspChatHist.forEach(function(m){
+    var d = document.createElement('div');
+    d.className = 'cmsg ' + (m.role==='user'?'cu':'ca');
+    d.style.fontSize = '12.5px';
+    d.textContent = m.content;
+    box.appendChild(d);
+  });
+  box.scrollTop = box.scrollHeight;
+}
+
+async function aspSend(){
+  var inp = document.getElementById('asp-chat-inp');
+  var txt = inp ? inp.value.trim() : '';
+  if(!txt) return;
+  if(inp) inp.value = '';
+  _aspChatHist.push({role:'user',content:txt});
+  aspRenderChat();
+  var box = document.getElementById('asp-chatbox');
+  if(box){ var tk=document.createElement('div');tk.className='cmsg ca tk';tk.id='asp-tk';tk.style.fontSize='12.5px';tk.textContent='Thinking…';box.appendChild(tk);box.scrollTop=99999; }
+  var bookCtx = S.book ? 'The student is reading "'+S.book.title+'". Excerpt:\n'+S.book.content.substring(0,500) : 'No book open.';
+  var reply = '';
+  if((ANT&&ANT.length>10)||(WORKER_URL&&WORKER_URL.length>8)){
+    try{
+      var sys = 'You are SmartRead AI, a helpful reading assistant. '+bookCtx+' Answer clearly in 3-4 sentences.';
+      var msgs = _aspChatHist.filter(function(m){return m.role==='user'||m.role==='assistant';}).slice(-6);
+      var useW = WORKER_URL&&WORKER_URL.length>8;
+      var ep   = useW ? WORKER_URL : 'https://api.anthropic.com/v1/messages';
+      var hd   = {'Content-Type':'application/json'};
+      if(!useW){ hd['x-api-key']=ANT; hd['anthropic-version']='2023-06-01'; hd['anthropic-dangerous-direct-browser-access']='true'; }
+      var res  = await fetch(ep,{method:'POST',headers:hd,body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:400,system:sys,messages:msgs})});
+      if(res.ok){ var data=await res.json(); if(!data.error){ var t2=(data.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join(''); if(t2) reply=t2; } }
+    } catch(e){ console.warn('aspSend:',e.message); }
+  }
+  if(!reply) reply = localReply(txt);
+  var tkel = document.getElementById('asp-tk');
+  if(tkel && tkel.parentNode) tkel.parentNode.removeChild(tkel);
+  _aspChatHist.push({role:'assistant',content:reply});
+  aspRenderChat();
+}
+
+function aspQp(p){ var i=document.getElementById('asp-chat-inp'); if(i){i.value=p;} setASPTab('chat',document.getElementById('aspt-chat')); aspSend(); }
+
+// ═══════════════════════════════════════════════
+// FOCUS MODE NOTES PANEL
+// ═══════════════════════════════════════════════
+function openFocusNotePanel(){
+  var panel = document.getElementById('focus-note-panel');
+  if(panel){ panel.classList.add('open'); renderFocusNoteList(); }
+  setTimeout(function(){ var ta=document.getElementById('focus-note-ta'); if(ta) ta.focus(); }, 280);
+}
+function closeFocusNotePanel(){
+  var panel = document.getElementById('focus-note-panel');
+  if(panel) panel.classList.remove('open');
+}
+function saveFocusNote(){
+  var ta = document.getElementById('focus-note-ta');
+  var text = ta ? ta.value.trim() : '';
+  if(!text) return;
+  var note = {id:'n-'+Date.now(), text:text, book:S.book?S.book.title:'', ts:new Date().toLocaleTimeString()};
+  S.notes.push(note);
+  if(ta) ta.value = '';
+  renderNotesPanel();
+  renderFocusNoteList();
+  scheduleSave();
+  reward('📝','Note saved!','',5);
+}
+function renderFocusNoteList(){
+  var el = document.getElementById('focus-note-list');
+  if(!el) return;
+  if(!S.notes.length){ el.innerHTML='<div class="hn-empty">No notes yet — write one above!</div>'; return; }
+  el.innerHTML = S.notes.slice().reverse().map(function(n){
+    return '<div class="fnp-item">'
+      +'<span style="font-size:10px;color:var(--t3);display:block;margin-bottom:3px">'+n.ts+(n.book?' · '+n.book:'')+'</span>'
+      +n.text.substring(0,120)+(n.text.length>120?'…':'')
+      +'<button class="fnp-del" onclick="removeFocusNote(\''+n.id+'\')">✕</button>'
+      +'</div>';
+  }).join('');
+}
+function removeFocusNote(id){
+  S.notes = S.notes.filter(function(n){ return n.id!==id; });
+  renderNotesPanel(); renderFocusNoteList(); scheduleSave();
+}
+
 (function init(){
   // Apply saved theme
   var saved=localStorage.getItem('sr_theme')||'auto';
@@ -2553,5 +2727,50 @@ function cycleTheme(){
   if(window.speechSynthesis){window.speechSynthesis.onvoiceschanged=function(){};}
 })();
 </script>
+<!-- Floating AI button (visible on Read and Game pages) -->
+<button id="ai-float-btn" onclick="toggleAIPanel()" title="AI Assistant">🤖</button>
+
+<!-- Sliding AI panel -->
+<div id="ai-slide-panel">
+  <div class="asp-header">
+    <span style="font-size:13px;font-weight:600;color:var(--teal);flex:1">🤖 AI Assistant</span>
+    <button style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--t3);padding:.2rem" onclick="toggleAIPanel()">✕</button>
+  </div>
+  <div class="asp-tabs">
+    <button class="asp-tab on" id="aspt-dict" onclick="setASPTab('dict',this)">📖 Dictionary</button>
+    <button class="asp-tab" id="aspt-chat" onclick="setASPTab('chat',this)">🤖 Ask AI</button>
+  </div>
+  <div class="asp-body">
+    <!-- Dictionary tab -->
+    <div id="asp-dict-pane">
+      <div style="display:flex;gap:6px;margin-bottom:.45rem">
+        <input class="asp-winp" id="asp-word-inp" type="text" placeholder="Type any word…" onkeydown="if(event.key==='Enter')aspLookup()">
+        <button class="btn btns btnp" onclick="aspLookup()" style="flex-shrink:0">↗</button>
+      </div>
+      <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:.55rem">
+        <button class="asp-mode on" id="aspm-define"    onclick="aspMode('define')">📖 Define</button>
+        <button class="asp-mode"    id="aspm-synonym"   onclick="aspMode('synonym')">🔄 Synonyms</button>
+        <button class="asp-mode"    id="aspm-example"   onclick="aspMode('example')">💬 Examples</button>
+        <button class="asp-mode"    id="aspm-pronounce" onclick="aspMode('pronounce')">🔊 Pronounce</button>
+      </div>
+      <div id="asp-dict-result" style="display:none"></div>
+    </div>
+    <!-- Chat tab -->
+    <div id="asp-chat-pane" style="display:none;flex-direction:column;gap:.5rem;flex:1">
+      <div id="asp-chatbox"></div>
+      <div style="display:flex;gap:6px">
+        <input class="asp-cinp" id="asp-chat-inp" type="text" placeholder="Ask anything about your reading…" onkeydown="if(event.key==='Enter')aspSend()">
+        <button class="btn btnp btns" onclick="aspSend()" style="flex-shrink:0">↗</button>
+      </div>
+      <div style="display:flex;gap:4px;flex-wrap:wrap">
+        <button class="asp-mode" onclick="aspQp('Summarise the key ideas')">📋 Summarise</button>
+        <button class="asp-mode" onclick="aspQp('Explain the main concepts')">💡 Explain</button>
+        <button class="asp-mode" onclick="aspQp('Create 5 quiz questions')">❓ Quiz me</button>
+        <button class="asp-mode" onclick="aspQp('What are the key terms?')">🔑 Key terms</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
