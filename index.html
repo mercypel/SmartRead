@@ -210,7 +210,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 #ai-float-btn{position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--purple));border:none;cursor:pointer;font-size:22px;box-shadow:0 4px 18px rgba(0,201,167,.4);z-index:850;display:none;align-items:center;justify-content:center;transition:transform .18s,box-shadow .18s}
 #ai-float-btn:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(0,201,167,.55)}
 #ai-float-btn.active{background:linear-gradient(135deg,var(--purple),var(--teal))}
-#ai-slide-panel{position:fixed;top:0;right:0;bottom:0;width:360px;max-width:100vw;background:var(--bg2);border-left:1px solid var(--cb);display:flex;flex-direction:column;z-index:840;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);box-shadow:-6px 0 30px rgba(0,0,0,.35)}
+#ai-slide-panel{position:fixed;top:0;right:0;bottom:0;width:360px;max-width:100vw;background:var(--bg2);border-left:1px solid var(--cb);display:flex;flex-direction:column;z-index:1000;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);box-shadow:-6px 0 30px rgba(0,0,0,.35)}
 #ai-slide-panel.open{transform:translateX(0)}
 .asp-header{display:flex;align-items:center;gap:8px;padding:.85rem 1rem;border-bottom:1px solid var(--cb);flex-shrink:0;background:rgba(0,201,167,.06)}
 .asp-tabs{display:flex;gap:3px;padding:3px;background:rgba(0,0,0,.25);border-radius:8px;margin:.6rem 1rem;flex-shrink:0}
@@ -528,6 +528,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
         <button class="btn btns" onclick="doHighlight()">✏️ Highlight</button>
         <button class="btn btns" onclick="openNoteDialog()">📝 Add note</button>
         <button class="btn btns" onclick="aiSummarise()">🤖 Summarise</button>
+        <button class="btn btns" onclick="toggleAIPanel()" style="background:linear-gradient(135deg,rgba(0,201,167,.15),rgba(107,82,212,.15));border-color:rgba(0,201,167,.45);color:var(--teal);font-weight:600">🤖 Ask AI</button>
         <select class="sel" style="margin-left:auto" onchange="setFontSize(this.value)">
           <option value="14">Small</option><option value="16" selected>Medium</option><option value="19">Large</option>
         </select>
@@ -676,8 +677,13 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 
 <!-- GAMES -->
 <div id="p-game" style="display:none">
-  <div class="ptitle">Learning Games</div>
-  <div class="psub">Three research-backed games generated directly from your document</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:.25rem">
+    <div>
+      <div class="ptitle">Learning Games</div>
+      <div class="psub">Three research-backed games generated directly from your document</div>
+    </div>
+    <button class="btn btns" onclick="toggleAIPanel()" style="background:linear-gradient(135deg,rgba(0,201,167,.15),rgba(107,82,212,.15));border-color:rgba(0,201,167,.45);color:var(--teal);font-weight:600;flex-shrink:0">🤖 Ask AI</button>
+  </div>
   <div class="tabs" id="game-tabs">
     <button class="tab on" onclick="setGameTab('flashcard',this)">🃏 Flashcards</button>
     <button class="tab" onclick="setGameTab('fillin',this)">✍ Fill-in-blank</button>
@@ -726,14 +732,13 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
       <button class="ftab on" onclick="setFocusTab('read',this)">📖 Read</button>
       <button class="ftab" onclick="setFocusTab('audio',this)">🔊 Audio</button>
       <button class="ftab" onclick="setFocusTab('video',this)">🎬 Video</button>
-      <button class="ftab" onclick="setFocusTab('ai',this)">🤖 AI</button>
       <button class="ftab" onclick="setFocusTab('game',this)">🎮 Games</button>
       <button class="ftab" onclick="setFocusTab('quiz',this)">✅ Quiz</button>
     </div>
     <!-- Actions -->
     <button class="btn btns" onclick="doHighlight()">✏️ Highlight</button>
     <button class="btn btns" onclick="openFocusNotePanel()">📝 Note</button>
-    <button class="btn btns" id="f-side-btn" onclick="toggleFocusSide()">📋 Notes</button>
+    <button class="btn btns" onclick="toggleAIPanel()" style="background:linear-gradient(135deg,rgba(0,201,167,.15),rgba(107,82,212,.15));border-color:rgba(0,201,167,.45);color:var(--teal);font-weight:600">🤖 Ask AI</button>
     <div style="flex:1"></div>
     <span style="font-size:12px;color:var(--t3);margin-right:.5rem">🎯 Focus Mode</span>
     <button class="btn btns btnd" onclick="toggleFocus()">✕ Exit</button>
@@ -1272,31 +1277,6 @@ function setFocusTab(tab,btn){
       +'<button class="btn btns btnd" id="f-vStopBtn" style="display:none" onclick="vidStop()">⏹ Stop</button>'
       +'</div>'
       +'<div class="vthrow" id="f-vThumbs"></div>';
-
-  } else if(tab==='ai'){
-    main.innerHTML=''
-      +'<div style="font-size:14px;font-weight:500;margin-bottom:.75rem">📖 Dictionary &amp; AI Assistant</div>'
-      +'<div style="display:flex;gap:7px;margin-bottom:.6rem;flex-wrap:wrap;align-items:center">'
-      +'<input id="f-word-inp" type="text" placeholder="Type any word to look it up…" '
-      +'style="flex:1;min-width:140px;background:rgba(0,0,0,.28);border:1px solid rgba(0,201,167,.4);border-radius:var(--rs);padding:.42rem .7rem;font-family:Sora,sans-serif;font-size:13.5px;color:var(--text);outline:none" '
-      +'onkeydown="if(event.key===\'Enter\')fLookupWord()">'
-      +'<button class="btn btns btnp" onclick="fLookupWord()">Look up ↗</button>'
-      +'<button class="btn btns" onclick="useSelectedWord(true)">✏️ Selected word</button>'
-      +'</div>'
-      +'<div id="f-dict-result" style="display:none;margin-bottom:.65rem"></div>'
-      +'<div id="f-chatbox" style="height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:.5rem;padding:.8rem;background:rgba(0,0,0,.18);border:1px solid var(--cb);border-radius:var(--r)"></div>'
-      +'<div style="display:flex;gap:8px;margin-top:.65rem">'
-      +'<input type="text" id="f-chat-inp" placeholder="Ask a concept question…" '
-      +'style="flex:1;background:rgba(0,0,0,.25);border:1px solid var(--cb);border-radius:var(--rs);padding:.42rem .65rem;font-family:Sora,sans-serif;font-size:13px;color:var(--text);outline:none" '
-      +'onkeydown="if(event.key===\'Enter\')fSendChat()">'
-      +'<button class="btn btnp btns" onclick="fSendChat()">Send ↗</button>'
-      +'</div>'
-      +'<div style="display:flex;gap:5px;margin-top:.5rem;flex-wrap:wrap">'
-      +'<button class="btn btns" onclick="fQp(\'Summarise the key ideas\')">📋 Summarise</button>'
-      +'<button class="btn btns" onclick="fQp(\'Explain the main concepts with examples\')">💡 Explain</button>'
-      +'<button class="btn btns" onclick="fQp(\'Create 5 quiz questions\')">❓ Quiz me</button>'
-      +'</div>';
-    renderFocusChat();
 
   } else if(tab==='game'){
     main.innerHTML='<div style="font-size:14px;font-weight:500;margin-bottom:.75rem">🎮 Games</div>'
@@ -2626,7 +2606,7 @@ async function aspLookup(){
 
 function aspInitChat(){
   var hasAI = (ANT&&ANT.length>10)||(WORKER_URL&&WORKER_URL.length>8);
-  _aspChatHist = [{role:'assistant',content:'Hi! Ask me anything about what you\'re reading.\n\n'+(hasAI?'Claude AI is ready.':'I\'ll do my best with local responses.')}];
+  _aspChatHist = [{role:'assistant',content:'Ask me anything about what you\'re reading. Your AI Assistant is ready.'}];
   aspRenderChat();
 }
 
