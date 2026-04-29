@@ -40,12 +40,11 @@
   --card:rgba(255,255,255,.05);--cb:rgba(255,255,255,.1);
 }
 body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-#shell{display:flex;min-height:100vh}
-
+#shell{display:flex;height:100vh;overflow:hidden}
 /* ── Sidebar ── */
-#sidebar{width:220px;background:rgba(255,255,255,.03);border-right:1px solid var(--cb);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
-#content{flex:1;overflow:auto;padding:1.75rem 2rem}
-@media(max-width:700px){#sidebar{width:48px}#sidebar .nl{display:none}#sidebar .lt{display:none}#content{padding:1rem}}
+#sidebar{width:220px;background:rgba(255,255,255,.03);border-right:1px solid var(--cb);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;height:100vh}
+#content{flex:1;overflow-y:auto;padding:1.75rem 2rem;height:100vh}
+@media(max-width:700px){#sidebar{width:48px}#sidebar .nl{display:none}#sidebar .lt{display:none}#content{padding:1rem;height:100vh}}
 .logo{padding:1.1rem 1rem 1.2rem;display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--cb);flex-shrink:0}
 .logo-ic{width:34px;height:34px;background:linear-gradient(135deg,var(--teal),var(--purple));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .lt{font-family:'DM Serif Display',serif;font-size:17px;background:linear-gradient(90deg,var(--teal),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
@@ -96,8 +95,11 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 .bpct{font-size:11px;color:var(--t3);margin-bottom:5px}
 
 /* ── Text reading ── */
-.rtext{background:rgba(0,0,0,.22);border:1px solid var(--cb);border-radius:var(--r);padding:1.5rem 1.8rem;line-height:1.9;font-size:15.5px;min-height:240px;max-height:440px;overflow-y:auto}
-.rtext p{margin-bottom:.9em}
+.rtext{background:rgba(0,0,0,.22);border:1px solid var(--cb);border-radius:var(--r);padding:2rem 2.6rem;line-height:2.05;font-size:16.5px;min-height:200px;max-width:720px;margin:0 auto}
+.rtext p{margin-bottom:1.5em;word-spacing:.02em;letter-spacing:.01em}
+.rtext p:first-child{margin-top:0}
+.rtext p.para-heading{font-weight:600;font-size:18px;color:var(--teal);margin-top:1.8em;margin-bottom:.65em}
+.rtext p.para-subheading{font-weight:500;font-size:16.5px;color:var(--t2);margin-top:1.3em;margin-bottom:.55em}
 .hl{background:rgba(255,179,71,.38);border-radius:2px;cursor:pointer;transition:background .2s}
 .hl:hover{background:rgba(255,107,107,.35)}
 .ntarea{width:100%;background:rgba(0,0,0,.2);border:1px solid var(--cb);border-radius:var(--rs);padding:.65rem;font-family:'Sora',sans-serif;font-size:13px;color:var(--text);resize:vertical;min-height:80px;outline:none;margin-top:.4rem}
@@ -206,6 +208,13 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 #focus-side{width:280px;border-left:1px solid var(--cb);overflow:auto;flex-shrink:0;padding:1rem;display:none}
 #focus-side.open{display:block}
 
+.fitb-blank{display:inline-block;min-width:80px;border-bottom:2px solid var(--teal);padding:0 4px;margin:0 4px;color:var(--teal);font-weight:600;font-style:italic}
+.fitb-opts{display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem}
+.fitb-opt{padding:.4rem .9rem;border-radius:20px;border:1px solid var(--cb);background:var(--card);cursor:pointer;font-size:13px;color:var(--text);font-family:'Sora',sans-serif;transition:all .15s}
+.fitb-opt:hover{border-color:var(--teal);color:var(--teal)}
+.fitb-opt.ok{border-color:var(--green);background:rgba(74,222,128,.12);color:var(--green)}
+.fitb-opt.no{border-color:var(--red);background:rgba(255,107,107,.12);color:var(--red)}
+.fitb-opt:disabled{cursor:default}
 /* ── Floating AI panel ── */
 #ai-float-btn{position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--purple));border:none;cursor:pointer;font-size:22px;box-shadow:0 4px 18px rgba(0,201,167,.4);z-index:850;display:none;align-items:center;justify-content:center;transition:transform .18s,box-shadow .18s}
 #ai-float-btn:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(0,201,167,.55)}
@@ -234,6 +243,79 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 .fnp-item{background:rgba(255,255,255,.04);border:1px solid var(--cb);border-left:3px solid var(--teal);border-radius:var(--rs);padding:.45rem .6rem;margin-bottom:.4rem;font-size:12px;color:var(--t2);line-height:1.5;position:relative;word-break:break-word}
 .fnp-del{position:absolute;top:.3rem;right:.4rem;background:none;border:none;cursor:pointer;font-size:11px;color:var(--t3);opacity:.6}
 .fnp-del:hover{color:var(--red);opacity:1}
+.vdot{width:8px;height:8px;border-radius:50%;background:var(--cb);border:none;padding:0;cursor:pointer;transition:background .2s,transform .2s;flex-shrink:0}
+.vdot.on{background:var(--teal);transform:scale(1.3)}
+.vdot:hover{background:var(--t2)}
+/* ── Welcome screen ── */
+#welcomeScreen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1.5rem;overflow-y:auto}
+#welcomeScreen.hidden{display:none}
+.ws-box{width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center;text-align:center;padding:.5rem 0}
+.ws-logo{width:58px;height:58px;border-radius:16px;background:linear-gradient(135deg,var(--teal),var(--purple));display:flex;align-items:center;justify-content:center;font-size:25px;margin-bottom:.8rem;flex-shrink:0}
+.ws-name{font-size:24px;font-weight:600;color:var(--text);margin-bottom:.18rem}
+.ws-headline{font-size:13px;font-weight:500;background:linear-gradient(90deg,var(--teal),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.45rem;letter-spacing:.01em}
+.ws-tagline{font-size:12.5px;color:var(--t2);line-height:1.55;margin-bottom:1.4rem;max-width:300px}
+.ws-features{width:100%;display:flex;flex-direction:column;gap:8px;margin-bottom:1.4rem}
+.ws-feature{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--cb);border-radius:12px;padding:.58rem .85rem;text-align:left}
+.ws-fi{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ws-fi-teal{background:rgba(0,201,167,.15)}
+.ws-fi-purple{background:rgba(107,82,212,.15)}
+.ws-fi-amber{background:rgba(239,159,39,.15)}
+.ws-ftitle{font-size:12.5px;font-weight:500;color:var(--text);margin-bottom:1px}
+.ws-fdesc{font-size:11px;color:var(--t2);line-height:1.4}
+.ws-divider{width:100%;height:1px;background:var(--cb);margin-bottom:1.2rem}
+.ws-btn-google{width:100%;padding:.78rem 1rem;border-radius:12px;border:2px solid rgba(120,120,120,.4);background:#f0f0ee !important;color:#1a1a1a !important;font-size:13.5px;font-weight:600;font-family:'Sora',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;margin-bottom:.9rem}
+.ws-btn-google span{color:#1a1a1a !important;-webkit-text-fill-color:#1a1a1a !important;font-weight:600}
+.ws-skip{font-size:13px;color:var(--teal);font-weight:500;border-bottom:1px solid rgba(0,201,167,.35);padding-bottom:1px;cursor:pointer;margin-bottom:4px;display:inline-block}
+.ws-skip-sub{font-size:11px;color:var(--t2);margin-bottom:.7rem;display:block}
+.ws-privacy{font-size:11px;color:var(--t2);line-height:1.55}
+@media(max-height:650px){
+  .ws-logo{width:44px;height:44px;font-size:20px;margin-bottom:.5rem}
+  .ws-name{font-size:20px}
+  .ws-tagline{margin-bottom:1rem}
+  .ws-features{margin-bottom:1rem;gap:6px}
+  .ws-feature{padding:.45rem .75rem}
+  .ws-divider{margin-bottom:.85rem}
+}
+.path-card{display:flex;align-items:center;gap:12px;border:1px solid var(--cb);border-radius:14px;padding:13px 14px;margin-bottom:9px;cursor:pointer;transition:border-color .15s,background .15s}
+.path-card:hover{background:rgba(255,255,255,.03)}
+.path-card.selected-read{border-color:var(--teal);background:rgba(0,201,167,.07)}
+.path-card.selected-play{border-color:var(--purple);background:rgba(107,82,212,.07)}
+.path-card.selected-both{border-color:#EF9F27;background:rgba(239,159,39,.07)}
+.path-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.path-text{flex:1}
+.path-title{font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:2px}
+.path-desc{font-size:11.5px;color:var(--t3);line-height:1.4}
+.path-radio{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--cb);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:border-color .15s}
+.path-radio.on-read{border-color:var(--teal)}
+.path-radio.on-read::after{content:'';width:8px;height:8px;border-radius:50%;background:var(--teal);display:block}
+.path-radio.on-play{border-color:var(--purple)}
+.path-radio.on-play::after{content:'';width:8px;height:8px;border-radius:50%;background:var(--purple);display:block}
+.path-radio.on-both{border-color:#EF9F27}
+.path-radio.on-both::after{content:'';width:8px;height:8px;border-radius:50%;background:#EF9F27;display:block}
+/* ── Learn mode banner ── */
+#learn-mode-banner{display:none;background:rgba(107,82,212,.1);border:1px solid rgba(107,82,212,.3);border-radius:var(--rs);padding:.5rem .85rem;margin-bottom:.75rem;font-size:12px;color:var(--purple);display:flex;align-items:center;gap:8px}
+/* ── Learn mode card in games ── */
+.learn-concept-card{background:rgba(107,82,212,.07);border:1px solid rgba(107,82,212,.25);border-radius:var(--rs);padding:.75rem .9rem;margin-bottom:.85rem}
+.learn-concept-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--purple);margin-bottom:.4rem}
+.learn-concept-text{font-size:13px;color:var(--t2);line-height:1.6}
+/* ── Section selector modal ── */
+#sectionModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:2100;align-items:center;justify-content:center}
+#sectionModal.show{display:flex}
+.sec-box{background:var(--bg2);border:1px solid var(--cb);border-radius:20px;padding:1.5rem;width:480px;max-width:95vw;max-height:85vh;display:flex;flex-direction:column;overflow:hidden}
+.sec-list{overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin:.75rem 0;flex:1;min-height:0}
+.sec-item{border:1px solid var(--cb);border-radius:12px;padding:.75rem 1rem;cursor:pointer;transition:border-color .15s,background .15s;display:flex;align-items:flex-start;gap:10px}
+.sec-item:hover{background:rgba(255,255,255,.04)}
+.sec-item.selected{border-color:var(--teal);background:rgba(0,201,167,.07)}
+.sec-item.all-item{border-color:rgba(0,201,167,.3);background:rgba(0,201,167,.05)}
+.sec-item.all-item.selected{border-color:var(--teal);background:rgba(0,201,167,.12)}
+.sec-num{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--t2);flex-shrink:0;margin-top:1px}
+.sec-num.all-num{background:rgba(0,201,167,.15);color:var(--teal)}
+.sec-info{flex:1;min-width:0}
+.sec-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sec-preview{font-size:11.5px;color:var(--t3);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sec-len{font-size:10px;color:var(--t3);margin-top:3px}
+.sec-visited{font-size:10px;color:var(--teal);font-weight:600;margin-top:3px}
+.sec-item.visited{border-color:rgba(0,201,167,.25)}
 /* ── API modal ── */
 #apiModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;align-items:center;justify-content:center}
 #apiModal.show{display:flex}
@@ -242,7 +324,14 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 .aInp{width:100%;background:rgba(0,0,0,.25);border:1px solid var(--cb);border-radius:var(--rs);padding:.54rem .72rem;font-family:'Sora',sans-serif;font-size:13px;color:var(--text);outline:none;margin-bottom:.25rem}
 .aInp:focus{border-color:var(--teal)}
 .aInp::placeholder{color:var(--t3)}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px}
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.28);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.5)}
+[data-theme="light"] ::-webkit-scrollbar-thumb{background:rgba(0,0,0,.22)}
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.38)}
+.sec-list{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.3) transparent}
+#content{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.3) transparent}
 
 /* ── Light mode overrides ── */
 @media(prefers-color-scheme:light){
@@ -314,6 +403,9 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
   [data-theme="light"] .bcard{ background:#FFFFFF;border-color:rgba(139,100,60,.15); }
   :root:not([data-theme="dark"]) #reward,
   [data-theme="light"] #reward{ background:rgba(253,240,228,.98); }
+  :root:not([data-theme="dark"]) ::-webkit-scrollbar-thumb{background:rgba(0,0,0,.2)}
+  :root:not([data-theme="dark"]) ::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.38)}
+  :root:not([data-theme="dark"]) .sec-list,:root:not([data-theme="dark"]) #content{scrollbar-color:rgba(0,0,0,.2) transparent}
 }
 
 /* ══ Mobile ══ */
@@ -333,7 +425,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
   #focus-tabs{overflow-x:auto}
   .ftab{font-size:11px;padding:.28rem .55rem;white-space:nowrap;flex-shrink:0}
   #focus-bar{flex-wrap:wrap;gap:5px;padding:.6rem .85rem}
-  .rtext{padding:1rem 1.1rem;font-size:14.5px}
+  .rtext{padding:1.2rem 1.3rem;font-size:15px;max-width:100%}
   .read-along{padding:1rem 1.1rem;font-size:14px}
   .ptitle{font-size:19px}
 }
@@ -388,11 +480,61 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 </head>
 <body>
 
+<!-- Welcome Screen -->
+<div id="welcomeScreen" class="hidden">
+  <div class="ws-box">
+    <div class="ws-logo">📖</div>
+    <div class="ws-name">SmartRead</div>
+    <div class="ws-headline">Read Smarter. Learn Better.</div>
+    <div class="ws-tagline">Upload any document and transform it into interactive learning with reading, games, and AI.</div>
+
+    <div class="ws-features">
+      <div class="ws-feature">
+        <div class="ws-fi ws-fi-teal">📖</div>
+        <div>
+          <div class="ws-ftitle">Read, listen, or watch</div>
+          <div class="ws-fdesc">Three ways to go through your document</div>
+        </div>
+      </div>
+      <div class="ws-feature">
+        <div class="ws-fi ws-fi-purple">🎮</div>
+        <div>
+          <div class="ws-ftitle">Learn without reading</div>
+          <div class="ws-fdesc">Games that teach the content for you</div>
+        </div>
+      </div>
+      <div class="ws-feature">
+        <div class="ws-fi ws-fi-amber">☁️</div>
+        <div>
+          <div class="ws-ftitle">Pick up where you left off</div>
+          <div class="ws-fdesc">Sync progress across all your devices</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ws-divider"></div>
+
+    <button class="ws-btn-google" onclick="wsSignIn()">
+      <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+        <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+        <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/>
+        <path d="M3.964 10.706c-.18-.54-.282-1.117-.282-1.706s.102-1.166.282-1.706V4.962H.957C.347 6.175 0 7.548 0 9s.348 2.825.957 4.038l3.007-2.332z" fill="#FBBC05"/>
+        <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.962L3.964 6.294C4.672 4.167 6.656 3.58 9 3.58z" fill="#EA4335"/>
+      </svg>
+      <span>Sign in with Google</span>
+    </button>
+
+    <div class="ws-skip" onclick="wsContinue()">Continue without signing in</div>
+    <div class="ws-skip-sub">Progress saves on this device only</div>
+    <div class="ws-privacy">We only store your reading progress and notes.<br>Signing in is optional — no card required.</div>
+  </div>
+</div>
+
 <!-- API Modal -->
 <div id="apiModal">
   <div id="apiBox">
     <div style="font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:.4rem">🔑 Optional API Key</div>
-    <div style="font-size:13px;color:var(--t2);margin-bottom:.85rem">SmartRead works fully without any key. Adding your Anthropic key gives the AI assistant Claude-quality answers.</div>
+    <div style="font-size:13px;color:var(--t2);margin-bottom:.85rem">SmartRead works fully without any key. Adding your Anthropic key unlocks smarter AI-powered answers in the assistant.</div>
     <div style="margin-bottom:.85rem">
       <span class="aLbl">Anthropic API Key (optional)</span>
       <input class="aInp" type="password" id="ak1" placeholder="sk-ant-api03-...">
@@ -457,7 +599,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
   <button class="ni" onclick="go('read')"><span>📖</span><span class="nl">Read</span></button>
   <button class="ni" onclick="go('ai')"><span>🤖</span><span class="nl">AI Assistant</span></button>
   <button class="ni" onclick="go('game')"><span>🎮</span><span class="nl">Games</span></button>
-  <button class="ni" onclick="go('quiz')"><span>✅</span><span class="nl">Quiz</span></button>
+  <button class="ni" onclick="go('quiz')"><span>✅</span><span class="nl">Test</span></button>
   <button class="ni" onclick="go('progress')"><span>📊</span><span class="nl">Progress</span></button>
   <div class="nsep"></div>
   <button class="ni" onclick="toggleFocus()"><span>🎯</span><span class="nl">Focus Mode</span></button>
@@ -509,12 +651,12 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 <!-- READ -->
 <div id="p-read" style="display:none">
   <div style="max-width:860px;margin:0 auto">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:8px">
       <div>
         <div class="ptitle" id="read-title">No book open</div>
         <div style="font-size:12px;color:var(--t3)" id="read-sub">Go to Library to open a book</div>
       </div>
-      <button class="btn btns btnp" onclick="go('quiz')">📝 Take quiz</button>
+      <button class="btn btns btnp" onclick="go('quiz')">📝 Comprehension Test</button>
     </div>
     <div class="tabs" id="read-tabs">
       <button class="tab on" onclick="setTab('text',this)">📖 Text</button>
@@ -524,22 +666,26 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 
     <!-- TEXT TAB -->
     <div id="t-text">
-      <div style="display:flex;align-items:center;gap:7px;margin-bottom:.85rem;flex-wrap:wrap">
+      <!-- Sticky toolbar -->
+      <div style="position:sticky;top:0;z-index:10;background:var(--bg);padding:.5rem 0 .6rem;margin-bottom:.6rem;border-bottom:1px solid var(--cb);display:flex;align-items:center;gap:7px;flex-wrap:wrap">
         <button class="btn btns" onclick="doHighlight()">✏️ Highlight</button>
         <button class="btn btns" onclick="openNoteDialog()">📝 Add note</button>
         <button class="btn btns" onclick="aiSummarise()">🤖 Summarise</button>
         <button class="btn btns" onclick="toggleAIPanel()" style="background:linear-gradient(135deg,rgba(0,201,167,.15),rgba(107,82,212,.15));border-color:rgba(0,201,167,.45);color:var(--teal);font-weight:600">🤖 Ask AI</button>
+        <button class="btn btns" id="sec-switch-btn" style="display:none;border-color:rgba(167,139,250,.4);color:var(--purple)" onclick="reopenSectionModal()">📑 Sections</button>
         <select class="sel" style="margin-left:auto" onchange="setFontSize(this.value)">
           <option value="14">Small</option><option value="16" selected>Medium</option><option value="19">Large</option>
         </select>
       </div>
-      <div class="rtext" id="rtext"><p class="empty">Open a book from the Library to start reading</p></div>
-      <div style="display:flex;align-items:center;gap:8px;margin-top:.65rem">
+      <!-- Reading progress bar -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:.85rem">
         <div class="pbar" style="flex:1"><div class="pfill" id="rprog" style="width:0%"></div></div>
         <span style="font-size:11px;color:var(--t3)" id="rpct">0%</span>
       </div>
+      <!-- Text content — no max-height, scrolls with page -->
+      <div class="rtext" id="rtext"><p class="empty">Open a book from the Library to start reading</p></div>
       <!-- Quick note box -->
-      <div id="noteDialog" style="display:none;margin-top:.85rem;background:rgba(0,0,0,.22);border:1px solid var(--cb);border-radius:var(--rs);padding:.85rem">
+      <div id="noteDialog" style="display:none;margin-top:.85rem;background:rgba(0,0,0,.22);border:1px solid var(--cb);border-radius:var(--rs);padding:.85rem;max-width:720px;margin-left:auto;margin-right:auto">
         <div style="font-size:12px;font-weight:500;margin-bottom:.3rem;color:var(--t2)">Add a note</div>
         <textarea class="ntarea" id="noteTA" placeholder="Write your note here…"></textarea>
         <div style="display:flex;gap:7px;margin-top:.4rem">
@@ -609,20 +755,32 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
             <button class="btn btns btnd" id="vStopBtn" style="display:none" onclick="vidStop()">⏹ Stop</button>
           </div>
         </div>
+        <!-- Speed control -->
+        <div class="spd-row" style="margin-bottom:.6rem">
+          <span style="font-size:11px;color:var(--t3);align-self:center">Speed:</span>
+          <button class="spdBtn" onclick="setVidSpd(0.75,this)">0.75×</button>
+          <button class="spdBtn on" id="vidSpdActive" onclick="setVidSpd(1,this)">1×</button>
+          <button class="spdBtn" onclick="setVidSpd(1.25,this)">1.25×</button>
+          <button class="spdBtn" onclick="setVidSpd(1.5,this)">1.5×</button>
+        </div>
         <div style="border-radius:10px;overflow:hidden;background:#000;border:1px solid var(--cb);position:relative">
           <canvas id="vid-canvas" style="display:block;width:100%;height:auto"></canvas>
           <div id="vid-empty" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--t3);font-size:13px;pointer-events:none">
             <div style="font-size:34px;margin-bottom:.4rem">🎬</div>Open a book then click Preview or Present
           </div>
         </div>
+        <!-- Speaker notes panel -->
         <div id="vid-subtitle" style="display:none;background:rgba(0,0,0,.55);border:1px solid var(--cb);border-top:none;border-radius:0 0 10px 10px;padding:.7rem 1rem;font-size:13.5px;line-height:1.65;color:var(--text);min-height:52px"></div>
+        <!-- Progress bar + percentage -->
         <div style="display:flex;align-items:center;gap:8px;margin-top:.6rem">
           <div class="pbar" style="flex:1"><div class="pfill" id="vPfill" style="width:0%"></div></div>
           <span style="font-size:11px;color:var(--t3);min-width:30px" id="vPct">0%</span>
           <span style="font-size:11.5px;color:var(--teal);font-style:italic" id="vStatus"></span>
         </div>
+        <!-- Slide progress dots -->
+        <div id="vDots" style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin:.5rem 0;min-height:14px"></div>
         <div class="vthrow" id="vThumbs"></div>
-        <div style="font-size:11px;color:var(--t3);margin-top:.45rem">💡 With Anthropic key (🔑 via AI Assistant): uses Claude for explanations. Without key: smart explanations are generated from your document.</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:.45rem">💡 With an Anthropic key (🔑 via AI Assistant): uses AI for richer explanations. Without key: smart explanations are generated from your document.</div>
       </div>
     </div>
   </div>
@@ -635,7 +793,10 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
       <div class="ptitle">Dictionary &amp; AI Assistant</div>
       <div class="psub">Look up any word instantly — definitions, synonyms, pronunciation, examples. No key needed.</div>
     </div>
-    <button class="btn btns" id="apiKeyBtn" onclick="document.getElementById('apiModal').classList.add('show')" style="margin-top:.25rem;display:none">🔑 API Key</button>
+    <div style="display:flex;gap:6px;flex-shrink:0;margin-top:.25rem">
+      <button class="btn btns" id="sec-btn-ai" style="display:none;border-color:rgba(167,139,250,.4);color:var(--purple)" onclick="reopenSectionModal()">📑 Sections</button>
+      <button class="btn btns" id="apiKeyBtn" onclick="document.getElementById('apiModal').classList.add('show')" style="display:none">🔑 API Key</button>
+    </div>
   </div>
 
   <!-- Word lookup bar -->
@@ -682,16 +843,23 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
       <div class="ptitle">Learning Games</div>
       <div class="psub">Three research-backed games generated directly from your document</div>
     </div>
-    <button class="btn btns" onclick="toggleAIPanel()" style="background:linear-gradient(135deg,rgba(0,201,167,.15),rgba(107,82,212,.15));border-color:rgba(0,201,167,.45);color:var(--teal);font-weight:600;flex-shrink:0">🤖 Ask AI</button>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0">
+      <button class="btn btns" id="sec-btn-game" style="display:none;border-color:rgba(167,139,250,.4);color:var(--purple)" onclick="reopenSectionModal()">📑 Sections</button>
+      <button class="btn btns" onclick="toggleAIPanel()" style="background:linear-gradient(135deg,rgba(0,201,167,.15),rgba(107,82,212,.15));border-color:rgba(0,201,167,.45);color:var(--teal);font-weight:600">🤖 Ask AI</button>
+    </div>
+  </div>
+  <div id="learn-mode-banner" style="display:none">
+    <span style="font-size:14px">🎮</span>
+    <span><strong>Learn mode</strong> — each card shows the concept first, then tests you on it. No reading needed.</span>
   </div>
   <div class="tabs" id="game-tabs">
     <button class="tab on" onclick="setGameTab('flashcard',this)">🃏 Flashcards</button>
-    <button class="tab" onclick="setGameTab('fillin',this)">✍ Fill-in-blank</button>
-    <button class="tab" onclick="setGameTab('match',this)">🔗 Concept match</button>
+    <button class="tab" onclick="setGameTab('speed',this)">✅ True or False</button>
+    <button class="tab" onclick="setGameTab('challenge',this)">🎯 Challenge</button>
   </div>
   <div id="g-flashcard"><div class="empty">Open a book then click Generate below</div></div>
-  <div id="g-fillin" style="display:none"><div class="empty">Open a book then click Generate below</div></div>
-  <div id="g-match" style="display:none"><div class="empty">Open a book then click Generate below</div></div>
+  <div id="g-speed" style="display:none"><div class="empty">Open a book then click Generate below</div></div>
+  <div id="g-challenge" style="display:none"><div class="empty">Open a book then click Generate below</div></div>
   <div style="margin-top:1rem;text-align:right">
     <button class="btn btns btnp" onclick="genAllGames()">✨ Generate all games from reading</button>
   </div>
@@ -699,8 +867,13 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 
 <!-- QUIZ -->
 <div id="p-quiz" style="display:none">
-  <div class="ptitle">Comprehension Test</div>
-  <div class="psub">Score 70%+ to earn your completion badge and XP</div>
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:.5rem">
+    <div>
+      <div class="ptitle">Comprehension Test</div>
+      <div class="psub">Questions generated from every concept in your document — score 70%+ to earn your badge</div>
+    </div>
+    <button class="btn btns" id="sec-btn-quiz" style="display:none;border-color:rgba(167,139,250,.4);color:var(--purple)" onclick="reopenSectionModal()">📑 Sections</button>
+  </div>
   <button class="btn btnp" style="margin-bottom:1rem" onclick="genQuiz()">✨ Generate test</button>
   <div id="quiz-out"></div>
 </div>
@@ -733,12 +906,13 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
       <button class="ftab" onclick="setFocusTab('audio',this)">🔊 Audio</button>
       <button class="ftab" onclick="setFocusTab('video',this)">🎬 Video</button>
       <button class="ftab" onclick="setFocusTab('game',this)">🎮 Games</button>
-      <button class="ftab" onclick="setFocusTab('quiz',this)">✅ Quiz</button>
+      <button class="ftab" onclick="setFocusTab('quiz',this)">✅ Test</button>
     </div>
     <!-- Actions -->
     <button class="btn btns" onclick="doHighlight()">✏️ Highlight</button>
     <button class="btn btns" onclick="openFocusNotePanel()">📝 Note</button>
     <button class="btn btns" onclick="toggleAIPanel()" style="background:linear-gradient(135deg,rgba(0,201,167,.15),rgba(107,82,212,.15));border-color:rgba(0,201,167,.45);color:var(--teal);font-weight:600">🤖 Ask AI</button>
+    <button class="btn btns" id="sec-btn-focus" style="display:none;border-color:rgba(167,139,250,.4);color:var(--purple)" onclick="reopenSectionModal()">📑 Sections</button>
     <div style="flex:1"></div>
     <span style="font-size:12px;color:var(--t3);margin-right:.5rem">🎯 Focus Mode</span>
     <button class="btn btns btnd" onclick="toggleFocus()">✕ Exit</button>
@@ -913,6 +1087,7 @@ function loadFromFirestore(uid){
 var S = {
   xp:0, booksOpened:0, pagesRead:0, testsPassed:0,
   book: null,
+  learningPath: null,  // 'read' | 'play' | 'both'
   highlights: [],   // {id, text, book, color}
   notes: [],        // {id, text, book, ts}
   ttsOn:false, ttsSpeed:1, ttsParaIdx:0,
@@ -959,6 +1134,7 @@ function closeModal(){document.getElementById('apiModal').classList.remove('show
 // ═══════════════════════════════════════════════
 var PAGES=['library','read','ai','game','quiz','progress'];
 function go(p){
+  vidStop();
   PAGES.forEach(function(n){var el=document.getElementById('p-'+n);if(el)el.style.display='none';});
   document.getElementById('p-'+p).style.display='';
   document.querySelectorAll('.ni').forEach(function(b){b.classList.remove('on');});
@@ -1007,7 +1183,16 @@ function openBook(b){
   // Text tab
   var rt=document.getElementById('rtext');rt.innerHTML='';
   b.content.split('\n\n').filter(function(p){return p.trim();}).forEach(function(para){
-    var p=document.createElement('p');p.textContent=para;rt.appendChild(p);
+    var p=document.createElement('p');
+    var t=para.trim();
+    // Detect headings — short, capitalised, no trailing punctuation
+    var wordCount=t.split(/\s+/).length;
+    var isHeading=wordCount<=10&&wordCount>=1&&/^[A-Z]/.test(t)&&!/[.!?,;]$/.test(t)&&t.length<80;
+    var isSubheading=wordCount<=15&&/^[A-Z]/.test(t)&&!/[.!?,;]$/.test(t)&&t.length<100&&!isHeading;
+    if(isHeading) p.className='para-heading';
+    else if(isSubheading) p.className='para-subheading';
+    p.textContent=t;
+    rt.appendChild(p);
   });
   document.getElementById('rprog').style.width=b.prog+'%';
   document.getElementById('rpct').textContent=b.prog+'%';
@@ -1023,9 +1208,10 @@ function openBook(b){
   document.getElementById('afill').style.width='0%';
   document.getElementById('tts-btn').textContent='▶ Play';
   setWave(false);
-  go('read');
   scheduleSave();
   reward('📖','Book opened!',b.title,10);
+  // Show section selector for long docs, path modal for short ones
+  maybeSectionBook(b);
 }
 
 function buildReadAlong(b){
@@ -1048,11 +1234,17 @@ function selectFile(e){var f=e.target.files[0];if(f)processFile(f);}
 function processFile(f){
   var name=f.name.replace(/\.[^.]+$/,''),ext=f.name.split('.').pop().toLowerCase();
   if(ext==='txt'){
-    var r=new FileReader();r.onload=function(ev){addBook(name,'📄',ev.target.result.substring(0,9000));};r.readAsText(f);
+    var r=new FileReader();
+    r.onload=function(ev){
+      addBook(name,'📄',cleanExtractedText(ev.target.result,true));
+    };
+    r.readAsText(f);
   } else if(ext==='docx'||ext==='doc'){
     var r2=new FileReader();r2.onload=function(ev){
       if(typeof mammoth!=='undefined'){
-        mammoth.extractRawText({arrayBuffer:ev.target.result}).then(function(res){addBook(name,'📝',res.value.substring(0,9000));}).catch(function(){addBook(name,'📝','Could not extract text. Try .txt format.');});
+        mammoth.extractRawText({arrayBuffer:ev.target.result}).then(function(res){
+          addBook(name,'📝',cleanExtractedText(res.value,true));
+        }).catch(function(){addBook(name,'📝','Could not extract text. Try .txt format.');});
       } else {addBook(name,'📝','Please try .txt format');}
     };r2.readAsArrayBuffer(f);
   } else if(ext==='pdf'){
@@ -1061,28 +1253,52 @@ function processFile(f){
       var buf=ev.target.result;
       if(typeof pdfjsLib==='undefined'){
         var bytes=new Uint8Array(buf),raw='';
-        for(var i=0;i<Math.min(bytes.length,200000);i++){var cc=bytes[i];if(cc>=32&&cc<127)raw+=String.fromCharCode(cc);else if(cc===10)raw+=' ';}
-        var ss=raw.replace(/\s+/g,' ').match(/[A-Z][^.!?]{20,}[.!?]/g)||[];
-        addBook(name,'📄',ss.join(' ').substring(0,7000)||'PDF uploaded. Try .txt for best results.');
+        for(var i=0;i<Math.min(bytes.length,500000);i++){var cc=bytes[i];if(cc>=32&&cc<127)raw+=String.fromCharCode(cc);else if(cc===10)raw+='\n';}
+        addBook(name,'📄',cleanExtractedText(raw,false));
         return;
       }
       pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
       pdfjsLib.getDocument({data:buf}).promise.then(function(pdf){
-        var all='',chain=Promise.resolve();
-        for(var pn=1;pn<=Math.min(pdf.numPages,40);pn++){
+        var pages=[],chain=Promise.resolve();
+        for(var pn=1;pn<=Math.min(pdf.numPages,200);pn++){
           (function(pageNum){
             chain=chain.then(function(){
               return pdf.getPage(pageNum).then(function(pg){
                 return pg.getTextContent().then(function(tc){
-                  all+=tc.items.map(function(it){return it.str;}).join(' ')+' ';
+                  // Reconstruct text with position-aware line breaks
+                  var items=tc.items;
+                  var pageText='';
+                  var lastY=null;
+                  var lastX=null;
+                  for(var j=0;j<items.length;j++){
+                    var item=items[j];
+                    var str=item.str;
+                    if(!str) continue;
+                    var y=item.transform?Math.round(item.transform[5]):null;
+                    var x=item.transform?Math.round(item.transform[4]):null;
+                    if(lastY!==null&&y!==null&&Math.abs(y-lastY)>8){
+                      // Significant vertical gap — new line
+                      var gap=Math.abs(y-lastY);
+                      pageText+=gap>20?'\n\n':'\n';
+                    } else if(lastX!==null&&x!==null&&x>lastX+20&&str&&str[0]&&str[0]===str[0].toUpperCase()){
+                      // Large horizontal gap with capital — likely new paragraph
+                      pageText+=' ';
+                    } else if(pageText&&!pageText.endsWith(' ')&&str&&!str.startsWith(' ')){
+                      pageText+=' ';
+                    }
+                    pageText+=str;
+                    lastY=y;lastX=x+(str.length*5);
+                  }
+                  pages.push(pageText);
                 });
               });
             });
           })(pn);
         }
         chain.then(function(){
-          var clean=all.replace(/\s+/g,' ').trim();
-          addBook(name,'📄',clean.length>100?clean.substring(0,9000):'This PDF appears to be a scanned image. Please try a text-based PDF or paste the text into a .txt file.');
+          var raw=pages.join('\n\n');
+          var result=cleanExtractedText(raw,false);
+          addBook(name,'📄',result.length>100?result:'This PDF appears to be a scanned image. Please try a text-based PDF or paste the text into a .txt file.');
         });
       }).catch(function(){
         addBook(name,'📄','Could not read this PDF. Please try saving it as a .txt file.');
@@ -1090,6 +1306,63 @@ function processFile(f){
     };
     r3.readAsArrayBuffer(f);
   } else {alert('Please upload .txt, .docx, or .pdf');}
+}
+
+function cleanExtractedText(raw, hasParagraphs){
+  // Step 1: normalise line endings
+  var text=raw.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+
+  // Step 2: if source already has double newlines (txt, docx), preserve them
+  if(hasParagraphs&&text.indexOf('\n\n')>=0){
+    text=text.replace(/\n{3,}/g,'\n\n').trim();
+    return text; // NO cap here — full content preserved for section selector
+  }
+
+  // Step 3: for PDF or flat text, detect paragraph boundaries intelligently
+  var lines=text.split('\n');
+  var paras=[];
+  var current=[];
+
+  for(var i=0;i<lines.length;i++){
+    var line=lines[i].trim();
+    if(!line){
+      if(current.length) paras.push(current.join(' '));
+      current=[];
+      continue;
+    }
+    var prevLine=current.length?current[current.length-1]:'';
+    var isHeading=line.length<80&&/^[A-Z]/.test(line)&&!/[,;]$/.test(line)&&line.split(' ').length<12;
+    var prevEndsWithStop=prevLine&&/[.!?]$/.test(prevLine.trim());
+    var startsNewSentence=/^[A-Z]/.test(line)&&prevEndsWithStop;
+    var isShortLine=line.length<60&&prevLine&&prevLine.length>60;
+
+    if(isHeading&&current.length){
+      paras.push(current.join(' '));
+      current=[line];
+    } else if(isShortLine&&startsNewSentence&&current.length>2){
+      current.push(line);
+      paras.push(current.join(' '));
+      current=[];
+    } else {
+      current.push(line);
+      var joined=current.join(' ');
+      if(joined.length>400&&/[.!?]$/.test(line)){
+        paras.push(joined);
+        current=[];
+      }
+    }
+  }
+  if(current.length) paras.push(current.join(' '));
+
+  // Step 4: filter junk — page numbers, very short fragments, no real words
+  paras=paras.filter(function(p){
+    p=p.trim();
+    return p.length>40&&/[a-zA-Z]{3,}/.test(p)&&!/^\d+$/.test(p);
+  });
+
+  // Step 5: join — NO cap, full content for section selector
+  var result=paras.join('\n\n');
+  return result||raw;
 }
 function addBook(name,emoji,content){
   var b={id:Date.now(),e:emoji,title:name,prog:0,content:content};
@@ -1100,6 +1373,7 @@ function addBook(name,emoji,content){
 // READ TABS
 // ═══════════════════════════════════════════════
 function setTab(t,btn){
+  if(t!=='video') vidStop();
   ['text','audio','video'].forEach(function(n){document.getElementById('t-'+n).style.display='none';});
   document.getElementById('t-'+t).style.display='';
   document.querySelectorAll('#read-tabs .tab').forEach(function(b){b.classList.remove('on');});
@@ -1207,10 +1481,12 @@ function renderNotesPanel(){
 function toggleFocus(){
   var ov=document.getElementById('focusOv');
   if(ov.classList.contains('show')){
+    vidStop();
     ov.classList.remove('show');
     return;
   }
   if(!S.book){alert('Open a book from the Library first!');return;}
+  vidStop();
   ov.classList.add('show');
   setFocusTab('read',document.querySelector('.ftab'));
   renderFocusSidePanels();
@@ -1282,17 +1558,17 @@ function setFocusTab(tab,btn){
     main.innerHTML='<div style="font-size:14px;font-weight:500;margin-bottom:.75rem">🎮 Games</div>'
       +'<div class="tabs" id="f-game-tabs">'
       +'<button class="tab on" onclick="setFocusGameTab(\'flashcard\',this)">🃏 Flashcards</button>'
-      +'<button class="tab" onclick="setFocusGameTab(\'fillin\',this)">✍ Fill-in</button>'
-      +'<button class="tab" onclick="setFocusGameTab(\'match\',this)">🔗 Match</button>'
+      +'<button class="tab" onclick="setFocusGameTab(\'speed\',this)">✅ True or False</button>'
+      +'<button class="tab" onclick="setFocusGameTab(\'challenge\',this)">🎯 Challenge</button>'
       +'</div>'
       +'<div id="f-g-flashcard"></div>'
-      +'<div id="f-g-fillin" style="display:none"></div>'
-      +'<div id="f-g-match" style="display:none"></div>'
+      +'<div id="f-g-speed" style="display:none"></div>'
+      +'<div id="f-g-challenge" style="display:none"></div>'
       +'<div style="margin-top:.75rem;text-align:right"><button class="btn btns btnp" onclick="genAllGames(true)">✨ Generate games</button></div>';
     if(GM.flashcards.length) renderFocusFlashcard();
     else document.getElementById('f-g-flashcard').innerHTML='<div class="empty">Click Generate games above</div>';
-    document.getElementById('f-g-fillin').innerHTML='<div class="empty">Click Generate games above</div>';
-    document.getElementById('f-g-match').innerHTML='<div class="empty">Click Generate games above</div>';
+    document.getElementById('f-g-speed').innerHTML='<div class="empty">Click Generate games above</div>';
+    document.getElementById('f-g-challenge').innerHTML='<div class="empty">Click Generate games above</div>';
 
   } else if(tab==='quiz'){
     main.innerHTML='<div style="font-size:14px;font-weight:500;margin-bottom:.75rem">✅ Quiz</div>'
@@ -1388,9 +1664,39 @@ if(window.speechSynthesis){window.speechSynthesis.onvoiceschanged=function(){};}
 // VIDEO PRESENTER
 // ═══════════════════════════════════════════════
 function vpKw(text){
-  var stop=new Set('the a an is are was were be been have has do does to of and or but in on at by for with that this it they we can will which from as also more most many some these those their very just about not all any each'.split(' '));
-  var freq={};text.replace(/[^a-zA-Z\s]/g,' ').split(/\s+/).forEach(function(w){var l=w.toLowerCase();if(l.length>4&&!stop.has(l))freq[l]=(freq[l]||0)+1;});
-  var top=Object.entries(freq).sort(function(a,b){return b[1]-a[1];});return top.length?top[0][0]:'';
+  var stop=new Set('the a an is are was were be been have has had do does did to of and or but in on at by for with that this it they we can will which from as also more most many some these those their very just about not all any each its who what when where how if so up out no into than then there after before between through during over under while even though although because since both either neither within without across along among around behind beyond despite except inside outside toward upon within'.split(' '));
+  // First try: find prominent noun phrases (2-3 word sequences, no stop words)
+  var words=text.replace(/[^a-zA-Z\s]/g,' ').split(/\s+/).map(function(w){return w.toLowerCase();}).filter(function(w){return w.length>1;});
+  // Score bigrams and trigrams
+  var phrases={};
+  for(var i=0;i<words.length-1;i++){
+    var w1=words[i],w2=words[i+1];
+    if(w1.length>2&&w2.length>2&&!stop.has(w1)&&!stop.has(w2)){
+      var bi=w1+' '+w2;
+      phrases[bi]=(phrases[bi]||0)+2;
+    }
+    if(i<words.length-2){
+      var w3=words[i+2];
+      if(w1.length>2&&w2.length>1&&w3.length>2&&!stop.has(w1)&&!stop.has(w3)){
+        var tri=w1+' '+w2+' '+w3;
+        phrases[tri]=(phrases[tri]||0)+3;
+      }
+    }
+  }
+  // Also score single meaningful words
+  var freq={};
+  words.forEach(function(w){
+    if(w.length>4&&!stop.has(w)) freq[w]=(freq[w]||0)+1;
+  });
+  // Prefer bigrams/trigrams that appear more than once, else fall back to top single word
+  var topPhrase=Object.entries(phrases).filter(function(e){return e[1]>=2;}).sort(function(a,b){return b[1]-a[1];});
+  if(topPhrase.length){
+    // Capitalise first letter of phrase
+    var p=topPhrase[0][0];
+    return p.charAt(0).toUpperCase()+p.slice(1);
+  }
+  var top=Object.entries(freq).sort(function(a,b){return b[1]-a[1];});
+  return top.length?top[0][0].charAt(0).toUpperCase()+top[0][0].slice(1):'';
 }
 
 function localExplain(heading,body,kw){
@@ -1586,11 +1892,12 @@ async function vidPreview(focusMode){
   await vpPreloadImages(VP.slides);
   VP.cur=0;VP.prev=true;VP.playing=false;
   vBuildThumbs(tid,cid);
+  vBuildDots(VP.slides.length, 'vDots', cid);
   if(pb) pb.disabled=false;if(vb) vb.disabled=false;
   if(stEl) stEl.textContent='Preview — click thumbnails to jump';
   var t=0,idx=0;
   (function loop(){
-    t+=0.006;if(t>1){t=0;idx=(idx+1)%VP.slides.length;VP.cur=idx;vHiThumb(idx);}
+    t+=0.006;if(t>1){t=0;idx=(idx+1)%VP.slides.length;VP.cur=idx;vHiThumb(idx);vHiDot(idx,'vDots');}
     vDrawFrame(ctx,VP.slides[idx],t,idx,VP.slides.length,VP.slides[idx]._img||null);
     var sub=document.getElementById(sid);if(sub) sub.textContent=VP.slides[idx].narration||'';
     var pf=document.getElementById(pid);if(pf) pf.style.width=Math.round((idx+t)/VP.slides.length*100)+'%';
@@ -1625,6 +1932,7 @@ async function vidRecord(focusMode){
   await vpPreloadImages(VP.slides);
   VP.cur=0;VP.playing=true;VP.prev=false;VP.chunks=[];VP.blob=null;
   vBuildThumbs(tid,cid);
+  vBuildDots(VP.slides.length, 'vDots', cid);
   var stopBtn=document.getElementById(stopBtnId);if(stopBtn) stopBtn.style.display='';
   reward('▶','Presenting!','Explaining each section with images…',0);
   runVSlide(0,ctx,sid,pid,pctid,stid,stopBtnId,playBtnId,prevBtnId);
@@ -1640,14 +1948,14 @@ function runVSlide(idx,ctx,sid,pid,pctid,stid,stopBtnId,playBtnId,prevBtnId){
     return;
   }
   var slide=VP.slides[idx],total=VP.slides.length;
-  VP.cur=idx;vHiThumb(idx);
+  VP.cur=idx;vHiThumb(idx);vHiDot(idx,'vDots');
   var narr=slide.narration||slide.heading||'';
   var sub=document.getElementById(sid);if(sub) sub.textContent=narr;
   var words=narr.split(/\s+/).length;
-  var estMs=Math.max(slide.type==='title'?3500:2500,(words/105)*60000);
+  var estMs=Math.max(slide.type==='title'?3500:2500,(words/105)*60000/VP_RATE);
   var ttsDone=false,animDone=false,startTs=null;
   function done(){if(ttsDone&&animDone)runVSlide(idx+1,ctx,sid,pid,pctid,stid,stopBtnId,playBtnId,prevBtnId);}
-  var u=new SpeechSynthesisUtterance(narr);u.rate=0.92;u.lang='en-US';
+  var u=new SpeechSynthesisUtterance(narr);u.rate=0.92*VP_RATE;u.lang='en-US';
   var voices=window.speechSynthesis.getVoices();
   var v=voices.find(function(vv){return vv.lang.startsWith('en')&&(vv.name.includes('Google')||vv.name.includes('Samantha')||vv.name.includes('Daniel'));});
   if(v) u.voice=v;
@@ -1666,6 +1974,35 @@ function runVSlide(idx,ctx,sid,pid,pctid,stid,stopBtnId,playBtnId,prevBtnId){
   })(0);
 }
 
+// Video speed control
+var VP_RATE = 1;
+function setVidSpd(r, btn){
+  VP_RATE = r;
+  document.querySelectorAll('.spdBtn').forEach(function(b){ b.classList.remove('on'); });
+  if(btn) btn.classList.add('on');
+}
+
+// Build slide progress dots
+function vBuildDots(total, dotsId, cid){
+  var el = document.getElementById(dotsId);
+  if(!el) return;
+  el.innerHTML = '';
+  for(var i=0;i<total;i++){
+    var d = document.createElement('button');
+    d.className = 'vdot' + (i===0?' on':'');
+    d.title = 'Slide '+(i+1);
+    (function(idx){ d.onclick = function(){
+      if(VP.prev){ VP.cur=idx; }
+    }; })(i);
+    el.appendChild(d);
+  }
+}
+function vHiDot(idx, dotsId){
+  var el = document.getElementById(dotsId);
+  if(!el) return;
+  el.querySelectorAll('.vdot').forEach(function(d,i){ d.classList.toggle('on', i===idx); });
+}
+
 function vidStop(){
   VP.playing=false;VP.prev=false;
   window.speechSynthesis.cancel();
@@ -1679,43 +2016,64 @@ function vidStop(){
 // GAMES
 // ═══════════════════════════════════════════════
 function setGameTab(t,btn){
-  ['flashcard','fillin','match'].forEach(function(n){document.getElementById('g-'+n).style.display='none';});
+  ['flashcard','speed','challenge'].forEach(function(n){document.getElementById('g-'+n).style.display='none';});
   document.getElementById('g-'+t).style.display='';
   document.querySelectorAll('#game-tabs .tab').forEach(function(b){b.classList.remove('on');});
   btn.classList.add('on');
 }
 function setFocusGameTab(t,btn){
-  ['flashcard','fillin','match'].forEach(function(n){var el=document.getElementById('f-g-'+n);if(el)el.style.display='none';});
+  ['flashcard','speed','challenge'].forEach(function(n){var el=document.getElementById('f-g-'+n);if(el)el.style.display='none';});
   var el=document.getElementById('f-g-'+t);if(el)el.style.display='';
   document.querySelectorAll('#f-game-tabs .tab').forEach(function(b){b.classList.remove('on');});
   btn.classList.add('on');
 }
 function genAllGames(focusMode){
   if(!S.book){alert('Open a book from the Library first!');return;}
-  genFlashcards(focusMode);genFillin(focusMode);genMatch(focusMode);
+  genFlashcards(focusMode);genSpeedRound(focusMode);genChallenge(focusMode);
   reward('🎮','Games generated!','3 game types ready',15);
 }
 
 // Flashcards
+function deriveQuestion(para){
+  var sents=para.split(/[.!?]/).filter(function(s){return s.trim().length>20;});
+  var first=(sents[0]||para).trim();
+  var second=(sents[1]||'').trim();
+
+  // Extract subject — lookahead stops before the verb so verb is never included
+  var subjectMatch=first.match(/^([A-Za-z][a-zA-Z]*(?:\s+[a-zA-Z][a-zA-Z]*){0,2})(?=\s+(?:is\b|are\b|was\b|were\b|refers\b|means\b|allows\b|uses\b|enables\b|involves\b|describes\b|represents\b|defines\b|consists\b|comprises\b|focuses\b|works\b|helps\b|provides\b|supports\b|addresses\b|drives\b|powers\b|requires\b|trains\b|processes\b|handles\b))/i);
+  var subject=subjectMatch?subjectMatch[1].trim():'';
+  subject=subject.replace(/^(the|a|an)\s+/i,'').trim();
+
+  var isDefinition=/\b(is a|is an|are a|refers to|means|is defined as|is the process|is the ability|is the science|is the study|is the branch|is the method|is the field|is the practice)\b/i.test(first);
+  var isProcess=/\b(works by|functions by|operates by|processes|involves|consists of|is achieved by|steps|phases|stages|addresses|handles|trains)\b/i.test(first);
+  var isImportance=/\b(important|critical|essential|significant|crucial|key|vital|enables|allows|helps|benefits|advantages|improves|drives|powers)\b/i.test(first);
+  var isComparison=/\b(unlike|compared|whereas|while|however|difference|similar|both|contrast)\b/i.test(first);
+  var isExample=/\b(example|instance|such as|for instance|includes|like|specifically)\b/i.test(first);
+
+  var q,back;
+  back=(first+(second?' '+second:'')).trim();
+
+  if(subject&&isDefinition){ q='What is '+subject+'?'; }
+  else if(subject&&isProcess){ q='How does '+subject+' work?'; }
+  else if(subject&&isImportance){ q='Why is '+subject+' important?'; }
+  else if(isComparison&&subject){ q='How does '+subject+' differ from related concepts?'; }
+  else if(isExample&&subject){ q='Can you give an example of '+subject+'?'; }
+  else if(subject){ q='What can you tell me about '+subject+'?'; }
+  else {
+    var core=first.substring(0,60).trim();
+    q='What does this passage explain about '+core.split(' ').slice(0,4).join(' ')+'?';
+  }
+
+  return {front:q, back:back, term:subject||first.split(' ').slice(0,3).join(' ')};
+}
+
 function genFlashcards(focusMode){
   if(!S.book) return;
   var paras=S.book.content.split('\n\n').filter(function(p){return p.trim().length>50;});
-  var qTypes=[
-    function(kw,s0){ return 'Define "'+kw+'" in your own words.'; },
-    function(kw,s0){ return 'What is the significance of "'+kw+'" in this context?'; },
-    function(kw,s0){ return 'How does "'+kw+'" relate to the main topic?'; },
-    function(kw,s0){ return 'What does this passage tell us about "'+kw+'"?'; },
-    function(kw,s0){ return 'Give an example of "'+kw+'" based on the reading.'; }
-  ];
-  GM.flashcards=paras.slice(0,10).map(function(para,qi){
-    var kw=vpKw(para);
-    if(!kw){ var ww=para.split(' ').filter(function(w){return w.length>5;}); kw=ww[0]||'concept'; }
-    kw=kw.charAt(0).toUpperCase()+kw.slice(1);
-    var sents=para.split(/[.!?]/).filter(function(s){return s.trim().length>20;});
-    var front=qTypes[qi%qTypes.length](kw,sents[0]||'');
-    var back=(sents[0]||para.substring(0,180)).trim();
-    return{front:front,back:back,kw:kw};
-  });
+  GM.flashcards=paras.map(function(para){
+    var derived=deriveQuestion(para);
+    return{front:derived.front, back:derived.back, kw:derived.term};
+  }).filter(function(c){return c.front&&c.back;});
   GM.fcIdx=0;GM.fcFlipped=false;
   renderFlashcard(focusMode);
 }
@@ -1751,145 +2109,551 @@ function fcRate(knew,focusMode){
   renderFlashcard(focusMode);
 }
 
-// Fill-in-blank
-function genFillin(focusMode){
+// ✅ TRUE OR FALSE
+var TF = {cards:[],idx:0,score:0,streak:0,best:0,total:0};
+function genSpeedRound(focusMode){
   if(!S.book) return;
   var paras=S.book.content.split('\n\n').filter(function(p){return p.trim().length>60;});
-  GM.fibs=[];
-  paras.slice(0,6).forEach(function(para){
-    var sents=para.split(/[.!?]/).filter(function(s){return s.trim().length>30;}).slice(0,2);
-    sents.forEach(function(sent){
-      sent=sent.trim();if(!sent)return;
-      var words=sent.split(' ').filter(function(w){return w.replace(/[^a-zA-Z]/g,'').length>5;});
-      if(!words.length)return;
-      var target=words[Math.floor(words.length/2)],clean=target.replace(/[^a-zA-Z]/g,'');
-      if(!clean)return;
-      var allW=para.split(' ').filter(function(w){var c=w.replace(/[^a-zA-Z]/g,'');return c.length>5&&c.toLowerCase()!==clean.toLowerCase();});
-      var dist=allW.sort(function(){return Math.random()-.5;}).slice(0,3).map(function(w){return w.replace(/[^a-zA-Z]/g,'');});
-      while(dist.length<3)dist.push(['concept','process','approach','system'][dist.length]);
-      GM.fibs.push({sentence:sent.replace(target,'_____'),target:clean,options:[clean].concat(dist).sort(function(){return Math.random()-.5;})});
-    });
+  TF.cards=[];
+  paras.forEach(function(para){
+    var sents=para.split(/[.!?]/).filter(function(s){return s.trim().length>25;});
+    if(!sents.length) return;
+    var trueSent=sents[0].trim();
+    // Generate a false version by twisting the sentence
+    var falseSent=makeFalseSent(trueSent,paras,para);
+    // Add true card
+    TF.cards.push({statement:trueSent,answer:true,explanation:'This is correct — it comes directly from the reading.'});
+    // Add false card
+    if(falseSent) TF.cards.push({statement:falseSent,answer:false,explanation:'This is incorrect. The reading says: "'+trueSent.substring(0,80)+(trueSent.length>80?'…':'')+'"'});
   });
-  GM.fibs=GM.fibs.slice(0,8);GM.fibIdx=0;renderFillin(focusMode);
-}
-function renderFillin(focusMode){
-  var el=document.getElementById(focusMode?'f-g-fillin':'g-fillin');
-  if(!el) return;
-  if(!GM.fibs.length){el.innerHTML='<div class="empty">Click Generate games above</div>';return;}
-  if(GM.fibIdx>=GM.fibs.length){
-    el.innerHTML='<div class="card" style="text-align:center;padding:1.5rem"><div style="font-size:44px;margin-bottom:.5rem">✍</div><div style="font-family:\'DM Serif Display\',serif;font-size:18px;margin-bottom:.4rem">All blanks filled!</div><button class="btn btns btnp" onclick="GM.fibIdx=0;renderFillin('+(focusMode?'true':'false')+')">🔄 Restart</button></div>';
-    reward('✍','Fill-in complete!','',25);return;
-  }
-  var q=GM.fibs[GM.fibIdx],pct=Math.round(GM.fibIdx/GM.fibs.length*100),fm=focusMode?'true':'false';
-  el.innerHTML='<div style="margin-bottom:.65rem;font-size:13px;color:var(--t3)">Question '+(GM.fibIdx+1)+' of '+GM.fibs.length+'</div>'
-    +'<div class="card" style="margin-bottom:.75rem"><div style="font-size:12px;color:var(--t3);margin-bottom:.5rem;font-weight:500;text-transform:uppercase;letter-spacing:.06em">Fill in the blank</div>'
-    +'<div class="fib-sentence">'+q.sentence+'</div>'
-    +'<div class="fib-options">'+q.options.map(function(o){return'<button class="fib-opt" onclick="checkFib(\''+o+'\',\''+q.target+'\',this,'+fm+')">'+o+'</button>';}).join('')+'</div></div>'
-    +'<div class="pbar"><div class="pfill" style="width:'+pct+'%"></div></div>';
-}
-function checkFib(choice,target,btn,focusMode){
-  document.querySelectorAll('.fib-opt').forEach(function(b){b.disabled=true;});
-  var ok=choice.toLowerCase()===target.toLowerCase();
-  btn.classList.add(ok?'ok':'no');
-  if(!ok)document.querySelectorAll('.fib-opt').forEach(function(b){if(b.textContent.toLowerCase()===target.toLowerCase())b.classList.add('ok');});
-  reward(ok?'✅':'❌',ok?'Correct!':'Incorrect','',ok?10:0);
-  GM.fibIdx++;setTimeout(function(){renderFillin(focusMode);},1800);
+  TF.cards=TF.cards.sort(function(){return Math.random()-.5;});
+  TF.total=TF.cards.length;
+  TF.idx=0;TF.score=0;TF.streak=0;TF.best=0;
+  renderSpeedRound(focusMode);
 }
 
-// Concept Match
-function genMatch(focusMode){
-  if(!S.book) return;
-  var paras=S.book.content.split('\n\n').filter(function(p){return p.trim().length>60;});
-  GM.pairs=paras.slice(0,6).map(function(para){
-    var kw=vpKw(para),sents=para.split(/[.!?]/).filter(function(s){return s.trim().length>20;});
-    var def=(sents[0]||para.substring(0,120)).trim().replace(/[.!?]$/,'');
-    return{term:kw.charAt(0).toUpperCase()+kw.slice(1),def:def.substring(0,100)+(def.length>100?'…':'')};
-  }).filter(function(p){return p.term&&p.def;}).slice(0,5);
-  GM.matchSel=null;GM.matchDone=0;renderMatch(focusMode);
-}
-function renderMatch(focusMode){
-  var el=document.getElementById(focusMode?'f-g-match':'g-match');
-  if(!el) return;
-  if(!GM.pairs.length){el.innerHTML='<div class="empty">Click Generate games above</div>';return;}
-  if(GM.matchDone>=GM.pairs.length){
-    el.innerHTML='<div class="card" style="text-align:center;padding:1.5rem"><div style="font-size:44px;margin-bottom:.5rem">🔗</div><div style="font-family:\'DM Serif Display\',serif;font-size:18px;margin-bottom:.4rem">All matched!</div><button class="btn btns btnp" onclick="genMatch('+(focusMode?'true':'false')+')">🔄 New round</button></div>';
-    reward('🔗','All matched!','',35);return;
+function makeFalseSent(trueSent,allParas,currentPara){
+  // Strategy 1: swap a key descriptor word with its opposite or a wrong one
+  var opposites={'is':'is not','are':'are not','can':'cannot','enables':'prevents','increases':'decreases','improves':'worsens','requires':'eliminates','uses':'avoids','first':'last','primary':'secondary','simple':'complex','fast':'slow','large':'small','high':'low','more':'less','always':'never','all':'none'};
+  var words=trueSent.split(' ');
+  for(var i=0;i<words.length;i++){
+    var clean=words[i].replace(/[^a-zA-Z]/g,'').toLowerCase();
+    if(opposites[clean]){
+      var newWords=words.slice();
+      newWords[i]=newWords[i].replace(new RegExp(clean,'i'),opposites[clean]);
+      return newWords.join(' ');
+    }
   }
-  var terms=GM.pairs.map(function(p){return{val:p.term,type:'term'};}).sort(function(){return Math.random()-.5;});
-  var defs=GM.pairs.map(function(p){return{val:p.def,type:'def'};}).sort(function(){return Math.random()-.5;});
-  var prefix=focusMode?'f-':'';
-  el.innerHTML='<div style="font-size:13px;color:var(--t3);margin-bottom:.75rem">Click a term on the left, then its matching definition on the right.</div>'
-    +'<div class="match-grid"><div class="match-col" id="'+prefix+'match-terms"></div><div class="match-col" id="'+prefix+'match-defs"></div></div>'
-    +'<div style="font-size:12px;color:var(--t3)" id="'+prefix+'match-hint">Select a term to begin</div>';
-  terms.forEach(function(item){
-    var d=document.createElement('div');d.className='match-item';d.textContent=item.val;d.dataset.val=item.val;d.dataset.type='term';d.dataset.prefix=prefix;
-    d.onclick=function(){selectMatch(this,focusMode);};document.getElementById(prefix+'match-terms').appendChild(d);
-  });
-  defs.forEach(function(item){
-    var d=document.createElement('div');d.className='match-item';d.textContent=item.val;d.dataset.val=item.val;d.dataset.type='def';d.dataset.prefix=prefix;
-    d.onclick=function(){selectMatch(this,focusMode);};document.getElementById(prefix+'match-defs').appendChild(d);
-  });
+  // Strategy 2: replace subject phrase with one from a different paragraph
+  var others=allParas.filter(function(p){return p!==currentPara&&p.trim().length>40;});
+  if(others.length){
+    var otherPara=others[Math.floor(Math.random()*others.length)];
+    var otherDerived=deriveQuestion(otherPara);
+    if(otherDerived.term&&otherDerived.term.length>2){
+      var subjectMatch=trueSent.match(/^([A-Za-z][a-z]*(?:\s+[a-z][a-z]*){0,2})\s/);
+      if(subjectMatch){
+        return trueSent.replace(subjectMatch[1],otherDerived.term);
+      }
+    }
+  }
+  return null;
 }
-function selectMatch(el,focusMode){
-  if(el.classList.contains('matched'))return;
-  var prefix=el.dataset.prefix||'';
-  var hint=document.getElementById(prefix+'match-hint');
-  if(!GM.matchSel){
-    document.querySelectorAll('.match-item.selected').forEach(function(e){e.classList.remove('selected');});
-    if(el.dataset.type==='term'){el.classList.add('selected');GM.matchSel=el;if(hint)hint.textContent='Now click the matching definition';}
-    else{if(hint)hint.textContent='Select a term first (left column)';}
+
+function renderSpeedRound(focusMode){
+  var el=document.getElementById(focusMode?'f-g-speed':'g-speed');
+  if(!el)return;
+  if(!TF.cards.length){el.innerHTML='<div class="empty">Click Generate games above</div>';return;}
+  if(TF.idx>=TF.cards.length){
+    var pct=Math.round(TF.score/TF.total*100);
+    el.innerHTML='<div class="card" style="text-align:center;padding:1.8rem">'
+      +'<div style="font-size:48px;margin-bottom:.4rem">'+(pct>=70?'✅':'📚')+'</div>'
+      +'<div style="font-family:\'DM Serif Display\',serif;font-size:20px;margin-bottom:.3rem">True or False complete!</div>'
+      +'<div style="font-size:14px;color:var(--t2);margin-bottom:.2rem">Score: '+TF.score+' / '+TF.total+' ('+pct+'%)</div>'
+      +'<div style="font-size:13px;color:var(--teal);margin-bottom:1rem">🔥 Best streak: '+TF.best+'</div>'
+      +'<button class="btn btns btnp" onclick="TF.idx=0;TF.score=0;TF.streak=0;TF.best=0;renderSpeedRound('+(focusMode?'true':'false')+')">🔄 Play again</button>'
+      +'</div>';
+    reward(pct>=70?'✅':'📚',pct>=70?'Well done!':'Keep studying!',pct+'%',pct>=70?40:15);
     return;
   }
-  if(el.dataset.type==='term'){GM.matchSel.classList.remove('selected');el.classList.add('selected');GM.matchSel=el;return;}
-  var pair=GM.pairs.find(function(p){return p.term===GM.matchSel.dataset.val;});
-  var correct=pair&&el.textContent.indexOf(pair.def.substring(0,20))===0;
-  if(correct){
-    GM.matchSel.classList.remove('selected');GM.matchSel.classList.add('matched');el.classList.add('matched');
-    GM.matchSel=null;GM.matchDone++;if(hint)hint.textContent=GM.matchDone+' of '+GM.pairs.length+' matched ✅';
-    reward('🔗','Matched!','',10);if(GM.matchDone>=GM.pairs.length)setTimeout(function(){renderMatch(focusMode);},1200);
-  } else {
-    el.classList.add('wrong');GM.matchSel.classList.add('wrong');reward('❌','Not a match','',0);
-    setTimeout(function(){el.classList.remove('wrong');if(GM.matchSel){GM.matchSel.classList.remove('wrong','selected');}GM.matchSel=null;if(hint)hint.textContent='Try again';},900);
+  var card=TF.cards[TF.idx];
+  var pct=Math.round(TF.idx/TF.total*100);
+  var fm=focusMode?'true':'false';
+
+  // Learn mode — show correct statement first
+  if(isLearnMode()&&card.answer===true){
+    el.innerHTML='<div class="card">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">'
+      +'<span style="font-size:12px;color:var(--t3)">'+(TF.idx+1)+' of '+TF.total+'</span>'
+      +'<span style="font-size:11px;color:var(--purple);font-weight:600">🎮 Learn mode</span>'
+      +'</div>'
+      +'<div class="pbar" style="margin-bottom:1rem"><div class="pfill" style="width:'+pct+'%"></div></div>'
+      +'<div class="learn-concept-card">'
+      +'<div class="learn-concept-label">📖 This is a fact from the reading</div>'
+      +'<div class="learn-concept-text" style="font-size:14px;line-height:1.6">'+card.statement+'</div>'
+      +'</div>'
+      +'<div style="font-size:12px;color:var(--t3);margin-bottom:.75rem">Read and remember this — you\'ll be tested on similar statements.</div>'
+      +'<button class="btn btns btnp" style="width:100%" onclick="tfNext('+fm+')">Got it — next ↗</button>'
+      +'</div>';
+    return;
   }
+
+  el.innerHTML='<div class="card">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">'
+    +'<span style="font-size:12px;color:var(--t3)">'+(TF.idx+1)+' of '+TF.total+'</span>'
+    +'<span style="font-size:13px;font-weight:700;color:var(--teal)">🔥 '+TF.streak+'</span>'
+    +'</div>'
+    +'<div class="pbar" style="margin-bottom:1rem"><div class="pfill" style="width:'+pct+'%"></div></div>'
+    +'<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);margin-bottom:.6rem">True or False?</div>'
+    +'<div style="font-size:15px;font-weight:500;line-height:1.6;margin-bottom:1.2rem;color:var(--text)">'+card.statement+'</div>'
+    +'<div style="display:flex;gap:10px;">'
+    +'<button class="btn btns" style="flex:1;padding:.75rem;font-size:15px;border-color:rgba(0,201,167,.4);color:var(--teal)" onclick="tfAnswer(true,'+fm+')">✅ True</button>'
+    +'<button class="btn btns" style="flex:1;padding:.75rem;font-size:15px;border-color:rgba(220,50,50,.4);color:#E24B4A" onclick="tfAnswer(false,'+fm+')">❌ False</button>'
+    +'</div>'
+    +'</div>';
+}
+
+function tfNext(focusMode){
+  TF.idx++;
+  renderSpeedRound(focusMode);
+}
+
+function tfAnswer(answer,focusMode){
+  var card=TF.cards[TF.idx];
+  var correct=answer===card.answer;
+  var el=document.getElementById(focusMode?'f-g-speed':'g-speed');
+  if(!el)return;
+  if(correct){TF.score++;TF.streak++;if(TF.streak>TF.best)TF.best=TF.streak;}
+  else{TF.streak=0;}
+  var fm=focusMode?'true':'false';
+  // Show result briefly
+  el.querySelector('.card').innerHTML=(el.querySelector('.card').innerHTML||'')
+  +'<div id="tf-result" style="margin-top:.85rem;padding:.65rem .85rem;border-radius:var(--rs);background:'+(correct?'rgba(0,201,167,.1)':'rgba(220,50,50,.1)')+';border:1px solid '+(correct?'rgba(0,201,167,.3)':'rgba(220,50,50,.3)')+';">'
+    +'<div style="font-size:13px;font-weight:600;color:'+(correct?'var(--teal)':'#E24B4A')+';margin-bottom:.3rem">'+(correct?'✅ Correct!':'❌ Wrong')+'</div>'
+    +'<div style="font-size:12px;color:var(--t2);line-height:1.5">'+card.explanation+'</div>'
+    +'</div>';
+  reward(correct?'✅':'❌',correct?'Correct!':'Wrong!',correct?'Streak: '+TF.streak:'',correct?10:0);
+  TF.idx++;
+  setTimeout(function(){renderSpeedRound(focusMode);},1800);
+}
+
+// 🎯 CHALLENGE GAME (one term, 4 short definitions, 3 lives)
+var CG = {pairs:[],idx:0,score:0,lives:3,streak:0};
+
+function cleanDef(para, term){
+  var sents=para.split(/(?<=[.!?])\s+/).filter(function(s){return s.trim().length>15;});
+  var first=(sents[0]||para).trim();
+  var lastStop=first.lastIndexOf('.');
+  if(lastStop>20) first=first.substring(0,lastStop+1);
+
+  var stripped=first;
+
+  // Strip using the actual term precisely if provided
+  if(term&&term.length>2){
+    var esc=term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    var rx=new RegExp('^'+esc+'\\s+(?:is|are|was|were|refers to|means|describes|enables|allows|involves|addresses|drives|powers|trains|processes|handles|focuses on|consists of|comprises|uses|can|helps|supports|provides|requires|employs|applies|relies|operates|performs|offers|produces|generates|creates|builds|works|runs|plays|serves|acts|forms|makes|gives|takes|brings|holds|keeps|shows|sets|puts|starts|turns)\\s+','i');
+    var t2=first.replace(rx,'');
+    if(t2.length>15&&t2.length<first.length) stripped=t2;
+  }
+
+  // Fallback generic strip if term stripping didn't work
+  if(stripped===first){
+    var t3=first.replace(/^[A-Za-z][a-zA-Z]*(?:\s+[a-zA-Z][a-zA-Z]*){0,3}\s+(?:is|are|was|refers to|means|describes|enables|addresses|uses|can|helps|supports|provides|requires|employs|applies|operates|performs|offers|produces|generates|creates|builds|works)\s+/i,'');
+    if(t3.length>15&&t3.length<first.length) stripped=t3;
+  }
+
+  stripped=stripped.charAt(0).toUpperCase()+stripped.slice(1);
+  if(!/[.!?]$/.test(stripped)) stripped+='.';
+  if(stripped.length>110){
+    var cut=stripped.substring(0,100).replace(/\s+\S*$/,'');
+    if(!/[.!?]$/.test(cut)) cut+='.';
+    return cut;
+  }
+  return stripped;
+}
+
+function genChallenge(focusMode){
+  if(!S.book) return;
+  var paras=S.book.content.split('\n\n').filter(function(p){return p.trim().length>60;});
+  CG.pairs=paras.map(function(para){
+    var derived=deriveQuestion(para);
+    var term=derived.term;
+    if(!term||term.length<3) return null;
+    term=term.charAt(0).toUpperCase()+term.slice(1);
+    // Clean the definition — full sentence, complete thought
+    var def=cleanDef(para,term);
+    if(!def||def.length<12) return null;
+    return{term:term,def:def,para:para};
+  }).filter(Boolean);
+  // Deduplicate by term
+  var seen={};
+  CG.pairs=CG.pairs.filter(function(p){
+    var k=p.term.toLowerCase();
+    if(seen[k]) return false;
+    seen[k]=true; return true;
+  });
+  CG.pairs=CG.pairs.sort(function(){return Math.random()-.5;});
+  CG.idx=0;CG.score=0;CG.lives=3;CG.streak=0;
+  renderChallenge(focusMode);
+}
+function renderChallenge(focusMode){
+  var el=document.getElementById(focusMode?'f-g-challenge':'g-challenge');
+  if(!el)return;
+  if(!CG.pairs.length){el.innerHTML='<div class="empty">Click Generate games above</div>';return;}
+  if(CG.lives<=0||CG.idx>=CG.pairs.length){
+    var won=CG.lives>0;
+    el.innerHTML='<div class="card" style="text-align:center;padding:1.8rem">'
+      +'<div style="font-size:48px;margin-bottom:.4rem">'+(won?'🎯':'💔')+'</div>'
+      +'<div style="font-family:\'DM Serif Display\',serif;font-size:20px;margin-bottom:.3rem">'+(won?'Challenge Complete!':'Out of lives!')+'</div>'
+      +'<div style="font-size:14px;color:var(--t2);margin-bottom:.2rem">Score: '+CG.score+' / '+(won?CG.pairs.length:CG.idx+1)+'</div>'
+      +'<div style="font-size:13px;color:var(--teal);margin-bottom:1rem">🔥 Best streak: '+CG.streak+'</div>'
+      +'<button class="btn btns btnp" onclick="genChallenge('+(focusMode?'true':'false')+')">🎯 Try again</button>'
+      +'</div>';
+    reward(won?'🎯':'💔',won?'Challenge complete!':'You ran out of lives!','Score: '+CG.score,won?50:10);
+    return;
+  }
+  var current=CG.pairs[CG.idx];
+  // Build 3 wrong options — each cleaned the same way as the correct answer
+  var others=CG.pairs.filter(function(_,i){return i!==CG.idx;})
+    .sort(function(){return Math.random()-.5;}).slice(0,3);
+  var opts=[{def:current.def,correct:true}].concat(others.map(function(p){
+    return{def:cleanDef(p.para,p.term),correct:false};
+  }));
+  opts=opts.sort(function(){return Math.random()-.5;});
+  var fm=focusMode?'true':'false';
+  var lives='';for(var i=0;i<3;i++)lives+=(i<CG.lives?'❤️':'🖤');
+
+  // LEARN MODE — two steps: concept first, then question
+  if(isLearnMode()){
+    el.innerHTML='<div class="card">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">'
+      +'<span style="font-size:13px;color:var(--t3)">Q '+(CG.idx+1)+' of '+CG.pairs.length+'</span>'
+      +'<span style="font-size:11px;color:var(--purple);font-weight:600">🎮 Learn mode</span>'
+      +'</div>'
+      +'<div class="pbar" style="margin-bottom:1rem"><div class="pfill" style="width:'+Math.round(CG.idx/CG.pairs.length*100)+'%"></div></div>'
+      +'<div class="learn-concept-card">'
+      +'<div class="learn-concept-label">📖 Learn this concept</div>'
+      +'<div style="font-size:15px;font-weight:700;color:var(--purple);margin-bottom:.45rem;font-family:\'DM Serif Display\',serif">'+current.term+'</div>'
+      +'<div class="learn-concept-text">'+cleanDef(current.para,current.term)+'</div>'
+      +'</div>'
+      +'<div style="font-size:12px;color:var(--t3);margin-bottom:.75rem">Read the concept above carefully, then tap when ready.</div>'
+      +'<button class="btn btns btnp" style="width:100%" onclick="cgShowQuestion('+fm+')">✅ Ready — test me</button>'
+      +'</div>';
+    return;
+  }
+
+  // TEST MODE — lives system
+  el.innerHTML='<div class="card">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">'
+    +'<span style="font-size:13px;color:var(--t3)">Q '+(CG.idx+1)+' of '+CG.pairs.length+'</span>'
+    +'<span style="font-size:14px">'+lives+'</span>'
+    +'<span style="font-size:13px;font-weight:700;color:var(--teal)">🔥 '+CG.streak+'</span>'
+    +'</div>'
+    +'<div class="pbar" style="margin-bottom:.9rem"><div class="pfill" style="width:'+Math.round(CG.idx/CG.pairs.length*100)+'%"></div></div>'
+    +'<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);margin-bottom:.35rem">Which definition matches this term?</div>'
+    +'<div style="font-size:18px;font-weight:700;color:var(--teal);margin-bottom:1rem;font-family:\'DM Serif Display\',serif">'+current.term+'</div>'
+    +opts.map(function(o,i){
+      return '<button class="qopt" style="text-align:left;font-size:13px;line-height:1.5;margin-bottom:.45rem" '
+        +'onclick="cgAnswer('+o.correct+',this,'+fm+')">'+String.fromCharCode(65+i)+'. '+o.def+'</button>';
+    }).join('')
+    +'</div>';
+}
+function cgShowQuestion(focusMode){
+  var el=document.getElementById(focusMode?'f-g-challenge':'g-challenge');
+  if(!el) return;
+  var current=CG.pairs[CG.idx];
+  var others=CG.pairs.filter(function(_,i){return i!==CG.idx;})
+    .sort(function(){return Math.random()-.5;}).slice(0,3);
+  var opts=[{def:current.def,correct:true}].concat(others.map(function(p){
+    return{def:cleanDef(p.para,p.term),correct:false};
+  }));
+  opts=opts.sort(function(){return Math.random()-.5;});
+  var fm=focusMode?'true':'false';
+  el.innerHTML='<div class="card">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">'
+    +'<span style="font-size:13px;color:var(--t3)">Q '+(CG.idx+1)+' of '+CG.pairs.length+'</span>'
+    +'<span style="font-size:11px;color:var(--purple);font-weight:600">🎮 Now pick the right one</span>'
+    +'</div>'
+    +'<div class="pbar" style="margin-bottom:.9rem"><div class="pfill" style="width:'+Math.round(CG.idx/CG.pairs.length*100)+'%"></div></div>'
+    +'<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);margin-bottom:.35rem">Which definition matches this term?</div>'
+    +'<div style="font-size:18px;font-weight:700;color:var(--purple);margin-bottom:1rem;font-family:\'DM Serif Display\',serif">'+current.term+'</div>'
+    +opts.map(function(o,i){
+      return '<button class="qopt" style="text-align:left;font-size:13px;line-height:1.5;margin-bottom:.45rem" '
+        +'onclick="cgAnswer('+o.correct+',this,'+fm+')">'+String.fromCharCode(65+i)+'. '+o.def+'</button>';
+    }).join('')
+    +'</div>';
+}
+
+function cgAnswer(correct,btn,focusMode){
+  var outId=focusMode?'f-g-challenge':'g-challenge';
+  document.querySelectorAll('#'+outId+' .qopt').forEach(function(b){b.disabled=true;});
+  if(correct){
+    btn.classList.add('ok');CG.score++;CG.streak++;
+    reward('🎯','Correct!','Streak: '+CG.streak,12);
+  } else {
+    btn.classList.add('no');CG.lives--;CG.streak=0;
+    // Show correct answer
+    document.querySelectorAll('#'+outId+' .qopt').forEach(function(b){
+      if(b.textContent.indexOf(CG.pairs[CG.idx].def.substring(0,15))>0) b.classList.add('ok');
+    });
+    reward('💔','Wrong!',CG.lives+' lives left',0);
+  }
+  CG.idx++;
+  setTimeout(function(){renderChallenge(focusMode);},1600);
 }
 
 // Focus game helpers
 function renderFocusFlashcard(){renderFlashcard(true);}
 
 // ═══════════════════════════════════════════════
-// QUIZ
+// QUIZ — AI streaming with JS fallback
 // ═══════════════════════════════════════════════
 function genQuiz(focusMode){
   var outId=focusMode?'f-quiz-out':'quiz-out';
   var el=document.getElementById(outId);
   if(!el)return;
   if(!S.book){el.innerHTML='<div class="empty">Open a book first!</div>';return;}
+
+  var hasAI=(ANT&&ANT.length>10)||(WORKER_URL&&WORKER_URL.length>8);
+  if(hasAI){
+    genQuizAI(focusMode);
+  } else {
+    genQuizJS(focusMode);
+  }
+}
+
+async function genQuizAI(focusMode){
+  var outId=focusMode?'f-quiz-out':'quiz-out';
+  var el=document.getElementById(outId);
+  if(!el)return;
+
+  el.innerHTML='<div class="card">'
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem">'
+    +'<span class="spin"></span>'
+    +'<span style="font-size:13.5px;font-weight:500;color:var(--teal)">Analysing your document and generating questions…</span>'
+    +'</div>'
+    +'<div style="font-size:12px;color:var(--t3)">This may take a few seconds.</div>'
+    +'</div>';
+
+  var content=S.book.content.substring(0,4000);
+  var sys='You are a comprehension test generator. Generate a mix of MCQ and fill-in-the-blank questions.\n\n'
+    +'STRICT RULES:\n'
+    +'1. NEVER say "main idea of this section", "according to the passage", "this reading", "in this section". Questions must stand alone.\n'
+    +'2. Test genuine UNDERSTANDING — what something does, how it works, why it matters, how concepts differ.\n'
+    +'3. MCQ wrong answers: plausible short sentences, similar length to correct answer. Never use full paragraph sentences as options.\n'
+    +'4. FITB wrong options: SHORT words or phrases only (1-4 words max), same length as the correct blank. Never use full sentences as FITB options.\n'
+    +'5. Each question covers a DISTINCT concept. Never repeat.\n'
+    +'6. For fitb: blank must be a KEY TERM. The sentence must be meaningful with any option inserted — only one is factually correct.\n\n'
+    +'Return ONLY valid JSON array. Each object needs:\n'
+    +'- type: "mcq" or "fitb"\n'
+    +'- q: question string (fitb uses ___ for the blank)\n'
+    +'- options: array of exactly 4 strings\n'
+    +'- ans: index 0-3 of correct option\n'
+    +'- blank: the correct word/phrase (fitb only)\n'
+    +'- exp: one sentence explanation\n\n'
+    +'MCQ EXAMPLE: {"type":"mcq","q":"Why does deep learning need large datasets?","options":["It learns features automatically without pre-programmed rules","It requires calibration of specialised hardware","It generates its own training data during processing","It uses more layers that each need individual tuning"],"ans":0,"exp":"Deep learning discovers patterns without manual feature engineering."}\n\n'
+    +'FITB EXAMPLE: {"type":"fitb","q":"Deep learning uses ___ to extract patterns from raw data.","blank":"neural networks","options":["neural networks","decision trees","lookup tables","linear equations"],"ans":0,"exp":"Neural networks with multiple layers are the core architecture of deep learning."}\n\n'
+    +'BAD FITB (NEVER DO): options like "Natural language processing enables computers to understand language" — too long for a blank.\n'
+    +'BAD MCQ (NEVER DO): "What is the main idea of this section on Deep learning?" — references document structure.';
+
+  var prompt='Document:\n'+content+'\n\nGenerate as many questions as the document supports — one per distinct concept. Aim for roughly 2 MCQ for every 1 FITB. Return JSON array only, no markdown, no explanation.';
+
+  QS.qs=[];QS.step=0;QS.score=0;
+
+  try{
+    var useW=WORKER_URL&&WORKER_URL.length>8;
+    var ep=useW?WORKER_URL:'https://api.anthropic.com/v1/messages';
+    var hd={'Content-Type':'application/json'};
+    if(!useW){hd['x-api-key']=ANT;hd['anthropic-version']='2023-06-01';hd['anthropic-dangerous-direct-browser-access']='true';}
+
+    // Use non-streaming for Worker (Workers often don't support streaming)
+    var res=await fetch(ep,{
+      method:'POST',headers:hd,
+      body:JSON.stringify({
+        model:'claude-sonnet-4-5',max_tokens:4000,stream:false,
+        system:sys,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+
+    if(!res.ok){
+      var errText=await res.text();
+      throw new Error('API error '+res.status+': '+errText.substring(0,200));
+    }
+
+    var data=await res.json();
+    var fullText='';
+    if(data.content&&Array.isArray(data.content)){
+      fullText=data.content.filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('');
+    } else if(data.error){
+      throw new Error(data.error.message||'API error');
+    }
+
+    if(!fullText) throw new Error('Empty response from API');
+
+    var clean=fullText.replace(/```json|```/g,'').trim();
+    var arrStart=clean.indexOf('[');
+    var arrEnd=clean.lastIndexOf(']');
+    if(arrStart>=0&&arrEnd>arrStart) clean=clean.substring(arrStart,arrEnd+1);
+
+    var parsed=JSON.parse(clean);
+    if(Array.isArray(parsed)&&parsed.length>0){
+      QS.qs=parsed.filter(function(q){
+        if(!q.q||!Array.isArray(q.options)||q.options.length!==4) return false;
+        // Accept fitb, fill_in_the_blank, fill-in-the-blank etc
+        var isFITB=/fitb|fill/i.test(q.type||'');
+        q.type=isFITB?'fitb':'mcq';
+        if(isFITB) return typeof q.blank==='string'&&q.blank.length>0;
+        return typeof q.ans==='number';
+      });
+      // Fix ans index for fitb — shuffle options and find correct
+      QS.qs.forEach(function(q){
+        if(q.type==='fitb'){
+          // Ensure blank is in options
+          var hasBlank=q.options.some(function(o){return o.toLowerCase().trim()===q.blank.toLowerCase().trim();});
+          if(!hasBlank){ q.options[0]=q.blank; }
+          q.options=shuffle(q.options);
+          q.ans=q.options.findIndex(function(o){return o.toLowerCase().trim()===q.blank.toLowerCase().trim();});
+          if(q.ans<0) q.ans=0;
+        }
+      });
+      if(QS.qs.length>0){ renderQuiz(focusMode); return; }
+    }
+    throw new Error('No valid questions in response');
+
+  }catch(e){
+    console.warn('AI quiz failed:',e.message);
+    genQuizJS(focusMode);
+  }
+}
+
+function genQuizJS(focusMode){
+  var outId=focusMode?'f-quiz-out':'quiz-out';
+  var el=document.getElementById(outId);
+  if(!el)return;
   el.innerHTML='<div class="empty"><span class="spin"></span> Generating test…</div>';
   setTimeout(function(){
-    var paras=S.book.content.split('\n\n').filter(function(p){return p.trim().length>60;}).slice(0,5);
-    QS.qs=paras.map(function(para,i){
-      var sents=para.split(/[.!?]/).filter(function(s){return s.trim().length>20;});
-      var correct=(sents[0]||para.substring(0,110)).trim().substring(0,110);
-      var opts=[correct,'This section is unrelated to the main topic','The text presents the opposite view here','This concept contradicts the rest of the document'].map(function(v,idx){return{v:v,idx:idx};}).sort(function(){return Math.random()-.5;});
-      return{q:'What is the main idea of paragraph '+(i+1)+'?',options:opts.map(function(o){return o.v;}),ans:opts.findIndex(function(o){return o.idx===0;}),exp:'The answer comes from the opening sentence of that paragraph.'};
+    var paras=S.book.content.split('\n\n').filter(function(p){return p.trim().length>60;});
+
+    // Build a pool of clean term+definition pairs — same as Challenge game
+    var pool=paras.map(function(para){
+      var derived=deriveQuestion(para);
+      var term=derived.term;
+      if(!term||term.length<3) return null;
+      term=term.charAt(0).toUpperCase()+term.slice(1);
+      var def=cleanDef(para,derived.term);
+      if(!def||def.length<12) return null;
+      return{term:term,def:def,para:para};
+    }).filter(Boolean);
+
+    // Deduplicate by term
+    var seen={};
+    pool=pool.filter(function(p){
+      var k=p.term.toLowerCase();
+      if(seen[k]) return false;
+      seen[k]=true; return true;
     });
+
+    var qTypes=[
+      function(item,others){ return{type:'mcq',q:'What is '+item.term+'?',options:buildOpts(item.def,others),ans:0,exp:item.term+' — '+item.def}; },
+      function(item,others){ return{type:'mcq',q:'Which of the following correctly describes "'+item.term+'"?',options:buildOpts(item.def,others),ans:0,exp:'"'+item.term+'" — '+item.def}; },
+      function(item,others){ return{type:'mcq',q:'How would you best explain "'+item.term+'"?',options:buildOpts(item.def,others),ans:0,exp:item.def}; },
+      function(item,others){ return{type:'mcq',q:'Which statement about "'+item.term+'" is accurate?',options:buildOpts(item.def,others),ans:0,exp:'The accurate statement: '+item.def}; },
+    ];
+
+    QS.qs=pool.map(function(item,i){
+      var others=pool.filter(function(_,j){return j!==i;}).sort(function(){return Math.random()-.5;}).slice(0,3);
+      var tpl=qTypes[i%qTypes.length];
+      var q=tpl(item,others);
+      // Shuffle options and track correct answer
+      var correctDef=q.options[0];
+      q.options=shuffle(q.options);
+      q.ans=q.options.findIndex(function(o){return o===correctDef;});
+      if(q.ans<0) q.ans=0;
+      return q;
+    }).filter(function(q){return q&&q.options.length===4;});
+
     QS.step=0;QS.score=0;renderQuiz(focusMode);
-  },500);
+  },400);
 }
+
+function buildOpts(correct, others){
+  // Build 4 options — correct + 3 wrong — all same style (clean short definitions)
+  var wrongs=others.slice(0,3).map(function(p){return p.def;});
+  while(wrongs.length<3){
+    wrongs.push(['A process for organising and retrieving information efficiently.','A method used to improve performance through repeated practice.','A system designed to handle complex operations automatically.'][wrongs.length]);
+  }
+  return [correct].concat(wrongs);
+}
+
+function shuffle(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+  return a;
+}
+
 function renderQuiz(focusMode){
   var outId=focusMode?'f-quiz-out':'quiz-out';
   var el=document.getElementById(outId);if(!el)return;
   var fm=focusMode?'true':'false';
   if(QS.step>=QS.qs.length){
     var pct=Math.round(QS.score/QS.qs.length*100),pass=pct>=70;
-    el.innerHTML='<div class="card" style="text-align:center;padding:1.6rem"><div style="font-size:44px;margin-bottom:.5rem">'+(pass?'🏆':'📚')+'</div><div style="font-family:\'DM Serif Display\',serif;font-size:20px;margin-bottom:.3rem">'+(pass?'Test Passed!':'Keep Studying')+'</div><div style="font-size:13.5px;color:var(--t2);margin-bottom:.3rem">Score: '+QS.score+'/'+QS.qs.length+' ('+pct+'%)</div><div style="font-size:12.5px;color:var(--t3);margin-bottom:1rem">'+(pass?'Excellent! You have mastered this material.':'You need 70% to pass. Review and try again.')+'</div>'+(pass?'<div class="badge tbadge" style="font-size:13px;padding:.38rem 1rem;margin-bottom:.9rem">✅ Completion badge earned!</div><br>':'')+'<button class="btn btns btnp" onclick="genQuiz('+fm+')">🔄 New test</button></div>';
+    el.innerHTML='<div class="card" style="text-align:center;padding:1.6rem">'
+      +'<div style="font-size:44px;margin-bottom:.5rem">'+(pass?'🏆':'📚')+'</div>'
+      +'<div style="font-family:\'DM Serif Display\',serif;font-size:20px;margin-bottom:.3rem">'+(pass?'Test Passed!':'Keep Studying')+'</div>'
+      +'<div style="font-size:13.5px;color:var(--t2);margin-bottom:.3rem">Score: '+QS.score+'/'+QS.qs.length+' ('+pct+'%)</div>'
+      +'<div style="font-size:12.5px;color:var(--t3);margin-bottom:1rem">'+(pass?'Excellent! You\'ve mastered this material.':'You need 70% to pass. Review the reading and try again.')+'</div>'
+      +(pass?'<div class="badge tbadge" style="font-size:13px;padding:.38rem 1rem;margin-bottom:.9rem">✅ Completion badge earned!</div><br>':'')
+      +'<button class="btn btns btnp" onclick="genQuiz('+fm+')">🔄 New test</button></div>';
     if(pass){S.testsPassed++;S.pagesRead+=8;scheduleSave();reward('🏆','Test passed!',pct+'% — badge earned!',150);}
     else reward('📚','Test done',pct+'% — aim for 70%+',30);
     return;
   }
   var q=QS.qs[QS.step],prog=Math.round(QS.step/QS.qs.length*100);
-  el.innerHTML='<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem"><span style="font-size:12px;color:var(--t3)">Question '+(QS.step+1)+' of '+QS.qs.length+'</span><span class="badge tbadge">'+QS.score+' correct</span></div><div class="pbar" style="margin-bottom:.85rem"><div class="pfill" style="width:'+prog+'%"></div></div><div style="font-weight:500;font-size:14.5px;margin-bottom:.8rem;line-height:1.5">'+q.q+'</div>'+q.options.map(function(o,i){return'<button class="qopt" onclick="ansQ('+i+',this,'+fm+')">'+o+'</button>';}).join('')+'</div>';
+  var header='<div class="card">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem">'
+    +'<span style="font-size:12px;color:var(--t3)">Question '+(QS.step+1)+' of '+QS.qs.length+'</span>'
+    +'<span class="badge tbadge">'+QS.score+' correct</span>'
+    +'</div>'
+    +'<div class="pbar" style="margin-bottom:.85rem"><div class="pfill" style="width:'+prog+'%"></div></div>';
+
+  if(q.type==='fitb'){
+    // Fill in the blank
+    var sentence=q.q.replace('___','<span class="fitb-blank" id="fitb-display">___</span>');
+    var opts=q.options.map(function(o,i){
+      return '<button class="fitb-opt" onclick="ansFITB('+i+',this,'+fm+')" id="fitb-opt-'+i+'">'+o+'</button>';
+    }).join('');
+    el.innerHTML=header
+      +'<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);margin-bottom:.6rem">Fill in the blank</div>'
+      +'<div style="font-size:15px;font-weight:500;line-height:1.7;margin-bottom:.4rem">'+sentence+'</div>'
+      +'<div class="fitb-opts">'+opts+'</div>'
+      +'</div>';
+  } else {
+    // MCQ
+    el.innerHTML=header
+      +'<div style="font-weight:500;font-size:14.5px;margin-bottom:.8rem;line-height:1.5">'+q.q+'</div>'
+      +q.options.map(function(o,i){
+        return '<button class="qopt" style="text-align:left" onclick="ansQ('+i+',this,'+fm+')">'+String.fromCharCode(65+i)+'. '+o+'</button>';
+      }).join('')
+      +'</div>';
+  }
 }
+
+function ansFITB(idx,btn,focusMode){
+  var q=QS.qs[QS.step];
+  var outId=focusMode?'f-quiz-out':'quiz-out';
+  document.querySelectorAll('#'+outId+' .fitb-opt').forEach(function(b){b.disabled=true;});
+  var correct=idx===q.ans;
+  var blank=document.getElementById('fitb-display');
+  if(blank){ blank.textContent=q.options[idx]; blank.style.color=correct?'var(--green)':'var(--red)'; blank.style.borderColor=correct?'var(--green)':'var(--red)'; }
+  if(correct){btn.classList.add('ok');QS.score++;reward('✅','Correct!','',10);}
+  else{
+    btn.classList.add('no');
+    document.getElementById('fitb-opt-'+q.ans).classList.add('ok');
+    reward('❌','Wrong',q.exp||'',0);
+  }
+  QS.step++;setTimeout(function(){renderQuiz(focusMode);},1900);
+}
+
 function ansQ(idx,btn,focusMode){
   var q=QS.qs[QS.step];
   document.querySelectorAll((focusMode?'#f-quiz-out':'#quiz-out')+' .qopt').forEach(function(b){b.disabled=true;});
@@ -2331,7 +3095,7 @@ async function doAI(txt) {
             .map(function(b){ return b.text; })
             .join('');
           if (text) {
-            S.chatHistory.push({role:'assistant', content:text, src:'Claude AI'});
+            S.chatHistory.push({role:'assistant', content:text, src:'AI Assistant'});
             return;
           }
         }
@@ -2697,6 +3461,324 @@ function removeFocusNote(id){
   renderNotesPanel(); renderFocusNoteList(); scheduleSave();
 }
 
+// ═══════════════════════════════════════════════
+// LEARNING PATH
+// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// SECTION SELECTOR
+// ═══════════════════════════════════════════════
+var _sectionBook  = null;
+var _selectedSec  = null;
+var _sections     = [];
+var _visitedSecs  = {};  // {index: true} — tracks which sections visited
+
+var SEC_THRESHOLD  = 8000;   // chars — above triggers selector
+var SEC_SIZE_SHORT = 4000;   // target chars per section for medium docs
+var SEC_SIZE_LONG  = 9000;   // target chars per section for very long docs
+var SEC_ALL_LIMIT  = 50000;  // chars — above this hide "Read all" option
+
+function maybeSectionBook(b){
+  if(b.content.length <= SEC_THRESHOLD){
+    showPathModal(b);
+    return;
+  }
+  _sectionBook = b;
+  var secSize = b.content.length > SEC_ALL_LIMIT ? SEC_SIZE_LONG : SEC_SIZE_SHORT;
+  _sections   = splitIntoSections(b.content, secSize);
+  _selectedSec= null;
+  showSectionModal(b);
+  // Show sections buttons everywhere
+  showAllSectionButtons(true);
+}
+
+function showAllSectionButtons(show){
+  ['sec-switch-btn','sec-btn-game','sec-btn-quiz','sec-btn-ai','sec-btn-focus'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.style.display=show?'':'none';
+  });
+}
+
+function splitIntoSections(content, secSize){
+  var paras=content.split('\n\n').filter(function(p){return p.trim().length>20;});
+  var sections=[];
+  var current=[];
+  var currentLen=0;
+
+  paras.forEach(function(para){
+    var p=para.trim();
+    var isHeading=p.length<100&&p.split(/\s+/).length<=12&&/^[A-Z]/.test(p)&&!/[.!?,;]$/.test(p);
+    if((isHeading&&currentLen>secSize*0.3)||(currentLen>secSize)){
+      if(current.length) sections.push(buildSection(current));
+      current=[p];
+      currentLen=p.length;
+    } else {
+      current.push(p);
+      currentLen+=p.length;
+    }
+  });
+  if(current.length) sections.push(buildSection(current));
+  return sections;
+}
+
+function buildSection(paras){
+  var content=paras.join('\n\n');
+  var words=content.split(/\s+/).length;
+  var first=paras[0]||'';
+  var isHeading=first.length<100&&first.split(/\s+/).length<=12&&!/[.!?,;]$/.test(first);
+  var title=isHeading?first:first.split(/\s+/).slice(0,6).join(' ')+'…';
+  var bodyPara=isHeading&&paras.length>1?paras[1]:paras[0];
+  var sents=(bodyPara||'').split(/(?<=[.!?])\s+/);
+  var preview=(sents[0]||bodyPara||'').trim().substring(0,140);
+  return{title:title,preview:preview,content:content,words:words};
+}
+
+function showSectionModal(b){
+  var m=document.getElementById('sectionModal');
+  if(!m) return;
+  document.getElementById('sec-book-title').textContent=_sectionBook?_sectionBook.title:(b?b.title:'');
+  var list=document.getElementById('sec-list');
+  list.innerHTML='';
+  var totalChars=_sectionBook?_sectionBook.content.length:(b?b.content.length:0);
+  var isVeryLong=totalChars>SEC_ALL_LIMIT;
+
+  // "Read all" — only for manageable docs
+  if(!isVeryLong){
+    var allWords=(b||_sectionBook).content.split(/\s+/).length;
+    var allItem=document.createElement('div');
+    allItem.className='sec-item all-item';
+    allItem.onclick=function(){ selectSection(-1); };
+    allItem.innerHTML='<div class="sec-num all-num">📖</div>'
+      +'<div class="sec-info">'
+      +'<div class="sec-title">Read entire document</div>'
+      +'<div class="sec-preview">All '+_sections.length+' sections at once</div>'
+      +'<div class="sec-len">~'+allWords+' words · ~'+Math.ceil(allWords/200)+' min read</div>'
+      +'</div>';
+    list.appendChild(allItem);
+  } else {
+    // Notice for very long docs
+    var notice=document.createElement('div');
+    notice.style.cssText='font-size:12px;color:var(--t3);background:rgba(255,179,71,.08);border:1px solid rgba(255,179,71,.25);border-radius:var(--rs);padding:.6rem .85rem;margin-bottom:.25rem';
+    notice.textContent='This document is too long to load at once. Select a section to begin — you can switch sections anytime using the 📑 Sections button while reading.';
+    list.appendChild(notice);
+  }
+
+  // Individual sections
+  _sections.forEach(function(sec,i){
+    var visited=_visitedSecs[i];
+    var item=document.createElement('div');
+    item.className='sec-item'+(visited?' visited':'');
+    item.id='sec-item-'+i;
+    item.onclick=function(){ selectSection(i); };
+    item.innerHTML='<div class="sec-num">'+(i+1)+'</div>'
+      +'<div class="sec-info">'
+      +'<div class="sec-title">'+escHtml(sec.title)+'</div>'
+      +'<div class="sec-preview">'+escHtml(sec.preview)+'</div>'
+      +'<div class="sec-len">~'+sec.words+' words · ~'+Math.ceil(sec.words/200)+' min read</div>'
+      +(visited?'<div class="sec-visited">✓ Visited</div>':'')
+      +'</div>';
+    list.appendChild(item);
+  });
+
+  // Reset button state
+  var btn=document.getElementById('sec-start-btn');
+  if(btn){btn.style.opacity='.4';btn.style.pointerEvents='none';}
+  _selectedSec=null;
+  m.classList.add('show');
+}
+
+function reopenSectionModal(){
+  if(!_sectionBook||!_sections.length) return;
+  showSectionModal(_sectionBook);
+}
+
+function selectSection(idx){
+  _selectedSec=idx;
+  document.querySelectorAll('.sec-item').forEach(function(el){el.classList.remove('selected');});
+  if(idx===-1){
+    var a=document.querySelector('.sec-item.all-item');
+    if(a) a.classList.add('selected');
+  } else {
+    var el=document.getElementById('sec-item-'+idx);
+    if(el) el.classList.add('selected');
+  }
+  var btn=document.getElementById('sec-start-btn');
+  if(btn){btn.style.opacity='1';btn.style.pointerEvents='auto';}
+}
+
+function startSection(){
+  var m=document.getElementById('sectionModal');
+  if(m) m.classList.remove('show');
+  var b=_sectionBook;
+  if(!b) return;
+
+  var isSwitch = S.learningPath !== null;
+
+  if(_selectedSec===-1){
+    b=Object.assign({},_sectionBook,{content:_sectionBook.content.substring(0,25000)});
+  } else {
+    var sec=_sections[_selectedSec];
+    if(!sec) return;
+    _visitedSecs[_selectedSec]=true;
+    b=Object.assign({},_sectionBook,{
+      content:sec.content,
+      title:_sectionBook.title+' · Section '+(_selectedSec+1),
+      prog:0
+    });
+  }
+
+  // Update S.book and reading content
+  S.book=b;
+  document.getElementById('read-title').textContent=b.title;
+  document.getElementById('read-sub').textContent=b.e+' 0% complete';
+  document.getElementById('rprog').style.width='0%';
+  document.getElementById('rpct').textContent='0%';
+
+  var rt=document.getElementById('rtext');
+  if(rt){
+    rt.innerHTML='';
+    b.content.split('\n\n').filter(function(p){return p.trim();}).forEach(function(para){
+      var p=document.createElement('p');
+      var t=para.trim();
+      var wc=t.split(/\s+/).length;
+      var isH=wc<=10&&/^[A-Z]/.test(t)&&!/[.!?,;]$/.test(t)&&t.length<80;
+      if(isH) p.className='para-heading';
+      p.textContent=t;
+      rt.appendChild(p);
+    });
+    var contentEl=document.getElementById('content');
+    if(contentEl) contentEl.scrollTop=0;
+  }
+
+  buildReadAlong(b);
+  scheduleSave();
+
+  if(isSwitch){
+    // Already has a path — detect current page and auto-regenerate
+    var currentPage=getCurrentPage();
+    go(currentPage==='focus'?'read':currentPage);
+    applyLearningPath(S.learningPath);
+    autoRegenForPage(currentPage);
+  } else {
+    showPathModal(b);
+  }
+}
+
+function getCurrentPage(){
+  // Detect which page is currently visible
+  var pages=['read','game','quiz','ai','library','progress'];
+  for(var i=0;i<pages.length;i++){
+    var el=document.getElementById('p-'+pages[i]);
+    if(el&&el.style.display!=='none') return pages[i];
+  }
+  // Check focus mode
+  var focusOv=document.getElementById('focusOv');
+  if(focusOv&&focusOv.classList.contains('show')) return 'focus';
+  return 'read';
+}
+
+function autoRegenForPage(page){
+  // Auto-regenerate content relevant to the current page after section switch
+  setTimeout(function(){
+    if(page==='game'){
+      genAllGames(false);
+      reward('📑','Section switched!','Games regenerated for new section',0);
+    } else if(page==='quiz'){
+      genQuiz(false);
+      reward('📑','Section switched!','Quiz regenerated for new section',0);
+    } else if(page==='focus'){
+      var focusTab=S.focusTab||'read';
+      if(focusTab==='game') genAllGames(true);
+      else if(focusTab==='quiz') genQuiz(true);
+      reward('📑','Section switched!','Focus mode updated',0);
+    } else if(page==='ai'){
+      reward('📑','Section switched!','AI context updated for new section',0);
+    } else {
+      reward('📑','Section switched!','Now reading new section',0);
+    }
+  },300);
+}
+
+function applyLearningPath(path){
+  if(path==='play'){
+    go('game');
+    genAllGames(false);
+    showLearnModeBanner(true);
+    var fcTab=document.querySelector('#game-tabs .tab:nth-child(1)');
+    if(fcTab) setGameTab('flashcard',fcTab);
+  } else {
+    go('read');
+    showLearnModeBanner(false);
+  }
+}
+
+function escHtml(str){
+  return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showPathModal(b){
+  var m=document.getElementById('pathModal');
+  if(!m) return;
+  document.getElementById('path-book-title').textContent=b.title;
+  document.getElementById('path-book-sub').textContent=b.e+' · tap a path to begin';
+  // Reset
+  ['read','play','both'].forEach(function(p){
+    document.getElementById('pc-'+p).className='path-card';
+    document.getElementById('pr-'+p).className='path-radio';
+  });
+  S.learningPath=null;
+  var btn=document.getElementById('path-start-btn');
+  btn.style.opacity='.4';btn.style.pointerEvents='none';
+  m.style.display='flex';
+}
+
+function selectPath(path){
+  S.learningPath=path;
+  ['read','play','both'].forEach(function(p){
+    document.getElementById('pc-'+p).className='path-card'+(p===path?' selected-'+p:'');
+    document.getElementById('pr-'+p).className='path-radio'+(p===path?' on-'+p:'');
+  });
+  var btn=document.getElementById('path-start-btn');
+  btn.style.opacity='1';btn.style.pointerEvents='auto';
+}
+
+function startLearningPath(){
+  var m=document.getElementById('pathModal');
+  if(m) m.style.display='none';
+  applyLearningPath(S.learningPath);
+}
+
+function showLearnModeBanner(show){
+  var b=document.getElementById('learn-mode-banner');
+  if(b) b.style.display=show?'flex':'none';
+}
+
+// Learn mode — inject concept card before each game question
+var _learnMode = false;
+function isLearnMode(){ return S.learningPath==='play'; }
+
+// ═══════════════════════════════════════════════
+// WELCOME SCREEN
+// ═══════════════════════════════════════════════
+function wsShow(){
+  var el=document.getElementById('welcomeScreen');
+  if(el) el.classList.remove('hidden');
+  document.getElementById('shell').style.display='none';
+}
+function wsHide(){
+  var el=document.getElementById('welcomeScreen');
+  if(el) el.classList.add('hidden');
+  document.getElementById('shell').style.display='';
+  localStorage.setItem('sr_seen','1');
+}
+function wsSignIn(){
+  wsHide();
+  // Trigger Google sign-in
+  setTimeout(function(){ signInGoogle(); },300);
+}
+function wsContinue(){
+  wsHide();
+}
+
 (function init(){
   // Apply saved theme
   var saved=localStorage.getItem('sr_theme')||'auto';
@@ -2705,8 +3787,100 @@ function removeFocusNote(id){
   renderChat();
   renderProgress();
   if(window.speechSynthesis){window.speechSynthesis.onvoiceschanged=function(){};}
+
+  // Show welcome screen on first visit only
+  if(!localStorage.getItem('sr_seen')){
+    wsShow();
+  }
+  // Track reading progress via scroll position on #content
+  var _scrollT=null;
+  var contentEl=document.getElementById('content');
+  if(contentEl){
+    contentEl.addEventListener('scroll',function(){
+      clearTimeout(_scrollT);
+      _scrollT=setTimeout(function(){
+        // Only track when on read page, text tab visible
+        var readPage=document.getElementById('p-read');
+        var textTab=document.getElementById('t-text');
+        if(!S.book||!readPage||readPage.style.display==='none') return;
+        if(!textTab||textTab.style.display==='none') return;
+        var rtext=document.getElementById('rtext');
+        if(!rtext) return;
+        var rect=rtext.getBoundingClientRect();
+        var contentRect=contentEl.getBoundingClientRect();
+        var scrolled=contentEl.scrollTop;
+        var total=rtext.scrollHeight;
+        var visible=contentEl.clientHeight;
+        var rtextTop=rtext.offsetTop;
+        var progress=Math.min(100,Math.round(Math.max(0,(scrolled+visible-rtextTop)/total*100)));
+        // Update progress bar
+        var pf=document.getElementById('rprog');
+        var pct=document.getElementById('rpct');
+        if(pf) pf.style.width=progress+'%';
+        if(pct) pct.textContent=progress+'%';
+        // Save progress to book
+        if(S.book&&progress>S.book.prog){
+          S.book.prog=progress;
+          var readSub=document.getElementById('read-sub');
+          if(readSub) readSub.textContent=S.book.e+' '+progress+'% complete';
+          scheduleSave();
+        }
+      },200);
+    });
+  }
 })();
 </script>
+<!-- Section Selector Modal -->
+<div id="sectionModal">
+  <div class="sec-box">
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:.3rem">SmartRead</div>
+    <div id="sec-book-title" style="font-size:17px;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:.2rem"></div>
+    <div style="font-size:12px;color:var(--t3)">This document is long. Choose a section to focus on, or read it all at once.</div>
+    <div class="sec-list" id="sec-list"></div>
+    <button id="sec-start-btn" class="btn btnp" style="width:100%;padding:.75rem;font-size:14px;opacity:.4;pointer-events:none" onclick="startSection()">Open selected section →</button>
+  </div>
+</div>
+
+<!-- Learning Path Choice Modal -->
+<div id="pathModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:2000;align-items:center;justify-content:center">
+  <div style="background:var(--bg2);border:1px solid var(--cb);border-radius:20px;padding:1.6rem 1.5rem;width:340px;max-width:94vw">
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:.35rem">SmartRead</div>
+    <div id="path-book-title" style="font-size:17px;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:.25rem"></div>
+    <div id="path-book-sub" style="font-size:11.5px;color:var(--t3);margin-bottom:1.3rem"></div>
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:.75rem">How do you want to learn this?</div>
+
+    <div class="path-card" id="pc-read" onclick="selectPath('read')">
+      <div class="path-icon" style="background:rgba(0,201,167,.12)">📖</div>
+      <div class="path-text">
+        <div class="path-title">Read it</div>
+        <div class="path-desc">Text, audio or video at your own pace</div>
+      </div>
+      <div class="path-radio" id="pr-read"></div>
+    </div>
+
+    <div class="path-card" id="pc-play" onclick="selectPath('play')">
+      <div class="path-icon" style="background:rgba(107,82,212,.12)">🎮</div>
+      <div class="path-text">
+        <div class="path-title">Play it</div>
+        <div class="path-desc">Learn through games — no reading needed</div>
+      </div>
+      <div class="path-radio" id="pr-play"></div>
+    </div>
+
+    <div class="path-card" id="pc-both" onclick="selectPath('both')">
+      <div class="path-icon" style="background:rgba(239,159,39,.12)">⚡</div>
+      <div class="path-text">
+        <div class="path-title">Both</div>
+        <div class="path-desc">Read first, then reinforce with games</div>
+      </div>
+      <div class="path-radio" id="pr-both"></div>
+    </div>
+
+    <div style="height:1px;background:var(--cb);margin:.9rem 0"></div>
+    <button id="path-start-btn" onclick="startLearningPath()" class="btn btnp" style="width:100%;padding:.75rem;font-size:14px;opacity:.4;pointer-events:none">Start learning</button>
+  </div>
+</div>
+
 <!-- Floating AI button (visible on Read and Game pages) -->
 <button id="ai-float-btn" onclick="toggleAIPanel()" title="AI Assistant">🤖</button>
 
