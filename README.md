@@ -48,7 +48,7 @@ More detail: `docs/research.md`
 
 ## Live Demo
 
-https://smartreadapp.netlify.app/
+https://smartread-c3w.pages.dev/
 
 ## Documentation
 
